@@ -9,7 +9,7 @@ mongoose.createConnection(process.env.DATABASE_URL);
 const app = express();
 const port = 3000;
 
-
+app.use(cookieParser());
 app.use([cors(), express.json()]);
 app.get('/', (req, res) => {
   res.json({ thongbao: 'API NodeJS cho fashion_web25'});

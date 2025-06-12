@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 // Tạo ObjectId giả để sử dụng trong dữ liệu mẫu
 const ObjectId = mongoose.Types.ObjectId;

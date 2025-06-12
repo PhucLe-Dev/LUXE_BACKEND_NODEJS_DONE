@@ -7,6 +7,7 @@ const schemaNguoiDung = require('../model/schemaNguoiDung');
 const conn = mongoose.createConnection(process.env.DATABASE_URL);
 const User = conn.model('nguoi_dung', schemaNguoiDung);
 
+let refreshTokens = [];
 const authControllers = {
     // Hàm tạo access token
     createAccessToken: (user) => {
@@ -58,14 +59,15 @@ const authControllers = {
                 const access_token = authControllers.createAccessToken(user);
                 // Tạo refresh token
                 const refresh_token = authControllers.createRefreshToken(user);
+                // Lưu refresh token vào mảng
+                refreshTokens.push(refresh_token); 
                 // Lưu refresh token vào HTTP-only cookie
                 res.cookie('refresh_token', refresh_token, {
                     httpOnly: true,
                     secure: false, // Chỉ gửi cookie qua HTTPS trong môi trường sản xuất
                     sameSite: 'strict', // Bảo vệ chống CSRF
-                    maxAge: 24 * 60 * 60 * 1000 // 1 ngày
                 });
-                const { mat_khau, xac_nhan_mat_khau, ...others } = user._doc; // Loại bỏ mật khẩu và xác nhận mật khẩu
+                const { mat_khau, ...others } = user._doc; // Loại bỏ mật khẩu và xác nhận mật khẩu
                 res.status(200).json({ message: 'Đăng nhập thành công', ...others, access_token });
             }
         } catch (error) {
@@ -74,9 +76,12 @@ const authControllers = {
     },
     // Hàm lấy refresh token
     refreshToken: async (req, res) => {
-        const refresh_token = req.cookies.refresh_token;
-        if (!refresh_token) {
+        const refresh_token = req.cookies.refresh_token;    
+        if(!refresh_token) {
             return res.status(401).json({ message: 'Không có refresh token' });
+        }
+        if (!refreshTokens.includes(refresh_token)) {
+            return res.status(403).json({ message: 'Refresh token không hợp lệ' });
         }
         jwt.verify(refresh_token, process.env.JWT_REFRESH_TOKEN_SECRET, async (err, user) => {
             if (err) {
@@ -86,10 +91,26 @@ const authControllers = {
             if (!currentUser) {
                 return res.status(404).json({ message: 'Người dùng không tồn tại' });
             }
+            refreshTokens = refreshTokens.filter(token => token !== refresh_token); // Xóa refresh token cũ
             // Tạo access token mới
             const newAccessToken = authControllers.createAccessToken(currentUser);
+            const newRefreshToken = authControllers.createRefreshToken(currentUser);
+            // Lưu refresh token mới vào mảng
+            refreshTokens.push(newRefreshToken);
+            // Lưu refresh token mới vào HTTP-only cookie
+            res.cookie('refresh_token', newRefreshToken, {
+                    httpOnly: true,
+                    secure: false, // Chỉ gửi cookie qua HTTPS trong môi trường sản xuất
+                    sameSite: 'strict', // Bảo vệ chống CSRF
+                });
             res.status(200).json({ access_token: newAccessToken });
         });
+    },
+    // Hàm đăng xuất người dùng
+    logoutUser: async (req, res) => {
+        res.clearCookie('refresh_token');
+        refreshTokens = refreshTokens.filter(token => token !== req.cookies.refresh_token); // Xóa refresh token khỏi mảng
+        res.status(200).json({ message: 'Đăng xuất thành công' });
     }
 };
 
