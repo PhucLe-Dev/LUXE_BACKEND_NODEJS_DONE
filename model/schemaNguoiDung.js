@@ -9,7 +9,7 @@ const nguoiDungSchema = new mongoose.Schema({
   avatar: { type: String, default: '' }, // Hình ảnh đại diện
   dia_chi: { type: String, default: '' }, // Địa chỉ mặc định
   vai_tro: { type: String, enum: ['khach_hang', 'admin', 'shipper'], default: 'khach_hang' }, // Vai trò
-  trang_thai: { type: Boolean, default: true }, // Trạng thái tài khoản
+  trang_thai: { type: Boolean, default: false }, // Trạng thái tài khoản
   created_at: { type: Date, default: Date.now }, // Thời gian tạo
   updated_at: { type: Date, default: Date.now } // Thời gian cập nhật
 }, { collection: 'nguoi_dung' });
