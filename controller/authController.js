@@ -19,10 +19,21 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// Hàm tạo mật khẩu ngẫu nhiên
+const generateRandomPassword = (length = 8) => {
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        password += charset[randomIndex];
+    }   
+    return password;
+};
+
 const authControllers = {
     // Hàm tạo access token
     createAccessToken: (user) => {
-        return jwt.sign({ id: user._id, vai_tro: user.vai_tro }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
+        return jwt.sign({ id: user._id, vai_tro: user.vai_tro }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '5h' });
     },
     // Hàm tạo refresh token
     createRefreshToken: (user) => {
@@ -144,6 +155,150 @@ const authControllers = {
             return false;
         }
     },
+
+    // Hàm gửi email chứa mật khẩu mới
+    sendNewPasswordEmail: async (user, newPassword) => {
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: 'Mật khẩu mới cho tài khoản của bạn',
+            html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .container {
+                            max-width: 600px;
+                            margin: 20px auto;
+                            background-color: #ffffff;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        }
+                        .header {
+                            background-color: #ebbd5b;
+                            color: #ffffff;
+                            text-align: center;
+                            padding: 20px;
+                        }
+                        .header h1 {
+                            margin: 0;
+                            font-size: 24px;
+                        }
+                        .content {
+                            padding: 20px;
+                            text-align: center;
+                        }
+                        .content h2 {
+                            color: #333333;
+                            font-size: 20px;
+                        }
+                        .content p {
+                            color: #666666;
+                            line-height: 1.6;
+                            margin: 10px 0;
+                        }
+                        .password-box {
+                            background-color: #f9f9f9;
+                            border: 1px solid #e0e0e0;
+                            padding: 15px;
+                            margin: 15px 0;
+                            border-radius: 5px;
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #333333;
+                        }
+                        .button {
+                            display: inline-block;
+                            padding: 12px 24px;
+                            background-color: #ebbd5b;
+                            color: #ffffff;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            margin: 15px 0;
+                            font-weight: bold;
+                        }
+                        .footer {
+                            background-color: #ebbd5b;
+                            text-align: center;
+                            padding: 10px;
+                            color: #ffffff;
+                            font-size: 12px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>EMAIL ĐẶT LẠI MẬT KHẨU</h1>
+                            <h2>LUXE</h2>
+                        </div>
+                        <div class="content">
+                            <h2>Xin chào ${user.ho_ten},</h2>
+                            <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
+                            <p>Mật khẩu mới của bạn là:</p>
+                            <div class="password-box">${newPassword}</div>
+                            <p>Vui lòng sử dụng mật khẩu này để đăng nhập và đổi mật khẩu mới ngay sau khi đăng nhập.</p>
+                            <a href="${process.env.CLIENT_URL}/login" class="button">Đăng nhập ngay</a>
+                            <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng liên hệ với chúng tôi ngay lập tức.</p>
+                        </div>
+                        <div class="footer">
+                            <p>© 2025 LUXE. All rights reserved.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `,
+        };
+
+        try {
+            await transporter.sendMail(mailOptions);
+            return true;
+        } catch (error) {
+            console.error('Lỗi gửi email mật khẩu:', error);
+            return false;
+        }
+    },
+
+    // Hàm xử lý quên mật khẩu
+    forgotPassword: async (req, res) => {
+        try {
+            const { email } = req.body;
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(404).json({ message: 'Email không tồn tại' });
+            }
+
+            // Tạo mật khẩu ngẫu nhiên mới
+            const newPassword = generateRandomPassword();
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+            // Cập nhật mật khẩu mới cho người dùng
+            user.mat_khau = hashedPassword;
+            await user.save();
+
+            // Gửi email chứa mật khẩu mới
+            const emailSent = await authControllers.sendNewPasswordEmail(user, newPassword);
+            if (!emailSent) {
+                return res.status(500).json({ message: 'Lỗi gửi email chứa mật khẩu mới' });
+            }
+
+            res.status(200).json({ message: 'Mật khẩu mới đã được gửi đến email của bạn' });
+        } catch (error) {
+            console.error('Lỗi quên mật khẩu:', error);
+            res.status(500).json({ message: 'Lỗi xử lý yêu cầu quên mật khẩu' });
+        }
+    },
+
     // Hàm đăng ký người dùng
     registerUser: async (req, res) => {
         try {
@@ -292,6 +447,45 @@ const authControllers = {
         res.clearCookie('refresh_token');
         refreshTokens = refreshTokens.filter(token => token !== req.cookies.refresh_token);
         res.status(200).json({ message: 'Đăng xuất thành công' });
+    },
+    // Hàm thay đổi mật khẩu
+    changePasswordUser: async (req, res) => {
+        try {
+            const { mat_khau, mat_khau_moi, xac_nhan_mat_khau_moi } = req.body;
+            const userId = req.user.id; // Lấy từ middleware verifyToken
+
+            // Tìm người dùng
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: 'Người dùng không tồn tại' });
+            }
+
+            // Kiểm tra mật khẩu hiện tại
+            const isPasswordValid = await bcrypt.compare(mat_khau, user.mat_khau);
+            if (!isPasswordValid) {
+                return res.status(400).json({ message: 'Mật khẩu hiện tại không đúng' });
+            }
+
+            // Kiểm tra mật khẩu mới và xác nhận mật khẩu mới có khớp không
+            if (mat_khau_moi !== xac_nhan_mat_khau_moi) {
+                return res.status(400).json({ message: 'Mật khẩu mới và xác nhận mật khẩu không khớp' });
+            }
+
+            // Mã hóa mật khẩu mới
+            const salt = await bcrypt.genSalt(10);
+            const hashedNewPassword = await bcrypt.hash(mat_khau_moi, salt);
+
+            // Cập nhật mật khẩu mới và thời gian cập nhật
+            user.mat_khau = hashedNewPassword;
+            user.xac_nhan_mat_khau = mat_khau_moi; // Cập nhật trường xac_nhan_mat_khau nếu cần
+            user.updated_at = Date.now();
+            await user.save();
+
+            res.status(200).json({ message: 'Đổi mật khẩu thành công' });
+        } catch (error) {
+            console.error('Lỗi thay đổi mật khẩu:', error);
+            res.status(500).json({ message: 'Lỗi xử lý yêu cầu đổi mật khẩu' });
+        }
     }
 };
 

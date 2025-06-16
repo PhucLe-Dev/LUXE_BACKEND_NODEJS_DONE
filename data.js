@@ -12,7 +12,7 @@ const hash = bcrypt.hashSync('hehe', salt);
 const loai_arr = [
   { _id: new ObjectId(), id: 1, ten_loai: 'Đồ nam', thu_tu: 1, an_hien: true, hinh: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748070916/parkbogum_c2heli.jpg' },
   { _id: new ObjectId(), id: 2, ten_loai: 'Đồ nữ', thu_tu: 2, an_hien: true, hinh: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/kimjiwon_yilxm4.jpg' },
-  { _id: new ObjectId(), id: 3, ten_loai: 'Túi xách', thu_tu: 3, an_hien: true, hinh: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748070915/bona_u9qryj.jpg' },
+  { _id: new ObjectId(), id: 3, ten_loai: 'Túi xách', thu_tu: 3, an_hien: true, hinh: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1750048602/1748253821-1748198625-img_8869-2_vvnnhk.webp' },
   { _id: new ObjectId(), id: 4, ten_loai: 'Phụ kiện', thu_tu: 4, an_hien: true, hinh: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069528/goyoujung2_h14veh.jpg' }
 ];
 
