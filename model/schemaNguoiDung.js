@@ -1,20 +1,20 @@
 const mongoose = require('mongoose');
 
-// Định nghĩa schema cho người dùng
 const nguoiDungSchema = new mongoose.Schema({
-  ho_ten: { type: String, unique: true, required: true }, // Họ tên (duy nhất)
-  email: { type: String, unique: true, required: true }, // Email (duy nhất)
-  mat_khau: { type: String, required: true }, // Mật khẩu (mã hóa)
-  so_dien_thoai: { type: String, default: '' }, // Số điện thoại
-  avatar: { type: String, default: '' }, // Hình ảnh đại diện
-  dia_chi: { type: String, default: '' }, // Địa chỉ mặc định
-  vai_tro: { type: String, enum: ['khach_hang', 'admin', 'shipper'], default: 'khach_hang' }, // Vai trò
-  ngay_thang_nam_sinh: {type: Date, default: ''},
-  gioi_tinh: {type: String, enum: ['nam', 'nữ', 'khác'], default: 'khác'},
-  trang_thai: { type: Boolean, default: false }, // Trạng thái tài khoản
-  created_at: { type: Date, default: Date.now }, // Thời gian tạo
-  updated_at: { type: Date, default: Date.now } // Thời gian cập nhật
+  ho_ten: { type: String, unique: true, required: true },
+  email: { type: String, unique: true, required: true },
+  mat_khau: { type: String, required: function() { return this.loginType !== 'google'; } },
+  so_dien_thoai: { type: String, default: '' },
+  avatar: { type: String, default: '' },
+  dia_chi: { type: String, default: '' },
+  vai_tro: { type: String, enum: ['khach_hang', 'admin', 'shipper'], default: 'khach_hang' },
+  ngay_thang_nam_sinh: { type: Date, default: '' },
+  gioi_tinh: { type: String, enum: ['nam', 'nữ', 'khác'], default: 'khác' },
+  trang_thai: { type: Boolean, default: false },
+  googleId: { type: String, unique: true, sparse: true },
+  loginType: { type: String, enum: ['form', 'google'], default: 'form' },
+  created_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now }
 }, { collection: 'nguoi_dung' });
 
-// Export model
 module.exports = nguoiDungSchema;

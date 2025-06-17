@@ -1,13 +1,16 @@
+const { admin } = require('../firebase-admin');
 const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv');
 const nodemailer = require('nodemailer');
 dotenv.config();
 const bcrypt = require('bcrypt');
+const admin = require('firebase-admin');
 const schemaNguoiDung = require('../model/schemaNguoiDung');
 const conn = mongoose.createConnection(process.env.DATABASE_URL);
 const User = conn.model('nguoi_dung', schemaNguoiDung);
 
+const auth = admin.auth();
 let refreshTokens = [];
 
 // Configure nodemailer transporter
@@ -26,7 +29,7 @@ const generateRandomPassword = (length = 8) => {
     for (let i = 0; i < length; i++) {
         const randomIndex = Math.floor(Math.random() * charset.length);
         password += charset[randomIndex];
-    }   
+    }
     return password;
 };
 
@@ -346,6 +349,7 @@ const authControllers = {
             res.status(500).json({ message: 'Lỗi đăng ký' });
         }
     },
+
     // Hàm xác thực email
     verifyEmail: async (req, res) => {
         try {
@@ -375,6 +379,7 @@ const authControllers = {
             res.status(400).json({ message: 'Token xác thực không hợp lệ hoặc đã hết hạn' });
         }
     },
+
     // Hàm đăng nhập người dùng
     loginUser: async (req, res) => {
         try {
@@ -410,6 +415,7 @@ const authControllers = {
             res.status(500).json({ message: 'Lỗi đăng nhập' });
         }
     },
+
     // Hàm lấy refresh token
     refreshToken: async (req, res) => {
         const refresh_token = req.cookies.refresh_token;
@@ -442,12 +448,14 @@ const authControllers = {
             res.status(200).json({ access_token: newAccessToken });
         });
     },
+
     // Hàm đăng xuất người dùng
     logoutUser: async (req, res) => {
         res.clearCookie('refresh_token');
         refreshTokens = refreshTokens.filter(token => token !== req.cookies.refresh_token);
         res.status(200).json({ message: 'Đăng xuất thành công' });
     },
+
     // Hàm thay đổi mật khẩu
     changePasswordUser: async (req, res) => {
         try {
@@ -486,7 +494,96 @@ const authControllers = {
             console.error('Lỗi thay đổi mật khẩu:', error);
             res.status(500).json({ message: 'Lỗi xử lý yêu cầu đổi mật khẩu' });
         }
+    },
+
+    // Hàm đăng nhập bằng google
+    googleLogin: async (req, res) => {
+        try {
+            const { idToken } = req.body;
+            const decodedToken = await auth.verifyIdToken(idToken);
+            const { uid, email, name, picture } = decodedToken; // Lấy picture (avatar) từ Firebase
+
+            let nguoiDung = await User.findOne({ email });
+            if (!nguoiDung) {
+                nguoiDung = new User({
+                    ho_ten: name || email.split('@')[0],
+                    email,
+                    googleId: uid,
+                    loginType: 'google',
+                    trang_thai: true,
+                    avatar: picture || 'https://res.cloudinary.com/dohwmkapy/image/upload/v1749871081/default-avatar_rwg8qu.webp' // Lưu avatar từ Google hoặc mặc định
+                });
+                await nguoiDung.save();
+                console.log('Người dùng mới được tạo:', email);
+            } else if (!nguoiDung.googleId) {
+                nguoiDung.googleId = uid;
+                nguoiDung.loginType = 'google';
+                nguoiDung.avatar = picture || nguoiDung.avatar || 'https://res.cloudinary.com/dohwmkapy/image/upload/v1749871081/default-avatar_rwg8qu.webp';
+                await nguoiDung.save();
+                console.log('Tài khoản đã liên kết với Google:', email);
+            } else {
+                console.log('Người dùng đã tồn tại:', email);
+            }
+            const access_token = authControllers.createAccessToken(nguoiDung);
+            const refresh_token = authControllers.createRefreshToken(nguoiDung);
+            refreshTokens.push(refresh_token);
+            res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: false, sameSite: 'strict' });
+            const { mat_khau, ...others } = nguoiDung._doc;
+            res.status(200).json({
+                success: true,
+                message: 'Đăng nhập thành công',
+                user: { ...others, avatar: nguoiDung.avatar }, // Trả về avatar
+                access_token
+            });
+        } catch (error) {
+            console.error('Lỗi:', error);
+            res.status(400).json({ success: false, message: error.message });
+        }
+    },
+
+    // Hàm đăng nhập bằng facebook
+    facebookLogin: async (req, res) => {
+    try {
+      const { idToken } = req.body;
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      const { uid, email, name, picture } = decodedToken;
+
+      let nguoiDung = await User.findOne({ email });
+      if (!nguoiDung) {
+        nguoiDung = new User({
+          ho_ten: name || email.split('@')[0],
+          email,
+          facebookId: uid,
+          loginType: 'facebook',
+          trang_thai: true,
+          avatar: picture || 'https://res.cloudinary.com/dohwmkapy/image/upload/v1749871081/default-avatar_rwg8qu.webp'
+        });
+        await nguoiDung.save();
+        console.log('Người dùng mới được tạo:', email);
+      } else if (!nguoiDung.facebookId) {
+        nguoiDung.facebookId = uid;
+        nguoiDung.loginType = 'facebook';
+        nguoiDung.avatar = picture || nguoiDung.avatar || 'https://res.cloudinary.com/dohwmkapy/image/upload/v1749871081/default-avatar_rwg8qu.webp';
+        await nguoiDung.save();
+        console.log('Tài khoản đã liên kết với Facebook:', email);
+      } else {
+        console.log('Người dùng đã tồn tại:', email);
+      }
+      const access_token = authControllers.createAccessToken(nguoiDung);
+      const refresh_token = authControllers.createRefreshToken(nguoiDung);
+      res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: false, sameSite: 'strict' });
+      const { mat_khau, ...others } = nguoiDung._doc;
+      res.status(200).json({
+        success: true,
+        message: 'Đăng nhập thành công',
+        user: { ...others, avatar: nguoiDung.avatar, loginType: nguoiDung.loginType },
+        access_token
+      });
+    } catch (error) {
+      console.error('Lỗi:', error);
+      res.status(400).json({ success: false, message: error.message });
     }
+  }
 };
 
 module.exports = authControllers;
