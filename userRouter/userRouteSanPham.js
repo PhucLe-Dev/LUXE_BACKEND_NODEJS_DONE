@@ -10,11 +10,11 @@ const ThuongHieuSchema = require('../model/schemaThuongHieu');
 router.get('/san-pham', async (req, res) => {
   try {
     const SanPhamModel = conn.model('san_pham', SanPhamSchema);
-    const LoaiSanPhamModel = conn.model('loai_san_pham', LoaiSanPhamSchema);
 
     const page = Math.max(1, parseInt(req.query.page)) || 1;
     const limit = Math.max(1, parseInt(req.query.limit)) || 20;
     const skip = (page - 1) * limit;
+    const isRandom = req.query.random === 'true';
 
     const categories = req.query.category ? (Array.isArray(req.query.category) ? req.query.category.map(id => parseInt(id)) : [parseInt(req.query.category)]) : [];
     const brands = req.query.brand ? (Array.isArray(req.query.brand) ? req.query.brand.map(id => parseInt(id)) : [parseInt(req.query.brand)]) : [];
@@ -39,6 +39,19 @@ router.get('/san-pham', async (req, res) => {
     }
 
     const pipeline = [{ $match: matchCondition }];
+    
+    if (isRandom) {
+      pipeline.push({ $sample: { size: Math.min(limit, 1000) } }); // Giới hạn size tối đa 1000 để tránh hiệu suất thấp
+      pipeline.push({
+        $lookup: {
+          from: 'thuong_hieu',
+          localField: 'id_thuong_hieu',
+          foreignField: 'id',
+          as: 'thuong_hieu',
+        },
+      });
+      pipeline.push({ $unwind: { path: '$thuong_hieu', preserveNullAndEmptyArrays: true } });
+    }
 
     if (['discounted', 'price_asc', 'price_desc', 'bestselling'].includes(sort)) {
       pipeline.push({ $unwind: '$variants' });

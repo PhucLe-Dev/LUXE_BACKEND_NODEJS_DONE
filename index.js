@@ -35,6 +35,8 @@ app.get('/', (req, res) => {
 // Router cho user
 const userRouterSP = require('./userRouter/userRouteSanPham');
 app.use('/api/user', userRouterSP);
+const customerCart = require('./userRouter/customerCart');
+app.use('/api/cart-store', customerCart);
 
 // Router cho addmin
 const adminRouterSP = require('./adminRouter/adminRouterSanPham');
