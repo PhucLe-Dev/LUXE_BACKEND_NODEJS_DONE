@@ -3352,7 +3352,10 @@ const gio_hang_arr = [
       {
         id_thuoc_tinh: sp_arr[0].variants[0]._id, 
         so_luong: 2,
-        gia: sp_arr[0].variants[0].gia_km || sp_arr[0].variants[0].gia // Ưu tiên gia_km
+        gia: sp_arr[0].variants[0].gia_km || sp_arr[0].variants[0].gia, // Ưu tiên gia_km
+        ten_sp: "Quần skurt nữ ngắn",
+        thuong_hieu: "Dior",
+        hinh_chinh: "https://assets.christiandior.com/is/image/diorprod/121P45B1166X9000_E01?$default_GHC$&crop=427,490,1106,1024&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85",
       },
     ]
   },
