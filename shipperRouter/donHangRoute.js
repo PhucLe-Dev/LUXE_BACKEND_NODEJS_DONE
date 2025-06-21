@@ -84,9 +84,13 @@ router.get('/get-my-orders', middlewaresController.verifyToken, async (req, res)
             'Hủy'
         ];
 
+        const regexFilter = trangThaiFilter.map(tt => ({
+            trang_thai: { $regex: tt, $options: 'i' }
+        }));
+
         const donHangList = await DonHang.find({
-            id_shipper: shipperId,
-            trang_thai: { $in: trangThaiFilter }
+            id_shipper: new mongoose.Types.ObjectId(shipperId),
+            $or: regexFilter
         }).populate('id_customer', 'ho_ten email');
 
         res.status(200).json(donHangList);
