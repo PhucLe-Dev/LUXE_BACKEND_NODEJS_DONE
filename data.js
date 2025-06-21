@@ -3343,24 +3343,6 @@ const binh_luan_arr = [
   }
 ];
 
-// Dữ liệu giỏ hàng
-const gio_hang_arr = [
-  {
-    _id: new ObjectId(),
-    id_customer: nguoi_dung_arr[1]._id, // Trần Thị B
-    items: [
-      {
-        id_thuoc_tinh: sp_arr[0].variants[0]._id, 
-        so_luong: 2,
-        gia: sp_arr[0].variants[0].gia_km || sp_arr[0].variants[0].gia, // Ưu tiên gia_km
-        ten_sp: "Quần skurt nữ ngắn",
-        thuong_hieu: "Dior",
-        hinh_chinh: "https://assets.christiandior.com/is/image/diorprod/121P45B1166X9000_E01?$default_GHC$&crop=427,490,1106,1024&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85",
-      },
-    ]
-  },
-];
-
 // Export dữ liệu
 module.exports = {
   loai_arr,
@@ -3370,5 +3352,4 @@ module.exports = {
   voucher_arr,
   don_hang_arr,
   binh_luan_arr,
-  gio_hang_arr
 };

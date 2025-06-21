@@ -12,7 +12,6 @@ const SanPham = require('./model/schemaSanPham');
 const NguoiDung = require('./model/schemaNguoiDung');
 const DonHang = require('./model/schemaDonHang');
 const BinhLuan = require('./model/schemaBinhLuan');
-const GioHang = require('./model/schemaGioHang');
 const Voucher = require('./model/schemaVoucher');
 
 // Import dữ liệu mẫu
@@ -24,7 +23,6 @@ const {
   voucher_arr,
   don_hang_arr,
   binh_luan_arr,
-  gio_hang_arr
 } = require('./data');
 
 // Hàm sinh SKU duy nhất
@@ -149,17 +147,6 @@ const chen_binh_luan = async () => {
   console.log('Chèn bình luận thành công');
 };
 
-// Hàm chèn giỏ hàng
-const chen_gio_hang = async () => {
-  const GioHangModel = conn.model('gio_hang', GioHang);
-  await GioHangModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} giỏ hàng`));
-  for (let gioHang of gio_hang_arr) {
-    let newGioHang = new GioHangModel(gioHang);
-    await newGioHang.save();
-  }
-  console.log('Chèn giỏ hàng thành công');
-};
-
 // Hàm chính để chạy tất cả
 (async () => {
   await chen_loai();
@@ -169,7 +156,6 @@ const chen_gio_hang = async () => {
   await chen_voucher();
   await chen_don_hang();
   await chen_binh_luan();
-  await chen_gio_hang();
   console.log('Hoàn tất chèn dữ liệu');
   process.exit();
 })();
