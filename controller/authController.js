@@ -591,6 +591,20 @@ const authControllers = {
             console.error('Lỗi:', error);
             res.status(400).json({ success: false, message: error.message });
         }
+    },
+
+    getCurrentUser: async (req, res) => {
+        try {
+            const user = await User.findById(req.user.id).select("-mat_khau -xac_nhan_mat_khau");
+            if (!user) {
+                return res.status(404).json({ message: "Không tìm thấy người dùng" });
+            }
+
+            res.status(200).json({ user });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Lỗi server khi lấy thông tin người dùng" });
+        }
     }
 };
 

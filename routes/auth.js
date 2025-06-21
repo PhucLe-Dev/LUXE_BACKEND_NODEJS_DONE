@@ -20,5 +20,7 @@ router.post("/google-login", authControllers.googleLogin);
 
 router.post("/facebook-login", authControllers.facebookLogin);
 
+router.get('/me', middlewaresController.verifyToken, authControllers.getCurrentUser);
+
 
 module.exports = router;
