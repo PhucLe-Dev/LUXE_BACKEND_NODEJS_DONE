@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 // Định nghĩa schema cho voucher
 const voucherSchema = new mongoose.Schema({
+  id_customer: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'nguoi_dung', 
+  },
   code: {
     type: String,
     required: true,

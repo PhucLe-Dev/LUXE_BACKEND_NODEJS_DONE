@@ -471,7 +471,7 @@ const sp_arr = [
   },
   {
     _id: new ObjectId(),
-    ten_sp: 'Áo khoác Montaigne Bar',
+    ten_sp: 'Skurt Montaigne Bar',
     id_loai: loai_arr[1].id,
     id_thuong_hieu: thuong_hieu_arr[0].id,
     mo_ta: 'Chiếc váy vừa hiện đại vừa vượt thời gian. Được chế tác bằng len đen và lụa, thiết kế có đường cắt corolla được tô điểm bằng nút CD màu đen ở eo và túi vá phía sau. Kiểu dáng này có thể kết hợp với áo len của mùa này để hoàn thiện vẻ ngoài hiện đại, tinh tế.',
@@ -3243,6 +3243,7 @@ const nguoi_dung_arr = [
 const voucher_arr = [
   {
     _id: new ObjectId(),
+    id_customer: nguoi_dung_arr[1]._id,
     code: "WELCOME10",
     description: "Giảm 10% cho đơn hàng đầu tiên",
     discount_type: "percent",
@@ -3254,6 +3255,7 @@ const voucher_arr = [
   },
   {
     _id: new ObjectId(),
+    id_customer: nguoi_dung_arr[2]._id,
     code: "SUMMER50K",
     description: "Giảm 50.000đ cho đơn từ 500.000đ",
     discount_type: "fixed",
@@ -3265,6 +3267,7 @@ const voucher_arr = [
   },
   {
     _id: new ObjectId(),
+    id_customer: nguoi_dung_arr[1]._id,
     code: "FLASHSALE20",
     description: "Flash Sale - Giảm 20% trong 2 ngày",
     discount_type: "percent",
@@ -3307,6 +3310,7 @@ const don_hang_arr = [
     sdt: '0865945907',
     dia_chi_giao_hang: '123 Đường Láng, TPHCM',
     phuong_thuc_thanh_toan: 'COD',
+    trang_thai_thanh_toan: 'Chưa thanh toán',
     trang_thai: 'Chờ xác nhận',
   },
   {
@@ -3326,6 +3330,7 @@ const don_hang_arr = [
     sdt: '0865945907',
     dia_chi_giao_hang: '123 Đường Láng, TPHCM',
     phuong_thuc_thanh_toan: 'VNPay',
+    trang_thai_thanh_toan: 'Đã thanh toán',
     trang_thai: 'Chờ xác nhận',
   }
 ];

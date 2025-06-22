@@ -16,7 +16,8 @@ const donHangSchema = new mongoose.Schema({
   sdt: {type: String, default: ''},
   dia_chi_giao_hang: { type: String, required: true }, // Địa chỉ giao
   phuong_thuc_thanh_toan: { type: String, enum: ['COD', 'VNPay'], required: true }, // Phương thức thanh toán
-  trang_thai: { type: String, enum: ['Chờ xác nhận', 'Đã xác nhận', 'Shipper đã nhận hàng', 'Đang giao', 'Đã giao', 'Giao hàng thành công', 'Giao hàng thất bại', 'Hủy', 'Trả hàng và hoàn tiền'], default: 'Chờ xác nhận' }, // Trạng thái
+  trang_thai_thanh_toan: { type: String, enum: ['Chưa thanh toán', 'Đã thanh toán'], required: true }, // Trạng thái thanh toán
+  trang_thai_don_hang: { type: String, enum: ['Chờ xác nhận', 'Đã xác nhận', 'Shipper đã nhận hàng', 'Đang giao', 'Đã giao', 'Giao hàng thành công', 'Giao hàng thất bại', 'Hủy', 'Trả hàng và hoàn tiền'], default: 'Chờ xác nhận' }, // Trạng thái
   ghi_chu: { type: String, default: '' }, // Ghi chú
   created_at: { type: Date, default: Date.now }, // Thời gian tạo
   updated_at: { type: Date, default: Date.now } // Thời gian cập nhật
