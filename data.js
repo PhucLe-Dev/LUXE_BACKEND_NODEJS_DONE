@@ -3306,6 +3306,7 @@ const don_hang_arr = [
       }
     ],
     tong_tien: 10000000,
+    ho_ten:"Phúc Lê",
     email: "phucle.415776@gmail.com",
     sdt: '0865945907',
     dia_chi_giao_hang: '123 Đường Láng, TPHCM',
@@ -3326,6 +3327,7 @@ const don_hang_arr = [
       }
     ],
     tong_tien: 10000000,
+    ho_ten: "Phúc Hoài",
     email: "phucle.415776@gmail.com",
     sdt: '0865945907',
     dia_chi_giao_hang: '123 Đường Láng, TPHCM',

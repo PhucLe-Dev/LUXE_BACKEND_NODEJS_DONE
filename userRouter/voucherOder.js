@@ -24,4 +24,26 @@ router.get('/check', async (req, res) => {
   }
 });
 
+router.patch('/deactivate', async (req, res) => {
+  const { code } = req.body;
+
+  try {
+    const voucher = await Voucher.findOne({ code });
+    if (!voucher) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy mã." });
+    }
+
+    if (!voucher.is_active) {
+      return res.status(400).json({ success: false, message: "Mã đã bị vô hiệu trước đó." });
+    }
+
+    voucher.is_active = false;
+    await voucher.save();
+
+    res.json({ success: true, message: "Đã vô hiệu hóa mã thành công." });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Lỗi server." });
+  }
+});
+
 module.exports = router;
