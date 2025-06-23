@@ -22,5 +22,6 @@ router.post("/facebook-login", authControllers.facebookLogin);
 
 router.get('/me', middlewaresController.verifyToken, authControllers.getCurrentUser);
 
+router.put('/update', middlewaresController.verifyToken, authControllers.updateUser);
 
 module.exports = router;

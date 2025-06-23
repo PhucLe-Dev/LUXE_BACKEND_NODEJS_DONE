@@ -11,6 +11,7 @@ const User = conn.model('nguoi_dung', schemaNguoiDung);
 
 const auth = admin.auth();
 let refreshTokens = [];
+const blacklistedAccessTokens = new Set();
 
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -452,6 +453,11 @@ const authControllers = {
     logoutUser: async (req, res) => {
         res.clearCookie('refresh_token');
         refreshTokens = refreshTokens.filter(token => token !== req.cookies.refresh_token);
+        const authHeader = req.headers.authorization;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            const accessToken = authHeader.split(' ')[1];
+            blacklistedAccessTokens.add(accessToken);
+        }
         res.status(200).json({ message: 'Đăng xuất thành công' });
     },
 
@@ -605,7 +611,37 @@ const authControllers = {
             console.error(error);
             res.status(500).json({ message: "Lỗi server khi lấy thông tin người dùng" });
         }
-    }
+    },
+
+    updateUser: async (req, res) => {
+        try {
+            const updates = { ...req.body };
+
+            if (updates.email) {
+                delete updates.email;
+            }
+
+            updates.updated_at = new Date();
+
+            const user = await User.findByIdAndUpdate(
+                req.user.id,
+                { $set: updates },
+                { new: true, runValidators: true, context: 'query' }
+            ).select("-mat_khau -xac_nhan_mat_khau");
+
+            if (!user) {
+                return res.status(404).json({ message: "Không tìm thấy người dùng" });
+            }
+
+            res.status(200).json({ message: "Cập nhật thành công", user });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Lỗi server khi cập nhật người dùng" });
+        }
+    },
 };
 
-module.exports = authControllers;
+module.exports = {
+    ...authControllers,
+    blacklistedAccessTokens,
+}
