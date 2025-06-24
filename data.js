@@ -3297,7 +3297,7 @@ const don_hang_arr = [
     id_customer: nguoi_dung_arr[1]._id,
     id_shipper: nguoi_dung_arr[3]._id, // Lê Văn D
     id_voucher: voucher_arr[0]._id, // Sử dụng voucher WELCOME10
-    ma_don_hang: 'DH001',
+    ma_don_hang: 'DH001111',
     chi_tiet: [
       {
         id_variant: sp_arr[0].variants[0]._id,
@@ -3318,7 +3318,7 @@ const don_hang_arr = [
     _id: new ObjectId(),
     id_customer: nguoi_dung_arr[0]._id,
     id_shipper: nguoi_dung_arr[4]._id, // Lê Văn E
-    ma_don_hang: 'DH002',
+    ma_don_hang: 'DH002222',
     chi_tiet: [
       {
         id_variant: sp_arr[4].variants[0]._id,

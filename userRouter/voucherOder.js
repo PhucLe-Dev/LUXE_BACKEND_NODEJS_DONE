@@ -5,43 +5,54 @@ const router = express.Router();
 const Voucher = conn.model('voucher', require('../model/schemaVoucher'));
 
 router.get('/check', async (req, res) => {
-  const { code } = req.query;
+  const { code, id_customer } = req.query;
+
+  if (!code || !id_customer) {
+    return res.status(400).json({ success: false, message: "Thiếu mã hoặc người dùng." });
+  }
 
   try {
-    const voucher = await Voucher.findOne({ code, is_active: true });
+    const voucher = await Voucher.findOne({ code, id_customer, is_active: true });
+
     if (!voucher) {
-      return res.status(400).json({ success: false, message: 'Mã không hợp lệ hoặc đã hết hạn!' });
+      return res.status(404).json({ success: false, message: "Voucher không hợp lệ hoặc không thuộc tài khoản này." });
     }
 
-    const currentDate = new Date();
-    if (currentDate < voucher.start_date || currentDate > voucher.end_date) {
-      return res.status(400).json({ success: false, message: 'Mã đã hết hạn!' });
+    const now = new Date();
+    if (now < new Date(voucher.start_date) || now > new Date(voucher.end_date)) {
+      return res.status(400).json({ success: false, message: "Voucher đã hết hạn." });
     }
 
     res.json({ success: true, data: voucher });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi server!' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Lỗi server khi kiểm tra voucher." });
   }
 });
 
-router.patch('/deactivate', async (req, res) => {
-  const { code } = req.body;
+router.patch("/deactivate", async (req, res) => {
+  const { code, id_customer } = req.body;
+
+  if (!code || !id_customer) {
+    return res.status(400).json({ success: false, message: "Thiếu mã hoặc ID người dùng." });
+  }
 
   try {
-    const voucher = await Voucher.findOne({ code });
+    const voucher = await Voucher.findOne({ code, id_customer });
+
     if (!voucher) {
-      return res.status(404).json({ success: false, message: "Không tìm thấy mã." });
+      return res.status(404).json({ success: false, message: "Không tìm thấy voucher phù hợp." });
     }
 
     if (!voucher.is_active) {
-      return res.status(400).json({ success: false, message: "Mã đã bị vô hiệu trước đó." });
+      return res.status(400).json({ success: false, message: "Voucher đã bị sử dụng." });
     }
 
     voucher.is_active = false;
     await voucher.save();
 
-    res.json({ success: true, message: "Đã vô hiệu hóa mã thành công." });
+    res.json({ success: true, message: "Đã vô hiệu hóa voucher cá nhân thành công." });
   } catch (err) {
+    console.error("Lỗi deactivate voucher:", err);
     res.status(500).json({ success: false, message: "Lỗi server." });
   }
 });

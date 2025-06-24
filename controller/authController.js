@@ -555,13 +555,6 @@ const authControllers = {
 
             let ho_ten = name || email.split('@')[0];
             let nguoiDung = await User.findOne({ email });
-            let counter = 1;
-
-            // Kiểm tra trùng lặp ho_ten
-            while (await User.findOne({ ho_ten })) {
-                ho_ten = `${name} ${counter}` || `${email.split('@')[0]} ${counter}`;
-                counter++;
-            }
 
             if (!nguoiDung) {
                 nguoiDung = new User({
