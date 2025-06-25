@@ -34,11 +34,14 @@ router.post("/", async (req, res) => {
 
     await newOrder.save();
 
-    res.json({ success: true, message: "Tạo đơn hàng thành công!", ma_don_hang, orderId: newOrder._id });
+    res.json({
+      success: true,
+      message: "Tạo đơn hàng thành công!",
+      data: newOrder  
+    });
   } catch (err) {
     console.error("Lỗi tạo đơn hàng:", err);
     res.status(500).json({ success: false, message: "Lỗi server khi tạo đơn hàng." });
   }
 });
-
 module.exports = router;

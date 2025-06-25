@@ -519,7 +519,7 @@ const authControllers = {
                     avatar: picture || 'https://res.cloudinary.com/dohwmkapy/image/upload/v1749871081/default-avatar_rwg8qu.webp' // Lưu avatar từ Google hoặc mặc định
                 });
                 await nguoiDung.save();
-                console.log('Người dùng mới được tạo:', email);
+                
             } else if (!nguoiDung.googleId) {
                 nguoiDung.googleId = uid;
                 nguoiDung.loginType = 'google';

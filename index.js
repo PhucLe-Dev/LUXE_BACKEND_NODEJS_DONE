@@ -39,8 +39,8 @@ const voucherOder = require('./userRouter/voucherOder');
 app.use('/api/voucher', voucherOder);
 const orderRoute = require('./userRouter/orderRoute');
 app.use('/api/order', orderRoute);
-const vnpayRoute = require('./userRouter/vnpayRoute'); // Import route VNPay
-app.use('/api/vnpay', vnpayRoute); // Sử dụng route VNPay
+const paymentVnpay = require('./userRouter/paymentWithVNPAY');
+app.use('/api/vnpay',paymentVnpay);
 
 // Router cho addmin
 const adminRouterSP = require('./adminRouter/adminRouterSanPham');
