@@ -9,7 +9,7 @@ const router = express.Router();
 const vnp_TmnCode = 'REGMMAYQ';
 const vnp_HashSecret = 'JL74UD9LLAUO61D8DHYRC3W64GVJV06G';
 const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-const vnp_ReturnUrl = 'http://localhost:3003/payment'; // đổi 127.0.0.1 nếu cần
+const vnp_ReturnUrl = 'https://fe-user-fashion-25-zsys.vercel.app/payment'; // đổi 127.0.0.1 nếu cần
 
 router.post('/create', (req, res) => {
     const { amount, orderId, orderInfo } = req.body;
