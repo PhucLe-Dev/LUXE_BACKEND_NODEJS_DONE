@@ -23,7 +23,7 @@ router.put('/update-status/:id', async (req, res) => {
 
         if (!donHang) return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
 
-        const currentStatus = donHang.trang_thai;
+        const currentStatus = donHang.trang_thai_don_hang;
         let nextStatus;
 
         if (currentStatus === 'Đang giao') nextStatus = 'Đã giao';
@@ -32,7 +32,7 @@ router.put('/update-status/:id', async (req, res) => {
         else
             return res.status(400).json({ message: 'Không thể cập nhật trạng thái từ trạng thái hiện tại' });
 
-        donHang.trang_thai = nextStatus;
+        donHang.trang_thai_don_hang = nextStatus;
         donHang.updated_at = Date.now();
         await donHang.save();
 
@@ -52,11 +52,11 @@ router.put('/cancel-order/:id', async (req, res) => {
             return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
         }
 
-        if (donHang.trang_thai !== 'Đang giao') {
+        if (donHang.trang_thai_don_hang !== 'Đang giao') {
             return res.status(400).json({ message: 'Chỉ có thể huỷ đơn hàng khi đang ở trạng thái "Đang giao"' });
         }
 
-        donHang.trang_thai = 'Hủy';
+        donHang.trang_thai_don_hang = 'Hủy';
         donHang.updated_at = Date.now();
         await donHang.save();
 
@@ -82,7 +82,7 @@ router.get('/get-my-orders', middlewaresController.verifyToken, async (req, res)
         ];
 
         const regexFilter = trangThaiFilter.map(tt => ({
-            trang_thai: { $regex: tt, $options: 'i' }
+            trang_thai_don_hang: { $regex: tt, $options: 'i' }
         }));
 
         const donHangList = await DonHang.find({
