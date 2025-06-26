@@ -21,7 +21,7 @@ const startServer = async () => {
     console.log('MongoDB connected');
 
     const app = express();
-    const port = process.env.PORT || 3000;
+    const port = 3000;
 
     app.use(cookieParser());
 
