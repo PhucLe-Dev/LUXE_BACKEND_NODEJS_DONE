@@ -1,16 +1,13 @@
-const mongoose = require('mongoose');
-const conn = mongoose.createConnection('mongodb://127.0.0.1:27017/fashion_web25');
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const DonHangSchema = require('../model/schemaDonHang');
-const NguoiDungSchema = require('../model/schemaNguoiDung');
 const middlewaresController = require('../controller/middlewaresController');
-conn.model('nguoi_dung', NguoiDungSchema);
 
 // Route lấy tất cả đơn hàng
 router.get('/get-all-orders', async (req, res) => {
     try {
-        const donHang = await conn.model('don_hang', DonHangSchema).find().populate('id_customer', 'ho_ten email');
+        const donHang = await mongoose.model('don_hang', DonHangSchema).find().populate('id_customer', 'ho_ten email');
         res.status(200).json(donHang);
     } catch (error) {
         console.error(error);
@@ -21,7 +18,7 @@ router.get('/get-all-orders', async (req, res) => {
 // Route cập nhật trạng thái đơn hàng
 router.put('/update-status/:id', async (req, res) => {
     try {
-        const DonHang = conn.model('don_hang', DonHangSchema);
+        const DonHang = mongoose.model('don_hang', DonHangSchema);
         const donHang = await DonHang.findById(req.params.id);
 
         if (!donHang) return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
@@ -48,7 +45,7 @@ router.put('/update-status/:id', async (req, res) => {
 
 router.put('/cancel-order/:id', async (req, res) => {
     try {
-        const DonHang = conn.model('don_hang', DonHangSchema);
+        const DonHang = mongoose.model('don_hang', DonHangSchema);
         const donHang = await DonHang.findById(req.params.id);
 
         if (!donHang) {
@@ -72,7 +69,7 @@ router.put('/cancel-order/:id', async (req, res) => {
 
 router.get('/get-my-orders', middlewaresController.verifyToken, async (req, res) => {
     try {
-        const DonHang = conn.model('don_hang', DonHangSchema);
+        const DonHang = mongoose.model('don_hang', DonHangSchema);
 
         const shipperId = req.user.id;
 

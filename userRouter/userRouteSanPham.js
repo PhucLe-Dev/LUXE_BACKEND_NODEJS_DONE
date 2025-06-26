@@ -1,16 +1,13 @@
-const mongoose = require('mongoose');
-const conn = mongoose.createConnection('mongodb://127.0.0.1:27017/fashion_web25');
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
-const SanPhamSchema = require('../model/schemaSanPham');
-const LoaiSanPhamSchema = require('../model/schemaLoaiSanPham');
-const ThuongHieuSchema = require('../model/schemaThuongHieu');
+const LoaiSanPhamModel = mongoose.model('loai_san_pham', require('../model/schemaLoaiSanPham'));
+const ThuongHieuModel = mongoose.model('thuong_hieu', require('../model/schemaThuongHieu'));
+const SanPhamModel = mongoose.model('san_pham', require('../model/schemaSanPham'));
 
 // Route để lấy danh sách sản phẩm với phân trang và bộ lọc
 router.get('/san-pham', async (req, res) => {
   try {
-    const SanPhamModel = conn.model('san_pham', SanPhamSchema);
-
     const page = Math.max(1, parseInt(req.query.page)) || 1;
     const limit = Math.max(1, parseInt(req.query.limit)) || 20;
     const skip = (page - 1) * limit;
@@ -39,7 +36,7 @@ router.get('/san-pham', async (req, res) => {
     }
 
     const pipeline = [{ $match: matchCondition }];
-    
+
     if (isRandom) {
       pipeline.push({ $sample: { size: Math.min(limit, 1000) } }); // Giới hạn size tối đa 1000 để tránh hiệu suất thấp
       pipeline.push({
@@ -155,8 +152,6 @@ router.get('/san-pham', async (req, res) => {
 // Route để lấy danh sách loại sản phẩm với phân trang
 router.get('/loai-san-pham', async (req, res) => {
   try {
-    const LoaiSanPhamModel = conn.model('loai_san_pham', LoaiSanPhamSchema);
-
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 4;
     const slug = req.query.slug || null; // Lấy query slug
@@ -214,8 +209,6 @@ router.get('/loai-san-pham', async (req, res) => {
 // Route để lấy danh sách thương hiệu với phân trang
 router.get('/thuong-hieu', async (req, res) => {
   try {
-    const ThuongHieuModel = conn.model('thuong_hieu', ThuongHieuSchema);
-
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 4;
     const slug = req.query.slug || null; // Lấy query slug
@@ -273,8 +266,6 @@ router.get('/thuong-hieu', async (req, res) => {
 // Route để lấy danh sách xuất xứ
 router.get('/xuat-xu', async (req, res) => {
   try {
-    const SanPhamModel = conn.model('san_pham', SanPhamSchema);
-
     const origins = await SanPhamModel.aggregate([
       { $match: { an_hien: true } },
       { $group: { _id: '$xuat_xu' } },
@@ -294,7 +285,6 @@ router.get('/xuat-xu', async (req, res) => {
 router.get('/san-pham/:sku', async (req, res) => {
   try {
     const sku = req.params.sku;
-    const SanPhamModel = conn.model('san_pham', SanPhamSchema);
 
     let sanpham = await SanPhamModel.aggregate([
       { $match: { 'variants.sku': sku } },
@@ -336,7 +326,6 @@ router.get('/san-pham/:sku', async (req, res) => {
 router.get('/san-pham-lien-quan/:sku', async (req, res) => {
   try {
     const sku = req.params.sku;
-    const SanPhamModel = conn.model('san_pham', SanPhamSchema);
 
     const currentProduct = await SanPhamModel.aggregate([
       { $match: { 'variants.sku': sku } },
@@ -404,8 +393,6 @@ router.get('/san-pham-lien-quan/:sku', async (req, res) => {
 // Route để lấy tất cả sản phẩm theo thương hiệu dựa trên slug (có phân trang)
 router.get('/san-pham-theo-thuong-hieu/:slug', async (req, res) => {
   try {
-    const SanPhamModel = conn.model('san_pham', SanPhamSchema);
-    const ThuongHieuModel = conn.model('thuong_hieu', ThuongHieuSchema);
     const slug = req.params.slug;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
@@ -487,12 +474,8 @@ router.get('/san-pham/slug/:slug', async (req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
 
-    const LoaiModel = conn.model('loai_san_pham', LoaiSanPhamSchema);
-    const ThuongHieuModel = conn.model('thuong_hieu', ThuongHieuSchema);
-    const ProductModel = conn.model('san_pham', SanPhamSchema);
-
     // Kiểm tra xem slug thuộc loại sản phẩm hay thương hiệu
-    const loai = await LoaiModel.findOne({ slug, an_hien: true });
+    const loai = await LoaiSanPhamModel.findOne({ slug, an_hien: true });
     const thuongHieu = await ThuongHieuModel.findOne({ slug, an_hien: true });
 
     if (!loai && !thuongHieu) {

@@ -2,12 +2,10 @@ const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv');
 const nodemailer = require('nodemailer');
-dotenv.config();
 const bcrypt = require('bcrypt');
 const admin = require('firebase-admin');
-const schemaNguoiDung = require('../model/schemaNguoiDung');
-const conn = mongoose.createConnection(process.env.DATABASE_URL);
-const User = conn.model('nguoi_dung', schemaNguoiDung);
+const User = mongoose.model('nguoi_dung', require('../model/schemaNguoiDung'));
+dotenv.config();
 
 const auth = admin.auth();
 let refreshTokens = [];

@@ -1,13 +1,12 @@
-const mongoose = require('mongoose');
-const conn = mongoose.createConnection('mongodb://127.0.0.1:27017/fashion_web25');
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const SanPhamSchema = require('../model/schemaSanPham');
 
 // Route lấy tất cả variant sản phẩm
 router.get('/', async (req, res) => {
     try {
-        const sanPhams = await conn.model('san_pham', SanPhamSchema).find().lean();
+        const sanPhams = await mongoose.model('san_pham', SanPhamSchema).find().lean();
         // Lấy tất cả variants, trả về nguyên bản từng variant
         const variants = sanPhams.flatMap(sp => sp.variants);
         res.status(200).json(variants);
@@ -23,7 +22,7 @@ router.get('/:sku', async (req, res) => {
 
     try {
         // tìm sản phẩm chứa variant có sku khớp
-        const sp = await conn.model('san_pham', SanPhamSchema)
+        const sp = await mongoose.model('san_pham', SanPhamSchema)
             .findOne({ 'variants.sku': sku })
             .lean();
 
@@ -50,8 +49,7 @@ router.put('/sua-variant/:sku', fileFields, async (req, res) => {
     const { sku } = req.params;
 
     /* 1. Tìm sản phẩm chứa variant cần sửa */
-    const prod = await conn.model('san_pham', SanPhamSchema)
-                           .findOne({ 'variants.sku': sku });
+    const prod = await mongoose.model('san_pham', SanPhamSchema).findOne({ 'variants.sku': sku });
     if (!prod) return res.status(404).json({ error: 'Variant not found' });
 
     /* 2. Lấy variant cần sửa */

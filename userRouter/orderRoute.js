@@ -1,8 +1,7 @@
-const mongoose = require("mongoose");
-const conn = mongoose.createConnection("mongodb://127.0.0.1:27017/fashion_web25");
-const express = require("express");
+const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
-const DonHang = conn.model('don_hang', require('../model/schemaDonHang'));
+const DonHang = mongoose.model('don_hang', require('../model/schemaDonHang'));
 
 // Hàm sinh mã đơn hàng duy nhất
 const generateUniqueOrderCode = async () => {

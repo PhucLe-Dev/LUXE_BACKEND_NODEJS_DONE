@@ -5,58 +5,61 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const admin = require('firebase-admin');
 
-// Khởi tạo Firebase Admin SDK
-const serviceAccount = require('./login-with-google/service-account-key.json'); 
+// Load env
+dotenv.config();
+
+// Firebase Admin
+const serviceAccount = require('./login-with-google/service-account-key.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-dotenv.config();
+// Kết nối MongoDB
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.DATABASE_URL);
+    console.log('MongoDB connected');
 
-mongoose.createConnection(process.env.DATABASE_URL);
+    const app = express();
+    const port = process.env.PORT || 3000;
 
-const app = express();
-const port = 3000;
+    app.use(cookieParser());
 
+    app.use(cors({
+      origin: ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'],
+      credentials: true
+    }));
 
-app.use(cookieParser());
+    app.use(express.json());
 
-app.use(cors({
-  origin: ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'], // Mảng các origin
-  credentials: true // Cho phép gửi cookie
-}));
+    app.get('/', (req, res) => {
+      res.json({ thongbao: 'API NodeJS cho fashion_web25' });
+    });
 
-app.use(express.json());
+    // USER
+    app.use('/api/user', require('./userRouter/userRouteSanPham'));
+    app.use('/api/voucher', require('./userRouter/voucherOder'));
+    app.use('/api/order', require('./userRouter/orderRoute'));
+    app.use('/api/vnpay', require('./userRouter/paymentWithVNPAY'));
 
-app.get('/', (req, res) => {
-  res.json({ thongbao: 'API NodeJS cho fashion_web25'});
-});
+    // ADMIN
+    app.use('/api/admin/san-pham', require('./adminRouter/adminRouterSanPham'));
+    app.use('/api/admin/variants', require('./adminRouter/adminRouteVariants'));
 
-// Router cho user
-const userRouterSP = require('./userRouter/userRouteSanPham');
-app.use('/api/user', userRouterSP);
-const voucherOder = require('./userRouter/voucherOder');
-app.use('/api/voucher', voucherOder);
-const orderRoute = require('./userRouter/orderRoute');
-app.use('/api/order', orderRoute);
-const paymentVnpay = require('./userRouter/paymentWithVNPAY');
-app.use('/api/vnpay',paymentVnpay);
+    // SHIPPER
+    app.use('/api/shipper/order', require('./shipperRouter/donHangRoute'));
 
-// Router cho addmin
-const adminRouterSP = require('./adminRouter/adminRouterSanPham');
-app.use('/api/admin/san-pham/', adminRouterSP);
-const adminRouterVariants = require('./adminRouter/adminRouteVariants');
-app.use('/api/admin/variants/', adminRouterVariants);
+    // AUTH
+    app.use('/api/auth', require('./routes/auth'));
 
-// Router cho shipper 
-const shipperRouterDonHang = require('./shipperRouter/donHangRoute');
-app.use('/api/shipper/order', shipperRouterDonHang);
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
 
-// Các router viết chung ở đây
-const authRoute = require('./routes/auth');
-app.use('/api/auth', authRoute);
+  } catch (err) {
+    console.error('MongoDB connect failed:', err);
+    process.exit(1);
+  }
+};
 
-// Khởi động server
-app.listen(port, () => {
-  console.log(`Ứng dụng đang chạy trên port ${port}`);
-});
+startServer();

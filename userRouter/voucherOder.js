@@ -1,8 +1,7 @@
-const mongoose = require("mongoose");
-const conn = mongoose.createConnection("mongodb://127.0.0.1:27017/fashion_web25");
-const express = require("express");
+const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
-const Voucher = conn.model('voucher', require('../model/schemaVoucher'));
+const Voucher = mongoose.model('voucher', require('../model/schemaVoucher'));
 
 router.get('/check', async (req, res) => {
   const { code, id_customer } = req.query;

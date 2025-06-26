@@ -1,13 +1,12 @@
-const mongoose = require('mongoose');
-const conn = mongoose.createConnection('mongodb://127.0.0.1:27017/fashion_web25');
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const SanPhamSchema = require('../model/schemaSanPham');
 
 // Route lấy tất cả sản phẩm
 router.get('/tat-ca-san-pham', async (req, res) => {
     try {
-        const sanPhams = await conn.model('san_pham', SanPhamSchema).find();
+        const sanPhams = await mongoose.model('san_pham', SanPhamSchema).find();
         res.status(200).json(sanPhams);
     } catch (error) {
         console.error(error);
@@ -19,7 +18,7 @@ router.get('/tat-ca-san-pham', async (req, res) => {
 router.get('/:slug', async (req, res) => {
     try {
         const { slug } = req.params;
-        const SanPham = await conn.model('san_pham', SanPhamSchema).findOne({ slug });
+        const SanPham = await mongoose.model('san_pham', SanPhamSchema).findOne({ slug });
         if (!SanPham) return res.status(404).json({ error: 'Product not found' });
         res.status(200).json(SanPham);
     } catch (error) {
@@ -47,7 +46,7 @@ router.post('/them-san-pham', fileFields, async (req, res) => {
             return res.status(400).json({ error: 'Thiếu hinh_chinh' });
 
         // Tạo product rỗng
-        let product = await conn.model('san_pham', SanPhamSchema).create({
+        let product = await mongoose.model('san_pham', SanPhamSchema).create({
             ten_sp, id_loai, id_thuong_hieu, mo_ta,
             chat_lieu, xuat_xu, hot, an_hien,
             tags: tags.split(',').map(t => t.trim())
@@ -98,7 +97,7 @@ router.post('/them-san-pham', fileFields, async (req, res) => {
 router.post('/:slug/variants', fileFields, async (req, res) => {
     try {
         const { slug } = req.params;
-        const prod = await conn.model('san_pham', SanPhamSchema).findOne({ slug });
+        const prod = await mongoose.model('san_pham', SanPhamSchema).findOne({ slug });
         if (!prod) return res.status(404).json({ error: 'Product not found' });
 
         const { kich_thuoc, mau_sac, gia, gia_km, so_luong } = req.body;
@@ -145,7 +144,7 @@ router.put('/sua-san-pham/:slug', fileFields, async (req, res) => {
     try {
         /* 1. Lấy sản phẩm theo slug */
         const { slug } = req.params;
-        const prod = await conn.model('san_pham', SanPhamSchema).findOne({ slug });
+        const prod = await mongoose.model('san_pham', SanPhamSchema).findOne({ slug });
         if (!prod) return res.status(404).json({ error: 'Product not found' });
 
         /* 2. Cập nhật các trường gửi lên  */
@@ -183,9 +182,7 @@ router.delete('/xoa-san-pham/:slug', async (req, res) => {
     const { slug } = req.params;
 
     // 1 Lấy sản phẩm
-    const prod = await conn
-      .model('san_pham', SanPhamSchema)
-      .findOne({ slug });
+    const prod = await mongoose.model('san_pham', SanPhamSchema).findOne({ slug });
 
     if (!prod) return res.status(404).json({ error: 'Product not found' });
 
