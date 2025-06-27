@@ -5,7 +5,7 @@ const qs = require('qs');
 
 const router = express.Router();
 
-// ✅ Thay bằng thông tin từ sandbox mới
+// Thay bằng thông tin từ sandbox mới
 const vnp_TmnCode = 'REGMMAYQ';
 const vnp_HashSecret = 'JL74UD9LLAUO61D8DHYRC3W64GVJV06G';
 const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
@@ -32,7 +32,7 @@ router.post('/create', (req, res) => {
         vnp_CreateDate: createDate
     };
 
-    // ✅ Sort tham số
+    // Sort tham số
     const sortedParams = {};
     Object.keys(vnp_Params).sort().forEach((key) => {
         sortedParams[key] = vnp_Params[key];
@@ -46,8 +46,8 @@ router.post('/create', (req, res) => {
     sortedParams.vnp_SecureHashType = 'SHA512';
 
     const paymentUrl = `${vnp_Url}?${qs.stringify(sortedParams, { encode: true })}`;
-    console.log("✅ SignData:", signData);
-    console.log("🔗 Payment URL:", paymentUrl);
+    console.log("SignData:", signData);
+    console.log("Payment URL:", paymentUrl);
 
     res.json({ paymentUrl });
 });

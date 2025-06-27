@@ -1,9 +1,8 @@
-const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 const slugify = require('slugify');
-
 // Kết nối MongoDB
-const conn = mongoose.createConnection('mongodb://127.0.0.1:27017/fashion_web25');
+const mongoose = require('mongoose');
+
 
 // Import các schema
 const LoaiSanPham = require('./model/schemaLoaiSanPham');
@@ -27,7 +26,7 @@ const {
 
 // Hàm sinh SKU duy nhất
 const generateUniqueSKU = async () => {
-  const SanPhamModel = conn.model('san_pham', SanPham);
+  const SanPhamModel = mongoose.model('san_pham', SanPham);
   const sku = `${uuidv4().slice(0, 8).toUpperCase()}_${uuidv4().slice(0, 4).toUpperCase()}`;
   const existing = await SanPhamModel.findOne({ 'variants.sku': sku });
   if (!existing) return sku;
@@ -41,7 +40,7 @@ let randomCreate = function (low, high) {
 
 // Hàm chèn danh mục
 const chen_loai = async () => {
-  const LoaiSanPhamModel = conn.model('loai_san_pham', LoaiSanPham);
+  const LoaiSanPhamModel = mongoose.model('loai_san_pham', LoaiSanPham);
   await LoaiSanPhamModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} danh mục`));
   for (let loai of loai_arr) {
     let newLoai = new LoaiSanPhamModel(loai);
@@ -52,7 +51,7 @@ const chen_loai = async () => {
 
 // Hàm chèn thương hiệu
 const chen_thuong_hieu = async () => {
-  const ThuongHieuModel = conn.model('thuong_hieu', ThuongHieu);
+  const ThuongHieuModel = mongoose.model('thuong_hieu', ThuongHieu);
   await ThuongHieuModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} thương hiệu`));
   for (let thuongHieu of thuong_hieu_arr) {
     let newThuongHieu = new ThuongHieuModel(thuongHieu);
@@ -63,7 +62,7 @@ const chen_thuong_hieu = async () => {
 
 // Hàm chèn sản phẩm
 const chen_sp = async () => {
-  const SanPhamModel = conn.model('san_pham', SanPham);
+  const SanPhamModel = mongoose.model('san_pham', SanPham);
   await SanPhamModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} sản phẩm`));
 
   for (let sp of sp_arr) {
@@ -105,7 +104,7 @@ const chen_sp = async () => {
 
 // Hàm chèn người dùng
 const chen_nguoi_dung = async () => {
-  const NguoiDungModel = conn.model('nguoi_dung', NguoiDung);
+  const NguoiDungModel = mongoose.model('nguoi_dung', NguoiDung);
   await NguoiDungModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} người dùng`));
   for (let nguoiDung of nguoi_dung_arr) {
     let newNguoiDung = new NguoiDungModel(nguoiDung);
@@ -116,7 +115,7 @@ const chen_nguoi_dung = async () => {
 
 // Hàm chèn voucher
 const chen_voucher = async () => {
-  const VoucherModel = conn.model('voucher', Voucher);
+  const VoucherModel = mongoose.model('voucher', Voucher);
   await VoucherModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} voucher`));
   for (let voucher of voucher_arr) {
     let newVoucher = new VoucherModel(voucher);
@@ -127,7 +126,7 @@ const chen_voucher = async () => {
 
 // Hàm chèn đơn hàng
 const chen_don_hang = async () => {
-  const DonHangModel = conn.model('don_hang', DonHang);
+  const DonHangModel = mongoose.model('don_hang', DonHang);
   await DonHangModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} đơn hàng`));
   for (let donHang of don_hang_arr) {
     let newDonHang = new DonHangModel(donHang);
@@ -138,7 +137,7 @@ const chen_don_hang = async () => {
 
 // Hàm chèn bình luận
 const chen_binh_luan = async () => {
-  const BinhLuanModel = conn.model('binh_luan', BinhLuan);
+  const BinhLuanModel = mongoose.model('binh_luan', BinhLuan);
   await BinhLuanModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} bình luận`));
   for (let binhLuan of binh_luan_arr) {
     let newBinhLuan = new BinhLuanModel(binhLuan);
