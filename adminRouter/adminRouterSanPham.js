@@ -178,31 +178,31 @@ const cloudinary = require('cloudinary').v2;
 
 // Route xóa sản phẩm
 router.delete('/xoa-san-pham/:slug', async (req, res) => {
-  try {
-    const { slug } = req.params;
+    try {
+        const { slug } = req.params;
 
-    // 1 Lấy sản phẩm
-    const prod = await mongoose.model('san_pham', SanPhamSchema).findOne({ slug });
+        // 1 Lấy sản phẩm
+        const prod = await mongoose.model('san_pham', SanPhamSchema).findOne({ slug });
 
-    if (!prod) return res.status(404).json({ error: 'Product not found' });
+        if (!prod) return res.status(404).json({ error: 'Product not found' });
 
-    // 2 Xoá mọi ảnh nằm dưới folder products/<_id>/*
-    //    (public_id của bạn là "products/<prod._id>/...")  
-    await cloudinary.api.delete_resources_by_prefix(`products/${prod._id}`);
+        // 2 Xoá mọi ảnh nằm dưới folder products/<_id>/*
+        //    (public_id của bạn là "products/<prod._id>/...")  
+        await cloudinary.api.delete_resources_by_prefix(`products/${prod._id}`);
 
-    // 3 Xoá luôn folder trống để gọn gàng (không bắt buộc)
-    await cloudinary.api.delete_folder(`products/${prod._id}`);
+        // 3 Xoá luôn folder trống để gọn gàng (không bắt buộc)
+        await cloudinary.api.delete_folder(`products/${prod._id}`);
 
-    // 4 Xoá document trong MongoDB
-    await prod.deleteOne();
+        // 4 Xoá document trong MongoDB
+        await prod.deleteOne();
 
-    res.status(200).json({ message: 'Deleted', product: prod });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
+        res.status(200).json({ message: 'Deleted', product: prod });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
 });
 
 // API mới gì đó các kiểu
 
-
+//fjkalksdjfajsdkfjlkasdjflk tets
 module.exports = router;
