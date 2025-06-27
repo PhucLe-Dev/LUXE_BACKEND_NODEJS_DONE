@@ -202,5 +202,7 @@ router.delete('/xoa-san-pham/:slug', async (req, res) => {
   }
 });
 
+// API mới gì đó các kiểu
+
 
 module.exports = router;
