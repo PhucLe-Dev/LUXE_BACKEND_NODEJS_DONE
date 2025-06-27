@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"ma_don_hang":{"$numberInt":"1"}},"name":"ma_don_hang_1","background":true,"unique":true}],"uuid":"a72b6bd2edea4dce8bc1f272fcead258","collectionName":"don_hang","type":"collection"}
