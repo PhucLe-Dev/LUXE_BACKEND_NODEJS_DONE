@@ -9,7 +9,7 @@ const router = express.Router();
 const vnp_TmnCode = 'REGMMAYQ';
 const vnp_HashSecret = 'JL74UD9LLAUO61D8DHYRC3W64GVJV06G';
 const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-const vnp_ReturnUrl = 'https://fe-user-fashion-25.vercel.app/payment'; 
+const vnp_ReturnUrl = 'https://luxe-customer.vercel.app/payment'; 
 
 router.post('/create', (req, res) => {
     const { amount, orderId, orderInfo } = req.body;
