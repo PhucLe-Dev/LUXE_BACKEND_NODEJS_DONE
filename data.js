@@ -3411,7 +3411,7 @@ const don_hang_arr = [
     sdt: '0865945907',
     dia_chi_giao_hang: '123 Đường Láng, TPHCM',
     phuong_thuc_thanh_toan: 'COD',
-    trang_thai_don_hang_thanh_toan: 'Chưa thanh toán',
+    trang_thai_thanh_toan: 'Chưa thanh toán',
     trang_thai_don_hang: 'Chờ xác nhận',
   },
   {
@@ -3432,7 +3432,7 @@ const don_hang_arr = [
     sdt: '0865945907',
     dia_chi_giao_hang: '123 Đường Láng, TPHCM',
     phuong_thuc_thanh_toan: 'VNPay',
-    trang_thai_don_hang_thanh_toan: 'Đã thanh toán',
+    trang_thai_thanh_toan: 'Đã thanh toán',
     trang_thai_don_hang: 'Chờ xác nhận',
   }
 ];

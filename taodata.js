@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const slugify = require('slugify');
-// Kết nối MongoDB
+require('dotenv').config();
 const mongoose = require('mongoose');
 
 
@@ -146,15 +146,24 @@ const chen_binh_luan = async () => {
   console.log('Chèn bình luận thành công');
 };
 
-// Hàm chính để chạy tất cả
 (async () => {
-  await chen_loai();
-  await chen_thuong_hieu();
-  await chen_sp();
-  await chen_nguoi_dung();
-  await chen_voucher();
-  await chen_don_hang();
-  await chen_binh_luan();
-  console.log('Hoàn tất chèn dữ liệu');
-  process.exit();
+  try {
+    await mongoose.connect(process.env.DATABASE_URL);
+    console.log("✅ Đã kết nối MongoDB");
+
+    // 👇 Sau khi kết nối xong mới chạy các hàm chèn dữ liệu:
+    await chen_loai();
+    await chen_thuong_hieu();
+    await chen_sp();
+    await chen_nguoi_dung();
+    await chen_voucher();
+    await chen_don_hang();
+    await chen_binh_luan();
+
+    console.log("🎉 Hoàn tất chèn dữ liệu!");
+    process.exit();
+  } catch (error) {
+    console.error("❌ Lỗi kết nối MongoDB:", error.message);
+    process.exit(1);
+  }
 })();
