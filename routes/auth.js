@@ -20,7 +20,7 @@ router.post("/google-login", authControllers.googleLogin);
 
 router.post("/facebook-login", authControllers.facebookLogin);
 
-router.get('/me', middlewaresController.verifyToken, authControllers.getCurrentUser);
+router.get('/me', authControllers.getCurrentUser);
 
 router.put('/update', middlewaresController.verifyToken, authControllers.updateUser);
 
