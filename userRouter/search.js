@@ -62,6 +62,44 @@ router.get('/find-by-slug', async (req, res) => {
     }
 });
 
+router.get('/full-text', async (req, res) => {
+    const keyword = req.query.q;
 
+    if (!keyword) return res.status(400).json({ error: 'Thiếu từ khóa' });
+
+    try {
+        const products = await SanPhamModel.aggregate([
+            {
+                $match: {
+                    ten_sp: { $regex: keyword, $options: 'i' }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'thuong_hieu',
+                    localField: 'id_thuong_hieu',
+                    foreignField: 'id',
+                    as: 'thuong_hieu'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'loai_san_pham',
+                    localField: 'id_loai',
+                    foreignField: 'id',
+                    as: 'loai_san_pham'
+                }
+            },
+            { $unwind: { path: '$thuong_hieu', preserveNullAndEmptyArrays: true } },
+            { $unwind: { path: '$loai_san_pham', preserveNullAndEmptyArrays: true } },
+            { $sort: { created_at: -1 } }
+        ]);
+
+        res.json({ data: products });
+    } catch (err) {
+        console.error('Lỗi tìm kiếm full-text:', err);
+        res.status(500).json({ error: 'Lỗi máy chủ' });
+    }
+});
 
 module.exports = router;
