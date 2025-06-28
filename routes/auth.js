@@ -14,7 +14,7 @@ router.post("/logout", authControllers.logoutUser);
 
 router.post("/forgot-password", authControllers.forgotPassword);
 
-router.post("/change-password", middlewaresController.verifyToken, authControllers.changePasswordUser);
+router.post("/change-password", authControllers.changePasswordUser);
 
 router.post("/google-login", authControllers.googleLogin);
 
