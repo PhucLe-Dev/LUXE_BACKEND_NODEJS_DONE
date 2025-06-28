@@ -41,6 +41,8 @@ const startServer = async () => {
     app.use('/api/voucher', require('./userRouter/voucherOder'));
     app.use('/api/order', require('./userRouter/orderRoute'));
     app.use('/api/vnpay', require('./userRouter/paymentWithVNPAY'));
+    app.use('/api/search', require('./userRouter/search'));
+
 
     // ADMIN
     app.use('/api/admin/san-pham', require('./adminRouter/adminRouterSanPham'));
