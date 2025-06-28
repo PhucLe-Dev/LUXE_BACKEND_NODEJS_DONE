@@ -462,34 +462,29 @@ const authControllers = {
     // Hàm thay đổi mật khẩu
     changePasswordUser: async (req, res) => {
         try {
-            const { mat_khau, mat_khau_moi, xac_nhan_mat_khau_moi } = req.body;
-            const userId = req.user.id; // Lấy từ middleware verifyToken
+            const { user_id, mat_khau, mat_khau_moi, xac_nhan_mat_khau_moi } = req.body;
 
-            // Tìm người dùng
-            const user = await User.findById(userId);
+            const user = await User.findById(user_id);
             if (!user) {
                 return res.status(404).json({ message: 'Người dùng không tồn tại' });
             }
 
-            // Kiểm tra mật khẩu hiện tại
             const isPasswordValid = await bcrypt.compare(mat_khau, user.mat_khau);
             if (!isPasswordValid) {
                 return res.status(400).json({ message: 'Mật khẩu hiện tại không đúng' });
             }
 
-            // Kiểm tra mật khẩu mới và xác nhận mật khẩu mới có khớp không
             if (mat_khau_moi !== xac_nhan_mat_khau_moi) {
-                return res.status(400).json({ message: 'Mật khẩu mới và xác nhận mật khẩu không khớp' });
+                return res.status(400).json({ message: 'Mật khẩu mới và xác nhận không khớp' });
             }
 
-            // Mã hóa mật khẩu mới
             const salt = await bcrypt.genSalt(10);
             const hashedNewPassword = await bcrypt.hash(mat_khau_moi, salt);
 
-            // Cập nhật mật khẩu mới và thời gian cập nhật
             user.mat_khau = hashedNewPassword;
-            user.xac_nhan_mat_khau = mat_khau_moi; // Cập nhật trường xac_nhan_mat_khau nếu cần
+            user.xac_nhan_mat_khau = mat_khau_moi; // nếu bạn thực sự cần lưu plain-text (không nên)
             user.updated_at = Date.now();
+
             await user.save();
 
             res.status(200).json({ message: 'Đổi mật khẩu thành công' });
@@ -517,7 +512,7 @@ const authControllers = {
                     avatar: picture || 'https://res.cloudinary.com/dohwmkapy/image/upload/v1749871081/default-avatar_rwg8qu.webp' // Lưu avatar từ Google hoặc mặc định
                 });
                 await nguoiDung.save();
-                
+
             } else if (!nguoiDung.googleId) {
                 nguoiDung.googleId = uid;
                 nguoiDung.loginType = 'google';
