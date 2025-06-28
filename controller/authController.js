@@ -464,10 +464,14 @@ const authControllers = {
         try {
             const { mat_khau, mat_khau_moi, xac_nhan_mat_khau_moi } = req.body;
 
-            const user = await User.findById(user_id);
+            
+            const users = await User.find(); // lấy toàn bộ user
+            const user = await Promise.all(users.map(async u => ({
+                ...u._doc,
+                isMatch: await bcrypt.compare(mat_khau, u.mat_khau)
+            }))).then(results => results.find(u => u.isMatch));
 
-            const isPasswordValid = await bcrypt.compare(mat_khau, user.mat_khau);
-            if (!isPasswordValid) {
+            if (!user) {
                 return res.status(400).json({ message: 'Mật khẩu hiện tại không đúng' });
             }
 
@@ -478,11 +482,11 @@ const authControllers = {
             const salt = await bcrypt.genSalt(10);
             const hashedNewPassword = await bcrypt.hash(mat_khau_moi, salt);
 
-            user.mat_khau = hashedNewPassword;
-            user.xac_nhan_mat_khau = mat_khau_moi; // nếu bạn thực sự cần lưu plain-text (không nên)
-            user.updated_at = Date.now();
-
-            await user.save();
+            await User.findByIdAndUpdate(user._id, {
+                mat_khau: hashedNewPassword,
+                xac_nhan_mat_khau: mat_khau_moi, // nếu bạn vẫn cần
+                updated_at: Date.now(),
+            });
 
             res.status(200).json({ message: 'Đổi mật khẩu thành công' });
         } catch (error) {
