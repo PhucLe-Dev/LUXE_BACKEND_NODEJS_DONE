@@ -524,7 +524,7 @@ router.get('/san-pham/slug/:slug', async (req, res) => {
       },
     });
 
-    const result = await ProductModel.aggregate(pipeline);
+    const result = await SanPhamModel.aggregate(pipeline);
     console.log('Aggregation Result:', result);
     const totalProducts = result[0]?.totalCount[0]?.count || 0;
     const totalPages = Math.ceil(totalProducts / limit);
