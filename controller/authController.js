@@ -462,12 +462,9 @@ const authControllers = {
     // Hàm thay đổi mật khẩu
     changePasswordUser: async (req, res) => {
         try {
-            const { user_id, mat_khau, mat_khau_moi, xac_nhan_mat_khau_moi } = req.body;
+            const { mat_khau, mat_khau_moi, xac_nhan_mat_khau_moi } = req.body;
 
             const user = await User.findById(user_id);
-            if (!user) {
-                return res.status(404).json({ message: 'Người dùng không tồn tại' });
-            }
 
             const isPasswordValid = await bcrypt.compare(mat_khau, user.mat_khau);
             if (!isPasswordValid) {
