@@ -26,7 +26,7 @@ const startServer = async () => {
     app.use(cookieParser());
 
     app.use(cors({
-      origin: ['http://localhost:3001', 'http://localhost:3002', 'https://luxe-customer.vercel.app'],
+      origin: ['http://localhost:3001', 'http://localhost:3002', 'https://luxe-customer-3h3s.vercel.app/'],
       credentials: true
     }));
 
