@@ -26,7 +26,7 @@ const startServer = async () => {
     app.use(cookieParser());
 
     app.use(cors({
-      origin: ['http://localhost:3001', 'http://localhost:3002', 'https://luxe-customer-3h3s.vercel.app'],
+      origin: ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'],
       credentials: true
     }));
 
@@ -42,7 +42,6 @@ const startServer = async () => {
     app.use('/api/order', require('./userRouter/orderRoute'));
     app.use('/api/vnpay', require('./userRouter/paymentWithVNPAY'));
     app.use('/api/search', require('./userRouter/search'));
-
 
     // ADMIN
     app.use('/api/admin/san-pham', require('./adminRouter/adminRouterSanPham'));

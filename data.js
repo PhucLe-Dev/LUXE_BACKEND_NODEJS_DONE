@@ -23,10 +23,10 @@ const loai_arr = [
 
 // Dữ liệu thương hiệu (ThuongHieu)
 const thuong_hieu_arr = [
-  { _id: new ObjectId(), id: 1, ten_thuong_hieu: 'Dior', hinh: 'https://i.pinimg.com/736x/86/dd/7d/86dd7d6d4b8e521646b48e31800724dd.jpg' },
-  { _id: new ObjectId(), id: 2, ten_thuong_hieu: 'Gucci', hinh: 'https://i.pinimg.com/736x/cf/e3/82/cfe38227b6923d763e9953abca0d03fe.jpg' },
-  { _id: new ObjectId(), id: 3, ten_thuong_hieu: 'Chanel', hinh: 'https://i.pinimg.com/736x/46/6b/53/466b53503c22a8e6c4bbdebfab44d175.jpg' },
-  { _id: new ObjectId(), id: 4, ten_thuong_hieu: 'Louis Vuitton', hinh: 'https://i.pinimg.com/736x/c6/17/5b/c6175b9b20e1e6cbcdeee9508b1c4f46.jpg' }
+  { _id: new ObjectId(), id: 1, ten_thuong_hieu: 'Dior', hinh: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1751253943/dior-logo-svgrepo-com_mucnzz.svg' },
+  { _id: new ObjectId(), id: 2, ten_thuong_hieu: 'Gucci', hinh: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1751253943/gucci-logo-svgrepo-com_evcqzf.svg' },
+  { _id: new ObjectId(), id: 3, ten_thuong_hieu: 'Chanel', hinh: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1751253943/chanel-2-logo-svgrepo-com_lrfu69.svg' },
+  { _id: new ObjectId(), id: 4, ten_thuong_hieu: 'Prada', hinh: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1751253943/prada-logo-svgrepo-com_ltgscx.svg' }
 ];
 
 // Dữ liệu sản phẩm (SanPham)
@@ -887,9 +887,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['váy', 'ngắn', 'cao cấp'],
-    meta_title: 'váy ngắn Louis Vuitton',
-    meta_description: 'Mua váy ngắn Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'váy, Louis Vuitton, ngắn, cao cấp'
+    meta_title: 'váy ngắn Prada',
+    meta_description: 'Mua váy ngắn Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'váy, Prada, ngắn, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -915,9 +915,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['áo khoác', 'cao cấp'],
-    meta_title: 'áo khoác Louis Vuitton',
-    meta_description: 'Mua áo khoác Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'áo khoác, Louis Vuitton,, cao cấp'
+    meta_title: 'áo khoác Prada',
+    meta_description: 'Mua áo khoác Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'áo khoác, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -943,9 +943,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['váy', 'dài', 'cao cấp'],
-    meta_title: 'váy Louis Vuitton',
-    meta_description: 'Mua váy Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'váy, Louis Vuitton,, cao cấp'
+    meta_title: 'váy Prada',
+    meta_description: 'Mua váy Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'váy, Prada,, cao cấp'
   },
   // Đồ nam
   {
@@ -974,9 +974,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['quần đùi', 'ngắn', 'cao cấp'],
-    meta_title: 'quần đùi Louis Vuitton',
-    meta_description: 'Mua quần đùi Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'quần đùi, Louis Vuitton,, cao cấp'
+    meta_title: 'quần đùi Prada',
+    meta_description: 'Mua quần đùi Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'quần đùi, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -1005,9 +1005,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['áo', 'vest', 'cao cấp'],
-    meta_title: 'áo Louis Vuitton',
-    meta_description: 'Mua áo Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'áo, Louis Vuitton,, cao cấp'
+    meta_title: 'áo Prada',
+    meta_description: 'Mua áo Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'áo, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -1048,9 +1048,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['áo', 'sơ mi tay ngắn', 'cao cấp'],
-    meta_title: 'áo sơ mi tay ngắn Louis Vuitton',
-    meta_description: 'Mua áo sơ mi tay ngắn Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'áo sơ mi tay ngắn, Louis Vuitton,, cao cấp'
+    meta_title: 'áo sơ mi tay ngắn Prada',
+    meta_description: 'Mua áo sơ mi tay ngắn Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'áo sơ mi tay ngắn, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -1964,9 +1964,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['quần thể thao may đo', 'cao cấp'],
-    meta_title: 'quần thể thao may đo Louis Vuitton',
-    meta_description: 'Mua quần thể thao may đo Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'quần thể thao may đo, Louis Vuitton, cao cấp'
+    meta_title: 'quần thể thao may đo Prada',
+    meta_description: 'Mua quần thể thao may đo Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'quần thể thao may đo, Prada, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -1993,9 +1993,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['quần Cargo', 'cao cấp'],
-    meta_title: 'quần Cargo Louis Vuitton',
-    meta_description: 'Mua quần Cargo Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'quần Cargo, Louis Vuitton,, cao cấp'
+    meta_title: 'quần Cargo Prada',
+    meta_description: 'Mua quần Cargo Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'quần Cargo, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -2024,9 +2024,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['áo khoác', 'cao cấp'],
-    meta_title: 'áo khoác Louis Vuitton',
-    meta_description: 'Mua áo khoác Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'áo khoác, Louis Vuitton,, cao cấp'
+    meta_title: 'áo khoác Prada',
+    meta_description: 'Mua áo khoác Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'áo khoác, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -2055,13 +2055,13 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['Quần Cargo', 'cao cấp'],
-    meta_title: 'Quần Cargo Louis Vuitton',
-    meta_description: 'Mua Quần Cargo Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'Quần Cargo, Louis Vuitton,, cao cấp'
+    meta_title: 'Quần Cargo Prada',
+    meta_description: 'Mua Quần Cargo Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'Quần Cargo, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
-    ten_sp: 'Áo khoác Louis Vuitton VÀ KAWS',
+    ten_sp: 'Áo khoác Prada VÀ KAWS',
     id_loai: loai_arr[0].id,
     id_thuong_hieu: thuong_hieu_arr[3].id,
     mo_ta: 'Áo khoác là một phần của bộ sưu tập độc quyền DIOR AND KAWS. Được làm bằng vải satin kỹ thuật màu hồng, áo khoác này khoe họa tiết Cannage chần bông mang tính biểu tượng trên khắp áo cũng như miếng vá thêu màu xanh lá cây của DIOR AND KAWS với chữ ký của Nhà thiết kế được tái hiện thành một con rắn đầy màu sắc. Áo khoác này được phân biệt bằng các đường xẻ bên hông có thể mặc mở hoặc đóng nhờ các nút bấm. Kết hợp giữa truyền thống và hiện đại, áo khoác sẽ kết hợp với quần jeans hoặc quần short Bermuda để hoàn thiện vẻ ngoài.',
@@ -2100,9 +2100,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['Áo khoác', 'sơ mi', 'cao cấp'],
-    meta_title: 'Áo khoác Louis Vuitton',
-    meta_description: 'Mua Áo khoác Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'Áo khoác, Louis Vuitton,, cao cấp'
+    meta_title: 'Áo khoác Prada',
+    meta_description: 'Mua Áo khoác Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'Áo khoác, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -2131,9 +2131,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['Quần thể thao', 'cao cấp'],
-    meta_title: 'Quần thể thao Louis Vuitton',
-    meta_description: 'Mua Quần thể thao Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'Quần thể thao, Louis Vuitton,, cao cấp'
+    meta_title: 'Quần thể thao Prada',
+    meta_description: 'Mua Quần thể thao Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'Quần thể thao, Prada,, cao cấp'
   },
   // Túi xách
   {
@@ -2177,13 +2177,13 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['túi xách', 'cao cấp'],
-    meta_title: 'túi xách Louis Vuitton',
-    meta_description: 'Mua túi xách Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'túi xách, Louis Vuitton, cao cấp'
+    meta_title: 'túi xách Prada',
+    meta_description: 'Mua túi xách Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'túi xách, Prada, cao cấp'
   },
   {
     _id: new ObjectId(),
-    ten_sp: 'Túi Tote Louis Vuitton Normandie cỡ trung',
+    ten_sp: 'Túi Tote Prada Normandie cỡ trung',
     id_loai: loai_arr[2].id,
     id_thuong_hieu: thuong_hieu_arr[3].id,
     mo_ta: 'Túi tote Dior Normandie là một sáng tạo kết hợp tinh thần thời trang cao cấp của Nhà Dior với thiết kế thực tế. Thể hiện sự điêu luyện của các xưởng may Dior, phong cách da bê Dior Icons màu đen được tăng cường bởi các lỗ xỏ dây đặc trưng của Dior Normandie, cũng như dây đeo bằng da Dior có thể điều chỉnh được, có thể đóng hoặc để mở để có phong cách thoải mái. Các chi tiết tỉ mỉ, như cấu trúc đồ họa ở hai bên, chân đế đặc trưng của Dior và quai xách có đệm, làm nổi bật sức hấp dẫn tinh tế của nó. Nội thất rộng rãi, được trang trí bằng lớp lót xương cá, có hai túi trượt và một túi có khóa kéo. Túi tote cỡ trung được trang bị dây đeo bằng da có thể điều chỉnh và tháo rời, cho phép cầm tay hoặc đeo thoải mái qua vai.',
@@ -2208,9 +2208,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['áo', 'vest', 'cao cấp'],
-    meta_title: 'áo Louis Vuitton',
-    meta_description: 'Mua áo Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'áo, Louis Vuitton,, cao cấp'
+    meta_title: 'áo Prada',
+    meta_description: 'Mua áo Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'áo, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -3208,9 +3208,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['nhẫn', 'cao cấp'],
-    meta_title: 'nhẫn Louis Vuitton',
-    meta_description: 'Mua nhẫn Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'nhẫn, Louis Vuitton, cao cấp'
+    meta_title: 'nhẫn Prada',
+    meta_description: 'Mua nhẫn Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'nhẫn, Prada, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -3237,9 +3237,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['móc khóa', 'cao cấp'],
-    meta_title: 'móc khóa Louis Vuitton',
-    meta_description: 'Mua móc khóa Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'móc khóa, Louis Vuitton,, cao cấp'
+    meta_title: 'móc khóa Prada',
+    meta_description: 'Mua móc khóa Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'móc khóa, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
@@ -3266,9 +3266,9 @@ const sp_arr = [
     hot: false,
     an_hien: true,
     tags: ['áo khoác', 'cao cấp'],
-    meta_title: 'áo khoác Louis Vuitton',
-    meta_description: 'Mua áo khoác Louis Vuitton chất liệu taffeta, xuất xứ Pháp',
-    meta_keywords: 'áo khoác, Louis Vuitton,, cao cấp'
+    meta_title: 'áo khoác Prada',
+    meta_description: 'Mua áo khoác Prada chất liệu taffeta, xuất xứ Pháp',
+    meta_keywords: 'áo khoác, Prada,, cao cấp'
   },
   {
     _id: new ObjectId(),
