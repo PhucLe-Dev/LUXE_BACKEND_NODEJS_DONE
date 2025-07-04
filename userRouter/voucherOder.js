@@ -3,6 +3,23 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const Voucher = mongoose.model('voucher', require('../model/schemaVoucher'));
 
+// GET /api/voucher/customer/:id
+router.get("/customer/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const vouchers = await Voucher.find({
+      id_customer: id,
+      is_active: true,
+    }).sort({ created_at: -1 });
+
+    res.json({ success: true, data: vouchers });
+  } catch (err) {
+    console.error("Lỗi lấy voucher theo người dùng:", err);
+    res.status(500).json({ success: false, message: "Lỗi server." });
+  }
+});
+
 router.get('/check', async (req, res) => {
   const { code, id_customer } = req.query;
 
