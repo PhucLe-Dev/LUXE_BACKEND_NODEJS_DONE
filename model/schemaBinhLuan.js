@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const binhLuanSchema = new mongoose.Schema({
   id_san_pham: { type: mongoose.Schema.Types.ObjectId, ref: 'san_pham', required: true }, // Tham chiếu sản phẩm
   id_customer: { type: mongoose.Schema.Types.ObjectId, ref: 'nguoi_dung', required: true }, // Tham chiếu khách hàng
-  ho_ten: { type: String, required: true }, // Họ tên người bình luận
+  parent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'binh_luan', default: null },
   diem: { type: Number, min: 1, max: 5, default: null }, // Điểm đánh giá (1-5 sao)
   noi_dung: { type: String, required: true }, // Nội dung bình luận
   an_hien: { type: Boolean, default: true }, // Ẩn/hiện bình luận

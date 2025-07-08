@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const admin = require('firebase-admin');
+const http = require('http');
+const { Server } = require('socket.io');
 
 // Load env
 dotenv.config();
@@ -14,36 +16,58 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-// Kết nối MongoDB
 const startServer = async () => {
   try {
     await mongoose.connect(process.env.DATABASE_URL);
-    console.log('MongoDB connected');
+    console.log('✅ MongoDB connected');
 
     const app = express();
+    const server = http.createServer(app);
+    const io = new Server(server, {
+      cors: {
+        origin: ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'],
+        credentials: true
+      }
+    });
+
+    // ✅ Truyền socket.io vào request
+    app.use((req, res, next) => {
+      req.io = io;
+      next();
+    });
+
+    // 🔌 Socket.io kết nối
+    io.on('connection', (socket) => {
+      console.log('🔌 Socket connected:', socket.id);
+      socket.on('disconnect', () => {
+        console.log('❌ Socket disconnected:', socket.id);
+      });
+    });
+
     const port = 3000;
 
+    // Middleware
     app.use(cookieParser());
-
     app.use(cors({
       origin: ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'],
       credentials: true
     }));
-
     app.use(express.json());
 
+    // Test route
     app.get('/', (req, res) => {
       res.json({ thongbao: 'API NodeJS cho fashion_web25' });
     });
 
-    // USER
+    // USER ROUTES
     app.use('/api/user', require('./userRouter/userRouteSanPham'));
     app.use('/api/voucher', require('./userRouter/voucherOder'));
     app.use('/api/order', require('./userRouter/orderRoute'));
     app.use('/api/vnpay', require('./userRouter/paymentWithVNPAY'));
     app.use('/api/search', require('./userRouter/search'));
+    app.use('/api/comment', require('./userRouter/commentRoute'));
 
-    // ADMIN
+    // ADMIN ROUTES
     app.use('/api/admin/san-pham', require('./adminRouter/adminRouterSanPham'));
     app.use('/api/admin/variants', require('./adminRouter/adminRouteVariants'));
 
@@ -53,12 +77,13 @@ const startServer = async () => {
     // AUTH
     app.use('/api/auth', require('./routes/auth'));
 
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+    // Start server
+    server.listen(port, () => {
+      console.log(`🚀 Server is running on port ${port}`);
     });
 
   } catch (err) {
-    console.error('MongoDB connect failed:', err);
+    console.error('❌ MongoDB connect failed:', err);
     process.exit(1);
   }
 };

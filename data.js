@@ -3441,15 +3441,32 @@ const don_hang_arr = [
 // Dữ liệu bình luận (BinhLuan)
 const binh_luan_arr = [
   {
-    _id: new ObjectId(),
+    _id: new ObjectId(), // Bình luận gốc
     id_san_pham: sp_arr[0]._id,
     id_customer: nguoi_dung_arr[1]._id,
-    ho_ten: 'Trần Thị B',
     diem: 5,
     noi_dung: 'Áo sơ mi rất đẹp, chất liệu lụa mềm mại, đáng giá tiền!',
-    an_hien: true
+    an_hien: true,
+    parent_id: null, // Đây là bình luận gốc
+    created_at: new Date(),
+    updated_at: new Date()
+  },
+  {
+    _id: new ObjectId(), // Bình luận phản hồi
+    id_san_pham: sp_arr[0]._id,
+    id_customer: nguoi_dung_arr[0]._id,
+    diem: null, // Không cần đánh giá sao với phản hồi
+    noi_dung: 'Cảm ơn bạn đã phản hồi, shop sẽ phục vụ tốt hơn nữa!',
+    an_hien: true,
+    parent_id: null, // Sẽ gán phía dưới
+    created_at: new Date(),
+    updated_at: new Date()
   }
 ];
+
+// Gán parent_id cho phản hồi
+binh_luan_arr[1].parent_id = binh_luan_arr[0]._id;
+
 
 // Export dữ liệu
 module.exports = {
