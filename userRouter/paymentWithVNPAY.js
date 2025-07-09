@@ -6,10 +6,10 @@ const qs = require('qs');
 const router = express.Router();
 
 // === THÔNG TIN TỪ VNPay SANDBOX ===
-const vnp_TmnCode = '5F6U2XP5';
-const vnp_HashSecret = 'X52DQXDT260B45XEEBS51Z5IITZBOSZM';
-const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-const vnp_ReturnUrl = `${process.env.CLIENT_URL}/payment`;
+const vnp_TmnCode = `${process.env.VNP_TMNCODE}`;
+const vnp_HashSecret = `${process.env.VNP_HASHSECRET}`;
+const vnp_Url = `${process.env.VNP_URL}`;
+const vnp_ReturnUrl = `${process.env.VNP_RETURNURL}`;
 
 // === API: TẠO URL THANH TOÁN ===
 router.post('/create', (req, res) => {
