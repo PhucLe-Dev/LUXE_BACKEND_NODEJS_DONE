@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+mongoose.set('strictQuery', true);
 const cors = require('cors');
 const admin = require('firebase-admin');
 const http = require('http');
@@ -25,7 +26,7 @@ const startServer = async () => {
     const server = http.createServer(app);
     const io = new Server(server, {
       cors: {
-        origin: ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'],
+        origin: ['http://localhost:3001', 'http://localhost:3002', 'https://luxe-customer-web-25-local.vercel.app'],
         credentials: true
       }
     });
