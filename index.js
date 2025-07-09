@@ -26,7 +26,12 @@ const startServer = async () => {
     const server = http.createServer(app);
     const io = new Server(server, {
       cors: {
-        origin: ['http://localhost:3001', 'http://localhost:3002', 'https://luxe-customer-web-25-local.vercel.app'],
+        origin: [
+          'http://localhost:3001',
+          'http://localhost:3002',
+          'http://localhost:3003',
+          'https://luxe-customer-web-25-local.vercel.app'
+        ],
         credentials: true
       }
     });
@@ -50,7 +55,12 @@ const startServer = async () => {
     // Middleware
     app.use(cookieParser());
     app.use(cors({
-      origin: ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'],
+      origin: [
+        'http://localhost:3001',
+        'http://localhost:3002',
+        'http://localhost:3003',
+        'https://luxe-customer-web-25-local.vercel.app'
+      ],
       credentials: true
     }));
     app.use(express.json());
