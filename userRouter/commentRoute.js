@@ -25,6 +25,7 @@ router.get('/:productId', async (req, res) => {
   res.json({ success: true, data: { comments, replies, totalPages } });
 });
 
+
 // Thêm bình luận
 router.post("/", async (req, res) => {
   try {

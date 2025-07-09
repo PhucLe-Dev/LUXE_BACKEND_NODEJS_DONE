@@ -4,7 +4,7 @@ const { blacklistedAccessTokens } = require('./authController');
 const middlewaresController = {
     // verify token middleware
     verifyToken: (req, res, next) => {
-    const token = req.headers.authorization;
+        const token = req.headers.authorization;
         if (token) {
             const accessToken = token.split(" ")[1];
             if (blacklistedAccessTokens.has(accessToken)) {
@@ -22,6 +22,19 @@ const middlewaresController = {
             return res.status(401).json({ message: "Bạn chưa đăng nhập" });
         }
     },
+
+    // ======================== CODE MỚI THÊM VÀO ========================
+    // Middleware xác thực vai trò Admin
+    verifyAdmin: (req, res, next) => {
+        // Middleware này phải được gọi sau verifyToken
+        if (req.user && req.user.vai_tro === 'admin') {
+            next(); // Nếu là admin, cho phép đi tiếp
+        } else {
+            // Nếu không phải admin, trả về lỗi 403 Forbidden
+            return res.status(403).json({ message: "Bạn không có quyền truy cập chức năng này" });
+        }
+    }
+    // ====================== KẾT THÚC CODE MỚI THÊM ======================
 }
 module.exports = middlewaresController;
 

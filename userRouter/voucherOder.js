@@ -20,6 +20,7 @@ router.get("/customer/:id", async (req, res) => {
   }
 });
 
+
 router.get('/check', async (req, res) => {
   const { code, id_customer } = req.query;
 
