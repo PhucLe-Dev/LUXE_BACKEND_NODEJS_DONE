@@ -7,9 +7,9 @@ const router = express.Router();
 
 // ✅ Cấu hình cố định từ bạn
 const vnp_TmnCode = '5F6U2XP5';
-const vnp_HashSecret = 'X52DQXDT260B45XEEBS51Z5IITZBOSZM';
-const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-const vnp_ReturnUrl = 'https://luxe-customer-web-25-local.vercel.app/payment';
+const vnp_HashSecret = 'X52DQXDT260B45XEEBS51Z5IITZBOSZM'
+const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
+const vnp_ReturnUrl = 'https://luxe-customer-web-25-local.vercel.app/payment'
 
 // ✅ Hàm tạo URL thanh toán VNPay
 router.post('/create', (req, res) => {
