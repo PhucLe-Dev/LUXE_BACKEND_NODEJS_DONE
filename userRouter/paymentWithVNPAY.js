@@ -42,7 +42,10 @@ router.post('/create', (req, res) => {
         vnp_ReturnUrl: vnp_ReturnUrl,
         vnp_IpAddr: ipAddr === '::1' ? '127.0.0.1' : ipAddr,
         vnp_CreateDate: createDate,
+        vnp_SecureHashType: 'sha256',
     };
+
+    console.log("🧾 VNP Params:", vnp_Params);
 
     const sortedParams = Object.keys(vnp_Params)
         .sort()
@@ -50,6 +53,8 @@ router.post('/create', (req, res) => {
             acc[key] = vnp_Params[key];
             return acc;
         }, {});
+
+    console.log("🧾 Raw Params:", sortedParams);
 
     // 🔐 Bước 1: ký trên bản chưa encode
     const signData = qs.stringify(sortedParams, { encode: false }); // ❗ Rất quan trọng
