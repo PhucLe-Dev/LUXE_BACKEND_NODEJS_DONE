@@ -39,11 +39,12 @@ router.post('/create', (req, res) => {
         vnp_OrderInfo: cleanOrderInfo,
         vnp_OrderType: 'other',
         vnp_Amount: Math.round(Number(amount) * 100),
-        vnp_ReturnUrl: vnp_ReturnUrl,
+        vnp_ReturnUrl,
         vnp_IpAddr: ipAddr === '::1' ? '127.0.0.1' : ipAddr,
         vnp_CreateDate: createDate,
         vnp_SecureHashType: 'sha256',
     };
+    console.log("🚨 Check ReturnUrl:", JSON.stringify(vnp_Params.vnp_ReturnUrl));
 
     console.log("🧾 VNP Params:", vnp_Params);
 
