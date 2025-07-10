@@ -57,14 +57,20 @@ router.post('/create', (req, res) => {
         .map(([key, value]) => `${key}=${value}`)
         .join('&');
 
-    const hmac = crypto.createHmac('sha512', vnp_HashSecret);
+    const hmac = crypto.createHmac('sha256', vnp_HashSecret);
     const secureHash = hmac.update(signData, 'utf-8').digest('hex');
+
 
     // Gắn secure hash vào params
     sortedParams.vnp_SecureHash = secureHash;
 
     // Tạo URL thanh toán
     const paymentUrl = `${vnp_Url}?${qs.stringify(sortedParams, { encode: true })}`;
+
+    console.log("🔐 signData:", signData);
+    console.log("🔐 secureHash:", secureHash);
+    console.log("🔗 paymentUrl:", paymentUrl);
+
 
     return res.json({ paymentUrl });
 });
