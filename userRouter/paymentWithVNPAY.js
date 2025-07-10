@@ -52,6 +52,10 @@ router.post('/create', (req, res) => {
 
     console.log('📋 Sorted params:', sortedParams);
 
+    // Thêm vào trước khi tạo hash
+    console.log('🔍 SignData bytes:', Buffer.from(signData, 'utf-8'));
+    console.log('🔍 HashSecret bytes:', Buffer.from(vnp_HashSecret, 'utf-8'));
+    
     // Tạo signData
     const signData = Object.keys(sortedParams)
         .map(key => `${key}=${sortedParams[key]}`)
