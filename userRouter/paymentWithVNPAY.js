@@ -5,7 +5,7 @@ const qs = require('qs');
 
 const router = express.Router();
 
-// === THÔNG TIN CẤU HÌNH VNPay (Hardcoded theo bạn cung cấp) ===
+// === THÔNG TIN CẤU HÌNH VNPay (Sandbox) ===
 const vnp_TmnCode = '5F6U2XP5';
 const vnp_HashSecret = 'X52DQXDT260B45XEEBS51Z5IITZBOSZM';
 const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
@@ -19,6 +19,13 @@ router.post('/create', (req, res) => {
     return res.status(400).json({ error: 'Thiếu thông tin thanh toán.' });
   }
 
+  // ✅ Làm sạch orderInfo: bỏ dấu tiếng Việt + thay đ => d
+  const cleanOrderInfo = orderInfo
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
+
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
   const ipAddr = ip === '::1' ? '127.0.0.1' : ip;
   const createDate = moment().format('YYYYMMDDHHmmss');
@@ -30,7 +37,7 @@ router.post('/create', (req, res) => {
     vnp_Locale: 'vn',
     vnp_CurrCode: 'VND',
     vnp_TxnRef: orderId.toString().replace(/[^a-zA-Z0-9]/g, ''),
-    vnp_OrderInfo: orderInfo,
+    vnp_OrderInfo: cleanOrderInfo,
     vnp_OrderType: 'other',
     vnp_Amount: Math.round(Number(amount) * 100),
     vnp_ReturnUrl,
@@ -40,7 +47,7 @@ router.post('/create', (req, res) => {
 
   console.log('🧾 Params (original):', JSON.stringify(vnp_Params, null, 2));
 
-  // === Sắp xếp thứ tự alphabet
+  // ✅ Sắp xếp tham số theo alphabet
   const sortedParams = {};
   Object.keys(vnp_Params)
     .sort()
@@ -48,24 +55,23 @@ router.post('/create', (req, res) => {
       sortedParams[key] = vnp_Params[key];
     });
 
-  // === Tạo chuỗi signData
+  // ✅ Tạo chuỗi dữ liệu ký
   const signData = Object.entries(sortedParams)
     .map(([key, val]) => `${key}=${val}`)
     .join('&');
 
   console.log('🔐 SignData:', signData);
 
-  // === Tạo hash SHA512
+  // ✅ Tạo chữ ký HMAC SHA512
   const hmac = crypto.createHmac('sha512', vnp_HashSecret);
   const secureHash = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
 
   console.log('🔑 SecureHash:', secureHash);
 
-  // === Gắn hash vào params
+  // ✅ Gắn vào URL
   sortedParams.vnp_SecureHash = secureHash;
-
-  // === Tạo URL thanh toán
   const paymentUrl = `${vnp_Url}?${qs.stringify(sortedParams, { encode: true })}`;
+
   console.log('✅ Payment URL:', paymentUrl);
 
   return res.json({ paymentUrl });
