@@ -51,13 +51,17 @@ router.post('/create', (req, res) => {
     });
 
     console.log('📋 Sorted params:', sortedParams);
-
+    
     // Tạo signData
     const signData = Object.keys(sortedParams)
         .map(key => `${key}=${sortedParams[key]}`)
         .join('&');
 
     console.log('🔐 SignData:', signData);
+    
+     // Thêm vào trước khi tạo hash
+    console.log('🔍 SignData bytes:', Buffer.from(signData, 'utf-8'));
+    console.log('🔍 HashSecret bytes:', Buffer.from(vnp_HashSecret, 'utf-8'));
 
     // Tạo hash
     const hmac = crypto.createHmac('sha512', vnp_HashSecret);
@@ -67,6 +71,7 @@ router.post('/create', (req, res) => {
 
     // Thêm hash vào params
     sortedParams.vnp_SecureHash = signed;
+
 
     // Tạo URL
     const paymentUrl = `${vnp_Url}?${qs.stringify(sortedParams, { encode: true })}`;
