@@ -9,7 +9,8 @@ const router = express.Router();
 const vnp_TmnCode = process.env.VNP_TMNCODE?.trim();
 const vnp_HashSecret = process.env.VNP_HASHSECRET?.trim();
 const vnp_Url = process.env.VNP_URL?.trim();
-const vnp_ReturnUrl = process.env.VNP_RETURNURL?.trim();
+const vnp_ReturnUrlOrigin = process.env.VNP_RETURNURL?.trim();
+const vnp_ReturnUrl = vnp_ReturnUrlOrigin.replace(/;$/, '');
 
 // Debug environment
 console.log('Environment check:');
@@ -41,8 +42,9 @@ router.post('/create', (req, res) => {
         vnp_CreateDate: createDate,
     };
 
-    // Log để debug
-    console.log('🔍 Original params:', vnp_Params);
+    console.log('🔍 vnp_ReturnUrl:', JSON.stringify(vnp_ReturnUrl));
+    console.log('🔍 Original params:', JSON.stringify(vnp_Params, null, 2));
+
 
     // Sắp xếp params theo thứ tự alphabet
     const sortedParams = {};
@@ -51,15 +53,15 @@ router.post('/create', (req, res) => {
     });
 
     console.log('📋 Sorted params:', sortedParams);
-    
+
     // Tạo signData
     const signData = Object.keys(sortedParams)
         .map(key => `${key}=${sortedParams[key]}`)
         .join('&');
 
     console.log('🔐 SignData:', signData);
-    
-     // Thêm vào trước khi tạo hash
+
+    // Thêm vào trước khi tạo hash
     console.log('🔍 SignData bytes:', Buffer.from(signData, 'utf-8'));
     console.log('🔍 HashSecret bytes:', Buffer.from(vnp_HashSecret, 'utf-8'));
 
