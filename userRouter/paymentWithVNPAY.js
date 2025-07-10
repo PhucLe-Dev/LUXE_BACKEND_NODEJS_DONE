@@ -40,6 +40,9 @@ router.post('/create', (req, res) => {
   sortedParams.vnp_SecureHash = signed;
 
   const paymentUrl = `${vnpUrl}?${qs.stringify(sortedParams, { encode: true })}`;
+
+   console.log("VNPay URL gửi cho client:", paymentUrl);
+
   res.json({ paymentUrl });
 });
 
