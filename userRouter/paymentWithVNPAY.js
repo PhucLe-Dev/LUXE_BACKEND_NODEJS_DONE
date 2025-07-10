@@ -32,7 +32,7 @@ router.post('/create', (req, res) => {
     const createDate = moment().format('YYYYMMDDHHmmss');
 
     console.log("🧼 rawReturnUrl =", rawReturnUrl);
-    console.log("🧼 afterClean =", vnp_ReturnUrl);  
+    console.log("🧼 afterClean =", vnp_ReturnUrl);
 
     const vnp_Params = {
         vnp_Version: '2.1.0',
@@ -80,7 +80,13 @@ router.post('/create', (req, res) => {
     sortedParams.vnp_SecureHash = secureHash;
 
     // === Tạo URL thanh toán
-    const paymentUrl = `${vnp_Url}?${qs.stringify(sortedParams, { encode: true })}`;
+    const encodedParams = qs.stringify({
+        ...sortedParams,
+        vnp_ReturnUrl: encodeURIComponent(sortedParams.vnp_ReturnUrl.trim().replace(/;+\s*$/, ''))
+    }, { encode: false });
+
+    const paymentUrl = `${vnp_Url}?${encodedParams}`;
+
     console.log('✅ Payment URL:', paymentUrl);
 
     return res.json({ paymentUrl });
