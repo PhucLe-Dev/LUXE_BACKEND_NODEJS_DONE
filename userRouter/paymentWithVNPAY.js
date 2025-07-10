@@ -44,7 +44,7 @@ router.post('/create', (req, res) => {
         vnp_CreateDate: createDate,
     };
 
-    // Sắp xếp key theo thứ tự alphabet
+    // Bỏ vnp_SecureHash trước khi ký
     const sortedParams = Object.keys(vnp_Params)
         .sort()
         .reduce((acc, key) => {
@@ -52,19 +52,15 @@ router.post('/create', (req, res) => {
             return acc;
         }, {});
 
-    // Tạo chuỗi ký
-    const signData = Object.entries(sortedParams)
-        .map(([key, value]) => `${key}=${value}`)
-        .join('&');
+    // ✅ Encode đúng từng key=value
+    const signData = qs.stringify(sortedParams, { encode: true });
 
-    const hmac = crypto.createHmac('sha256', vnp_HashSecret);
-    const secureHash = hmac.update(signData, 'utf-8').digest('hex');
+    const hmac = crypto.createHmac("sha256", vnp_HashSecret);
+    const secureHash = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
 
-
-    // Gắn secure hash vào params
     sortedParams.vnp_SecureHash = secureHash;
 
-    // Tạo URL thanh toán
+    // Tạo URL
     const paymentUrl = `${vnp_Url}?${qs.stringify(sortedParams, { encode: true })}`;
 
     console.log("🔐 signData:", signData);
