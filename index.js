@@ -81,7 +81,7 @@ const startServer = async () => {
     // ADMIN ROUTES
     app.use('/api/admin/san-pham', require('./adminRouter/adminRouterSanPham'));
     app.use('/api/admin/variants', require('./adminRouter/adminRouteVariants'));
-
+    app.use('/api/admin/order', require('./adminRouter/adminRouteDonHang'));
     // SHIPPER
     app.use('/api/shipper/order', require('./shipperRouter/donHangRoute'));
 
