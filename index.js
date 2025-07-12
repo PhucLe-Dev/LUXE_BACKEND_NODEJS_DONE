@@ -70,14 +70,15 @@ const startServer = async () => {
       res.json({ thongbao: 'API NodeJS cho fashion_web25' });
     });
 
-    // USER ROUTES
-    app.use('/api/user', require('./userRouter/userRouteSanPham'));
+    // CUSTOMER ROUTES
+    app.use('/api/product', require('./userRouter/userRouteSanPham'));
     app.use('/api/voucher', require('./userRouter/voucherOder'));
     app.use('/api/order', require('./userRouter/orderRoute'));
     app.use('/api/vnpay', require('./userRouter/paymentWithVNPAY'));
     app.use('/api/momo', require('./userRouter/paymentWithMOMO'));
     app.use('/api/search', require('./userRouter/search'));
     app.use('/api/comment', require('./userRouter/commentRoute'));
+    app.use('/api/customer', require('./userRouter/customerRoute'));
 
     // ADMIN ROUTES
     app.use('/api/admin/san-pham', require('./adminRouter/adminRouterSanPham'));

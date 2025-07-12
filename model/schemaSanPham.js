@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const variantSchema = new mongoose.Schema({
   sku: { type: String, required: true },
   kich_thuoc: { type: String, required: true },

@@ -3333,11 +3333,11 @@ const sp_arr = [
 
 // Dữ liệu người dùng (NguoiDung)
 const nguoi_dung_arr = [
-  { _id: new ObjectId(), ho_ten: 'Nguyễn Văn A', email: 'nguyenvana@gmail.com', mat_khau: hash, vai_tro: 'admin', avatar:'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069528/goyoujung1_zef06z.jpg' },
-  { _id: new ObjectId(), ho_ten: 'Trần Thị B', email: 'tranthib@gmail.com', mat_khau: hash, vai_tro: 'khach_hang', avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/kimjiwon2_dsilgi.jpg' },
-  { _id: new ObjectId(), ho_ten: 'Trần Thị C', email: 'tranthic@gmail.com', mat_khau: hash, vai_tro: 'khach_hang', avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/jisoo3_kqv7si.jpg' },
-  { _id: new ObjectId(), ho_ten: 'Lê Văn D', email: 'levand@gmail.com', mat_khau: hash, vai_tro: 'shipper', avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069248/jisoo4_p7a0qx.jpg' },
-  { _id: new ObjectId(), ho_ten: 'Lê Văn E', email: 'levane@gmail.com', mat_khau: hash, vai_tro: 'shipper', avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/soobin1_qmmtow.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Nguyễn Văn A', email: 'nguyenvana@gmail.com', mat_khau: hash, vai_tro: 'admin', trang_thai: true, avatar:'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069528/goyoujung1_zef06z.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Trần Thị B', email: 'tranthib@gmail.com', mat_khau: hash, vai_tro: 'khach_hang', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/kimjiwon2_dsilgi.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Trần Thị C', email: 'tranthic@gmail.com', mat_khau: hash, vai_tro: 'khach_hang', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/jisoo3_kqv7si.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Lê Văn D', email: 'levand@gmail.com', mat_khau: hash, vai_tro: 'shipper', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069248/jisoo4_p7a0qx.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Lê Văn E', email: 'levane@gmail.com', mat_khau: hash, vai_tro: 'shipper', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/soobin1_qmmtow.jpg' },
 ];
 
 // Dữ liệu voucher (Voucher)
@@ -3351,7 +3351,7 @@ const voucher_arr = [
     discount_value: 10,
     min_order_value: 0,
     start_date: new Date("2025-05-01T00:00:00Z"),
-    end_date: new Date("2025-06-01T23:59:59Z"),
+    end_date: new Date("2025-10-01T23:59:59Z"),
     is_active: true
   },
   {
@@ -3363,7 +3363,7 @@ const voucher_arr = [
     discount_value: 50000,
     min_order_value: 500000,
     start_date: new Date("2025-06-01T00:00:00Z"),
-    end_date: new Date("2025-06-30T23:59:59Z"),
+    end_date: new Date("2025-10-30T23:59:59Z"),
     is_active: true
   },
   {
@@ -3375,7 +3375,7 @@ const voucher_arr = [
     discount_value: 20,
     min_order_value: 200000,
     start_date: new Date("2025-05-27T00:00:00Z"),
-    end_date: new Date("2025-05-28T23:59:59Z"),
+    end_date: new Date("2025-10-28T23:59:59Z"),
     is_active: true
   },
   {
@@ -3386,7 +3386,7 @@ const voucher_arr = [
     discount_value: 100000,
     min_order_value: 300000,
     start_date: new Date("2025-04-01T00:00:00Z"),
-    end_date: new Date("2025-04-30T23:59:59Z"),
+    end_date: new Date("2025-10-30T23:59:59Z"),
     is_active: false
   }
 ];
@@ -3399,7 +3399,7 @@ const don_hang_arr = [
     id_shipper: nguoi_dung_arr[3]._id, // Lê Văn D
     id_voucher: voucher_arr[0]._id, // Sử dụng voucher WELCOME10
     ma_don_hang: 'DH001111',
-    chi_tiet: [
+    variants: [
       {
         id_variant: sp_arr[0].variants[0]._id,
         so_luong: 2,   
@@ -3420,12 +3420,17 @@ const don_hang_arr = [
     id_customer: nguoi_dung_arr[0]._id,
     id_shipper: nguoi_dung_arr[4]._id, // Lê Văn E
     ma_don_hang: 'DH002222',
-    chi_tiet: [
+    variants: [
       {
         id_variant: sp_arr[4].variants[0]._id,
         so_luong: 1,   
         gia: sp_arr[4].variants[0].gia_km || sp_arr[4].variants[0].gia,
-      }
+      },
+      {
+        id_variant: sp_arr[5].variants[0]._id,
+        so_luong: 1,   
+        gia: sp_arr[5].variants[0].gia_km || sp_arr[5].variants[0].gia,
+      },
     ],
     tong_tien: 10000000,
     ho_ten: "Phúc Hoài",
@@ -3466,6 +3471,40 @@ const binh_luan_arr = [
 
 // Gán parent_id cho phản hồi
 binh_luan_arr[1].parent_id = binh_luan_arr[0]._id;
+
+
+const customerAddresses = {
+  id_customer: nguoi_dung_arr[1]._id, // ObjectId dưới dạng string, bạn có thể dùng mongoose.Types.ObjectId()
+  addresses: [
+    {
+      fullName: "Trần Thị B",
+      phoneNumber: "0909123456",
+      email: "vana@gmail.com",
+      province: "TP Hồ Chí Minh",
+      district: "Quận 1",
+      ward: "Phường Bến Nghé",
+      specificAddress: "123 Nguyễn Huệ, P.Bến Nghé"
+    },
+    {
+      fullName: "Trần Thị B",
+      phoneNumber: "0909123456",
+      email: "vana@gmail.com",
+      province: "Hà Nội",
+      district: "Quận Cầu Giấy",
+      ward: "Phường Dịch Vọng",
+      specificAddress: "Số 12, ngõ 30 Trần Thái Tông"
+    },
+    {
+      fullName: "Trần Thị B",
+      phoneNumber: "0909123456",
+      email: "vana@gmail.com",
+      province: "Đà Nẵng",
+      district: "Quận Hải Châu",
+      ward: "Phường Hòa Thuận Đông",
+      specificAddress: "45 Lê Đình Lý"
+    }
+  ]
+};
 
 
 // Export dữ liệu
