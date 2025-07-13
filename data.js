@@ -3333,7 +3333,7 @@ const sp_arr = [
 
 // Dữ liệu người dùng (NguoiDung)
 const nguoi_dung_arr = [
-  { _id: new ObjectId(), ho_ten: 'Nguyễn Văn A', email: 'nguyenvana@gmail.com', mat_khau: hash, vai_tro: 'admin', trang_thai: true, avatar:'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069528/goyoujung1_zef06z.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Nguyễn Văn A', email: 'nguyenvana@gmail.com', mat_khau: hash, vai_tro: 'admin', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069528/goyoujung1_zef06z.jpg' },
   { _id: new ObjectId(), ho_ten: 'Trần Thị B', email: 'tranthib@gmail.com', mat_khau: hash, vai_tro: 'khach_hang', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/kimjiwon2_dsilgi.jpg' },
   { _id: new ObjectId(), ho_ten: 'Trần Thị C', email: 'tranthic@gmail.com', mat_khau: hash, vai_tro: 'khach_hang', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/jisoo3_kqv7si.jpg' },
   { _id: new ObjectId(), ho_ten: 'Lê Văn D', email: 'levand@gmail.com', mat_khau: hash, vai_tro: 'shipper', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069248/jisoo4_p7a0qx.jpg' },
@@ -3402,12 +3402,12 @@ const don_hang_arr = [
     variants: [
       {
         id_variant: sp_arr[0].variants[0]._id,
-        so_luong: 2,   
+        so_luong: 2,
         gia: sp_arr[0].variants[0].gia_km || sp_arr[0].variants[0].gia,
       }
     ],
     tong_tien: 10000000,
-    ho_ten:"Phúc Lê",
+    ho_ten: "Phúc Lê",
     email: "phucle.415776@gmail.com",
     sdt: '0865945907',
     dia_chi_giao_hang: '123 Đường Láng, TPHCM',
@@ -3423,12 +3423,12 @@ const don_hang_arr = [
     variants: [
       {
         id_variant: sp_arr[4].variants[0]._id,
-        so_luong: 1,   
+        so_luong: 1,
         gia: sp_arr[4].variants[0].gia_km || sp_arr[4].variants[0].gia,
       },
       {
         id_variant: sp_arr[5].variants[0]._id,
-        so_luong: 1,   
+        so_luong: 1,
         gia: sp_arr[5].variants[0].gia_km || sp_arr[5].variants[0].gia,
       },
     ],
@@ -3473,39 +3473,29 @@ const binh_luan_arr = [
 binh_luan_arr[1].parent_id = binh_luan_arr[0]._id;
 
 
-const customerAddresses = {
-  id_customer: nguoi_dung_arr[1]._id, // ObjectId dưới dạng string, bạn có thể dùng mongoose.Types.ObjectId()
-  addresses: [
-    {
-      fullName: "Trần Thị B",
-      phoneNumber: "0909123456",
-      email: "vana@gmail.com",
-      province: "TP Hồ Chí Minh",
-      district: "Quận 1",
-      ward: "Phường Bến Nghé",
-      specificAddress: "123 Nguyễn Huệ, P.Bến Nghé"
-    },
-    {
-      fullName: "Trần Thị B",
-      phoneNumber: "0909123456",
-      email: "vana@gmail.com",
-      province: "Hà Nội",
-      district: "Quận Cầu Giấy",
-      ward: "Phường Dịch Vọng",
-      specificAddress: "Số 12, ngõ 30 Trần Thái Tông"
-    },
-    {
-      fullName: "Trần Thị B",
-      phoneNumber: "0909123456",
-      email: "vana@gmail.com",
-      province: "Đà Nẵng",
-      district: "Quận Hải Châu",
-      ward: "Phường Hòa Thuận Đông",
-      specificAddress: "45 Lê Đình Lý"
-    }
-  ]
-};
+const dia_chi_arr = [
+  {
+    id_customer: nguoi_dung_arr[1]._id,
+    addresses: [
+      {
+        fullName: "Trần Thị B",
+        phoneNumber: "0909123456",
+        email: "tranthib@gmail.com",
+        administrativeAddress: "Phường Bến Nghé, Quận 1, TP Hồ Chí Minh",
+        specificAddress: "123 Nguyễn Huệ"
+      },
+      {
+        fullName: "Trần Thị B",
+        phoneNumber: "0909123456",
+        email: "tranthib@gmail.com",
+        administrativeAddress: "Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",
+        specificAddress: "Số 12, ngõ 30 Trần Thái Tông"
+      },
+    ]
+  },
+];
 
+const danh_gia_arr = [];
 
 // Export dữ liệu
 module.exports = {
@@ -3516,4 +3506,6 @@ module.exports = {
   voucher_arr,
   don_hang_arr,
   binh_luan_arr,
+  dia_chi_arr,
+  danh_gia_arr,
 };

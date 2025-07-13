@@ -3,17 +3,15 @@ const mongoose = require('mongoose');
 const addressSubSchema = new mongoose.Schema({
     fullName: { type: String, required: true },
     phoneNumber: { type: String, required: true },
-    email: { type: String, required: false }, // optional
-    province: { type: String, required: true },
-    district: { type: String, required: true },
-    ward: { type: String, required: true },
-    specificAddress: { type: String, required: true }, // địa chỉ cụ thể cho tài xế
+    email: { type: String },
+    administrativeAddress: { type: String, required: true },
+    specificAddress: { type: String }
 }, { _id: false });
 
 const diachiSchema = new mongoose.Schema({
     id_customer: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'nguoi_dung', // hoặc User nếu bạn dùng model đó
+        ref: 'nguoi_dung',
         required: true,
         unique: true
     },
@@ -27,8 +25,6 @@ const diachiSchema = new mongoose.Schema({
         },
         default: []
     }
-}, { timestamps: true });
+}, { timestamps: true, collection: 'dia_chi' });
 
-module.exports = mongoose.model('dia_chi', diachiSchema);
-
-module.exports = diachiSchema;
+module.exports = mongoose.model('dia_chi', diachiSchema); 

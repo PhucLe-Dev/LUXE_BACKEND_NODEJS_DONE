@@ -12,6 +12,8 @@ const NguoiDung = require('./model/schemaNguoiDung');
 const DonHang = require('./model/schemaDonHang');
 const BinhLuan = require('./model/schemaBinhLuan');
 const Voucher = require('./model/schemaVoucher');
+const DiaChiModel = require('./model/schemaDiaChi');
+const DanhGiaModel = require('./model/schemaDanhGia');
 
 // Import dữ liệu mẫu
 const {
@@ -22,6 +24,8 @@ const {
   voucher_arr,
   don_hang_arr,
   binh_luan_arr,
+  dia_chi_arr,
+  danh_gia_arr,
 } = require('./data');
 
 // Hàm sinh SKU duy nhất
@@ -146,6 +150,26 @@ const chen_binh_luan = async () => {
   console.log('Chèn bình luận thành công');
 };
 
+// Hàm chèn địa chỉ
+const chen_dia_chi = async () => {
+  await DiaChiModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} địa chỉ`));
+  for (let diaChi of dia_chi_arr) {
+    let newDiaChi = new DiaChiModel(diaChi);
+    await newDiaChi.save();
+  }
+  console.log('Chèn địa chỉ thành công');
+};
+
+// Hàm chèn đánh giá
+const chen_danh_gia = async () => {
+  await DanhGiaModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} đánh giá`));
+  for (let danhGia of danh_gia_arr) {
+    let newDanhGia = new DanhGiaModel(danhGia);
+    await newDanhGia.save();
+  }
+  console.log('Chèn đánh giá thành công');
+};
+
 (async () => {
   try {
     await mongoose.connect(process.env.DATABASE_URL);
@@ -159,6 +183,8 @@ const chen_binh_luan = async () => {
     await chen_voucher();
     await chen_don_hang();
     await chen_binh_luan();
+    await chen_dia_chi();
+    await chen_danh_gia();
 
     console.log("🎉 Hoàn tất chèn dữ liệu!");
     process.exit();
