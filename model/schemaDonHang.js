@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const orderItems = new mongoose.Schema({
   id_variant: { type: mongoose.Schema.Types.ObjectId, ref: 'san_pham.variants', required: true }, // Tham chiếu biến thể
   so_luong: { type: Number, min: 1, required: true }, // Số lượng
-  gia: { type: Number, min: 0, required: true } // Giá tại thời điểm mua
+  gia: { type: Number, min: 0, required: true }, // Giá tại thời điểm mua
+  da_danh_gia: { type: Boolean, default: false }
 });
 
 // Định nghĩa schema cho đơn hàng
