@@ -48,6 +48,7 @@ router.post("/", async (req, res) => {
       ...data,
       ma_don_hang,
       trang_thai_don_hang: "Chờ xác nhận", // mặc định
+      ma_giao_dich: req.body.ma_giao_dich || null, 
     });
 
     await newOrder.save();

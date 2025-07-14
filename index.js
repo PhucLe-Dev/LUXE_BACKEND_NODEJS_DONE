@@ -74,7 +74,7 @@ const startServer = async () => {
     app.use('/api/product', require('./userRouter/userRouteSanPham'));
     app.use('/api/voucher', require('./userRouter/voucherOder'));
     app.use('/api/order', require('./userRouter/orderRoute'));
-    app.use('/api/vnpay', require('./userRouter/paymentWithVNPAY'));
+    app.use("/api/vnpay", require("./userRouter/paymentWithVNPAY"));
     app.use('/api/momo', require('./userRouter/paymentWithMOMO'));
     app.use('/api/search', require('./userRouter/search'));
     app.use('/api/comment', require('./userRouter/commentRoute'));

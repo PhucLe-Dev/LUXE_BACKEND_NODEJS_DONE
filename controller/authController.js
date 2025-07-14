@@ -46,7 +46,7 @@ const authControllers = {
     },
     // Hàm gửi email xác thực
     sendVerificationEmail: async (user, verificationToken) => {
-        const verificationLink = `${process.env.CLIENT_URL}/api/auth/verify-email?token=${verificationToken}`;
+        const verificationLink = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/verify-email?token=${verificationToken}`;
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: user.email,
@@ -248,7 +248,7 @@ const authControllers = {
                             <p>Mật khẩu mới của bạn là:</p>
                             <div class="password-box">${newPassword}</div>
                             <p>Vui lòng sử dụng mật khẩu này để đăng nhập và đổi mật khẩu mới ngay sau khi đăng nhập.</p>
-                            <a href="${process.env.CLIENT_URL}/login" class="button">Đăng nhập ngay</a>
+                            <a href="${process.env.NEXT_PUBLIC_API_BASE_URL}/login" class="button">Đăng nhập ngay</a>
                             <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng liên hệ với chúng tôi ngay lập tức.</p>
                         </div>
                         <div class="footer">

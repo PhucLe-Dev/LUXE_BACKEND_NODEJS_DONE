@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
       { $set: { "variants.$.da_danh_gia": true } }
     );
 
-    res.status(201).json({ message: 'Đánh giá thành công.', review: newReview });
+    res.status(201).json({ "success": true, "message": "Đánh giá đã được gửi thành công!", review: newReview });
   } catch (err) {
     res.status(500).json({ message: 'Lỗi server', error: err.message });
   }

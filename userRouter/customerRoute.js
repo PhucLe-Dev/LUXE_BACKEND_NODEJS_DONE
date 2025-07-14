@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 const NguoiDung = mongoose.model('nguoi_dung', require('../model/schemaNguoiDung'));
-const DiaChiModel = require('../model/schemaDiaChi');
+const DiaChiModel = require('../model/schemaDiaChi'); // Import model DiaChi
 
 router.put('/:id', async (req, res) => {
   try {
@@ -43,148 +43,52 @@ router.post('/add/:customerId', async (req, res) => {
       });
     }
 
-    // Tạo địa chỉ mới
-    const newAddress = {
+    let customerAddresses = await DiaChiModel.findOne({ id_customer: customerId });
+
+    if (!customerAddresses) {
+      // Nếu chưa có địa chỉ nào cho khách hàng này, tạo mới
+      customerAddresses = new DiaChiModel({
+        id_customer: customerId,
+        addresses: []
+      });
+    }
+
+    // Thêm địa chỉ mới vào mảng
+    customerAddresses.addresses.push({
       fullName,
       phoneNumber,
       email: email || '',
       administrativeAddress,
       specificAddress: specificAddress || ''
-    };
+    });
 
-    // Tìm document địa chỉ của khách hàng
-    let customerAddresses = await DiaChiModel.findOne({ id_customer: customerId });
-
-    if (!customerAddresses) {
-      // Nếu chưa có, tạo mới
-      customerAddresses = new DiaChiModel({
-        id_customer: customerId,
-        addresses: [newAddress]
-      });
-    } else {
-      // Kiểm tra giới hạn 3 địa chỉ
-      if (customerAddresses.addresses.length >= 3) {
-        return res.status(400).json({
-          success: false,
-          message: 'Tối đa chỉ được lưu 3 địa chỉ nhận hàng!'
-        });
-      }
-
-      // Thêm địa chỉ mới vào mảng
-      customerAddresses.addresses.push(newAddress);
-    }
-
-    // Lưu vào database
+    // Lưu cập nhật
     await customerAddresses.save();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: 'Thêm địa chỉ thành công',
       data: customerAddresses
     });
 
   } catch (error) {
-    console.error('Lỗi khi thêm địa chỉ:', error);
+    console.error("Lỗi khi thêm địa chỉ:", error);
+    // Xử lý lỗi validate array length nếu có
+    if (error.name === 'ValidationError' && error.message.includes('addresses')) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
     res.status(500).json({
       success: false,
-      message: 'Lỗi server khi thêm địa chỉ',
-      error: error.message
+      message: 'Lỗi server khi thêm địa chỉ.'
     });
   }
 });
 
-// API lấy danh sách địa chỉ của khách hàng
-router.get('/:customerId', async (req, res) => {
-  try {
-    const { customerId } = req.params;
-
-    // Validate ObjectId
-    if (!mongoose.Types.ObjectId.isValid(customerId)) {
-      return res.status(400).json({
-        success: false,
-        message: 'ID khách hàng không hợp lệ'
-      });
-    }
-
-    const customerAddresses = await DiaChiModel.findOne({ id_customer: customerId });
-
-    if (!customerAddresses) {
-      return res.status(200).json({
-        success: true,
-        message: 'Khách hàng chưa có địa chỉ nào',
-        data: { addresses: [] }
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: 'Lấy danh sách địa chỉ thành công',
-      data: customerAddresses
-    });
-
-  } catch (error) {
-    console.error('Lỗi khi lấy danh sách địa chỉ:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Lỗi server khi lấy danh sách địa chỉ',
-      error: error.message
-    });
-  }
-});
-
-// API xóa địa chỉ
-router.delete('/:customerId/:addressIndex', async (req, res) => {
-  try {
-    const { customerId, addressIndex } = req.params;
-
-    // Validate ObjectId
-    if (!mongoose.Types.ObjectId.isValid(customerId)) {
-      return res.status(400).json({
-        success: false,
-        message: 'ID khách hàng không hợp lệ'
-      });
-    }
-
-    const customerAddresses = await DiaChiModel.findOne({ id_customer: customerId });
-
-    if (!customerAddresses) {
-      return res.status(404).json({
-        success: false,
-        message: 'Không tìm thấy địa chỉ của khách hàng'
-      });
-    }
-
-    // Validate index
-    const index = parseInt(addressIndex);
-    if (isNaN(index) || index < 0 || index >= customerAddresses.addresses.length) {
-      return res.status(400).json({
-        success: false,
-        message: 'Chỉ số địa chỉ không hợp lệ'
-      });
-    }
-
-    // Xóa địa chỉ
-    customerAddresses.addresses.splice(index, 1);
-    await customerAddresses.save();
-
-    res.status(200).json({
-      success: true,
-      message: 'Xóa địa chỉ thành công',
-      data: customerAddresses
-    });
-
-  } catch (error) {
-    console.error('Lỗi khi xóa địa chỉ:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Lỗi server khi xóa địa chỉ',
-      error: error.message
-    });
-  }
-});
-
-// API cập nhật địa chỉ
-router.put('/:customerId/:addressIndex', async (req, res) => {
+// API cập nhật địa chỉ đã lưu của người dùng
+router.put('/:customerId/address/:addressIndex', async (req, res) => {
   try {
     const { customerId, addressIndex } = req.params;
     const { fullName, phoneNumber, email, administrativeAddress, specificAddress } = req.body;
@@ -241,13 +145,82 @@ router.put('/:customerId/:addressIndex', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Lỗi khi cập nhật địa chỉ:', error);
+    console.error("Lỗi khi cập nhật địa chỉ:", error);
     res.status(500).json({
       success: false,
-      message: 'Lỗi server khi cập nhật địa chỉ',
-      error: error.message
+      message: 'Lỗi server khi cập nhật địa chỉ.'
     });
   }
 });
+
+// API xóa địa chỉ đã lưu của người dùng
+router.delete('/:customerId/address/:addressIndex', async (req, res) => {
+  try {
+    const { customerId, addressIndex } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(customerId)) {
+      return res.status(400).json({ success: false, message: 'ID khách hàng không hợp lệ' });
+    }
+
+    const customerAddresses = await DiaChiModel.findOne({ id_customer: customerId });
+
+    if (!customerAddresses) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy địa chỉ của khách hàng' });
+    }
+
+    const index = parseInt(addressIndex);
+    if (isNaN(index) || index < 0 || index >= customerAddresses.addresses.length) {
+      return res.status(400).json({ success: false, message: 'Chỉ số địa chỉ không hợp lệ' });
+    }
+
+    customerAddresses.addresses.splice(index, 1); // Xóa địa chỉ tại vị trí index
+    await customerAddresses.save();
+
+    res.status(200).json({ success: true, message: 'Xóa địa chỉ thành công', data: customerAddresses.addresses });
+
+  } catch (error) {
+    console.error("Lỗi khi xóa địa chỉ:", error);
+    res.status(500).json({ success: false, message: 'Lỗi server khi xóa địa chỉ.' });
+  }
+});
+
+
+// API LẤY TẤT CẢ ĐỊA CHỈ ĐÃ LƯU CỦA NGƯỜI DÙNG 
+router.get('/:customerId/addresses', async (req, res) => {
+  try {
+    const { customerId } = req.params;
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(customerId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'ID khách hàng không hợp lệ'
+      });
+    }
+
+    const customerAddresses = await DiaChiModel.findOne({ id_customer: customerId });
+
+    if (!customerAddresses) {
+      // Trả về mảng rỗng nếu không tìm thấy địa chỉ nào cho khách hàng này
+      return res.status(200).json({
+        success: true,
+        data: [] // Trả về mảng rỗng thay vì lỗi 404
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: customerAddresses.addresses
+    });
+
+  } catch (error) {
+    console.error("Lỗi khi lấy địa chỉ của khách hàng:", error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi server khi lấy địa chỉ.'
+    });
+  }
+});
+
 
 module.exports = router;
