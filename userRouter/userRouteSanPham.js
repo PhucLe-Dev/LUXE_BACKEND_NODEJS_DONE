@@ -53,13 +53,17 @@ router.get('/san-pham', async (req, res) => {
     if (['discounted', 'price_asc', 'price_desc', 'bestselling'].includes(sort)) {
       pipeline.push({ $unwind: '$variants' });
 
-      if (sort === 'discounted') {
-        pipeline.push({
-          $match: {
-            'variants.gia_km': { $ne: null, $gt: 0 },
-            $expr: { $lt: ['$variants.gia_km', '$variants.gia'] },
+      if (sort === 'bestselling') {
+        pipeline.push(
+          {
+            $addFields: {
+              total_sold: { $sum: '$variants.so_luong_da_ban' }
+            }
           },
-        });
+          {
+            $sort: { total_sold: -1 }
+          }
+        );
       }
 
       pipeline.push({

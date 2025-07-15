@@ -80,6 +80,8 @@ const startServer = async () => {
     app.use('/api/comment', require('./userRouter/commentRoute'));
     app.use('/api/customer', require('./userRouter/customerRoute'));
     app.use('/api/rating', require('./userRouter/ratingRoute'));
+    app.use('/api/contact', require('./userRouter/contactStore'));
+
 
     // ADMIN ROUTES
     app.use('/api/admin/san-pham', require('./adminRouter/adminRouterSanPham'));

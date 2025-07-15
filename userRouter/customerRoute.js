@@ -184,7 +184,6 @@ router.delete('/:customerId/address/:addressIndex', async (req, res) => {
   }
 });
 
-
 // API LẤY TẤT CẢ ĐỊA CHỈ ĐÃ LƯU CỦA NGƯỜI DÙNG 
 router.get('/:customerId/addresses', async (req, res) => {
   try {
