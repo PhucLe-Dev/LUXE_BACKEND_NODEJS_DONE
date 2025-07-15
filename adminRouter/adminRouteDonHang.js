@@ -8,9 +8,11 @@ const DonHang = mongoose.model('don_hang');
 const NguoiDung = mongoose.model('nguoi_dung');
 const SanPham = mongoose.model('san_pham');
 const Voucher = mongoose.model('voucher');
+// Import dịch vụ email
+const { sendOrderStatusEmail } = require('../services/emailService');
 
 // ======================================================
-// 1. Lấy danh sách tất cả đơn hàng (Đã cập nhật để trả về giá đúng)
+// 1. Lấy danh sách tất cả đơn hàng
 // ======================================================
 router.get('/', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
@@ -46,31 +48,6 @@ router.get('/', middlewaresController.verifyToken, middlewaresController.verifyA
             .populate('id_voucher', 'code discount_type discount_value')
             .lean();
 
-        // Populate thông tin chi tiết sản phẩm cho mỗi đơn hàng
-        for (const order of orders) {
-            for (let i = 0; i < order.chi_tiet.length; i++) {
-                const item = order.chi_tiet[i];
-                if (item.id_variant) {
-                    const product = await SanPham.findOne({ 'variants._id': item.id_variant });
-                    if (product) {
-                        const variant = product.variants.id(item.id_variant);
-                        if (variant) {
-                            // Gán lại id_variant thành một object đầy đủ thông tin
-                            order.chi_tiet[i].id_variant = {
-                                _id: variant._id,
-                                sku: variant.sku,
-                                kich_thuoc: variant.kich_thuoc,
-                                mau_sac: variant.mau_sac,
-                                hinh_chinh: variant.hinh_chinh,
-                                ten_sp: product.ten_sp,
-                                slug: product.slug
-                            };
-                        }
-                    }
-                }
-            }
-        }
-
         const totalOrders = await DonHang.countDocuments(query);
         const totalPages = Math.ceil(totalOrders / parseInt(limit));
 
@@ -90,7 +67,7 @@ router.get('/', middlewaresController.verifyToken, middlewaresController.verifyA
 });
 
 // ======================================================
-// 2. Lấy chi tiết một đơn hàng (Đã cập nhật để trả về giá đúng)
+// 2. Lấy chi tiết một đơn hàng
 // ======================================================
 router.get('/:id', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
@@ -103,13 +80,12 @@ router.get('/:id', middlewaresController.verifyToken, middlewaresController.veri
             .populate('id_customer', 'ho_ten email sdt avatar')
             .populate('id_shipper', 'ho_ten email sdt avatar')
             .populate('id_voucher')
-            .lean(); // Dùng .lean() để có thể chỉnh sửa object
+            .lean();
 
         if (!order) {
             return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng.' });
         }
 
-        // Populate thông tin sản phẩm và quan trọng là THÊM LẠI GIÁ GỐC
         for (let i = 0; i < order.chi_tiet.length; i++) {
             const item = order.chi_tiet[i];
             if (item.id_variant) {
@@ -117,14 +93,9 @@ router.get('/:id', middlewaresController.verifyToken, middlewaresController.veri
                 if (product) {
                     const variant = product.variants.find(v => v._id.equals(item.id_variant));
                     if (variant) {
-                        // **SỬA LỖI QUAN TRỌNG**:
-                        // 1. Nếu `gia_goc` chưa được lưu trong đơn hàng (cho các đơn hàng cũ),
-                        //    hãy lấy giá gốc hiện tại của sản phẩm để hiển thị.
                         if (item.gia_goc === undefined) {
                             item.gia_goc = variant.gia;
                         }
-
-                        // 2. Populate các thông tin khác của variant để hiển thị
                         item.id_variant = {
                             _id: variant._id,
                             sku: variant.sku,
@@ -146,77 +117,50 @@ router.get('/:id', middlewaresController.verifyToken, middlewaresController.veri
 });
 
 // ======================================================
-// CHỨC NĂNG MỚI: TẠO ĐƠN HÀNG THỦ CÔNG (ĐÃ SỬA LỖI)
-// POST /api/admin/orders
+// 3. Tạo đơn hàng thủ công
 // ======================================================
 router.post('/', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
         const {
-            ho_ten,
-            email,
-            sdt,
-            dia_chi_giao_hang,
-            phuong_thuc_thanh_toan,
-            ghi_chu,
-            chi_tiet
+            ho_ten, email, sdt, dia_chi_giao_hang,
+            phuong_thuc_thanh_toan, ghi_chu, chi_tiet
         } = req.body;
 
-        // --- B1: Validate dữ liệu cơ bản ---
         if (!ho_ten || !sdt || !dia_chi_giao_hang || !chi_tiet || chi_tiet.length === 0) {
             return res.status(400).json({ success: false, message: "Vui lòng cung cấp đủ thông tin khách hàng và sản phẩm." });
         }
-
-        // --- SỬA LỖI 1: Tìm khách hàng theo email ---
-        // Bắt buộc phải có email để liên kết hoặc tìm khách hàng
         if (!email) {
-            return res.status(400).json({ success: false, message: "Email khách hàng là bắt buộc để tạo đơn hàng." });
+            return res.status(400).json({ success: false, message: "Email khách hàng là bắt buộc." });
         }
         const customer = await NguoiDung.findOne({ email: email.toLowerCase() });
         if (!customer) {
-            return res.status(404).json({ success: false, message: `Không tìm thấy khách hàng với email: ${email}. Vui lòng tạo tài khoản cho khách trước.` });
+            return res.status(404).json({ success: false, message: `Không tìm thấy khách hàng với email: ${email}.` });
         }
 
         let tong_tien = 0;
         const chiTietDonHang = [];
 
-        // --- B2: Xử lý chi tiết sản phẩm ---
         for (const item of chi_tiet) {
-            const variantSku = item.id_variant;
-            if (!variantSku || !item.so_luong || item.so_luong <= 0) {
-                return res.status(400).json({ success: false, message: `Sản phẩm không hợp lệ trong giỏ hàng.` });
-            }
+            const product = await SanPham.findOne({ 'variants.sku': item.id_variant });
+            if (!product) return res.status(404).json({ success: false, message: `Không tìm thấy sản phẩm với SKU: ${item.id_variant}` });
+            const variant = product.variants.find(v => v.sku === item.id_variant);
+            if (!variant) return res.status(404).json({ success: false, message: `SKU ${item.id_variant} không tồn tại.` });
+            if (variant.so_luong < item.so_luong) return res.status(400).json({ success: false, message: `Sản phẩm ${variant.sku} không đủ số lượng.` });
 
-            const product = await SanPham.findOne({ 'variants.sku': variantSku });
-            if (!product) {
-                return res.status(404).json({ success: false, message: `Không tìm thấy sản phẩm với SKU: ${variantSku}` });
-            }
-
-            const variant = product.variants.find(v => v.sku === variantSku);
-            if (!variant) {
-                return res.status(404).json({ success: false, message: `SKU ${variantSku} không tồn tại.` });
-            }
-
-            if (variant.so_luong < item.so_luong) {
-                return res.status(400).json({ success: false, message: `Sản phẩm ${variant.sku} không đủ số lượng trong kho (còn ${variant.so_luong}).` });
-            }
-
-            const giaGoc = variant.gia;
             const giaBan = variant.gia_km || variant.gia;
             tong_tien += giaBan * item.so_luong;
 
-            // --- SỬA LỖI 3: Lưu đúng cấu trúc `gia` và thêm `gia_goc` ---
             chiTietDonHang.push({
                 id_variant: variant._id,
                 so_luong: item.so_luong,
-                gia: giaBan,      // Trường `gia` bắt buộc theo schema, lưu giá bán thực tế
-                gia_goc: giaGoc   // Thêm trường `gia_goc` để tiện hiển thị
+                gia: giaBan,
+                gia_goc: variant.gia
             });
 
             variant.so_luong -= item.so_luong;
             await product.save();
         }
 
-        // --- B3: Tạo mã đơn hàng ---
         const lastOrder = await DonHang.findOne().sort({ ma_don_hang: -1 });
         let newOrderCode = 'DH001';
         if (lastOrder && lastOrder.ma_don_hang) {
@@ -224,16 +168,11 @@ router.post('/', middlewaresController.verifyToken, middlewaresController.verify
             newOrderCode = 'DH' + (lastNum + 1).toString().padStart(3, '0');
         }
 
-        // --- B4: Tạo đơn hàng mới ---
         const newOrder = new DonHang({
-            ma_don_hang: newOrderCode,
-            id_customer: customer._id, // Sử dụng ID khách hàng đã tìm thấy
-            ho_ten,
-            email,
-            sdt,
-            dia_chi_giao_hang,
-            phuong_thuc_thanh_toan,
-            ghi_chu,
+            // ten_sp,
+            ma_don_hang: newOrderCode, id_customer: customer._id,
+            ho_ten, email, sdt, dia_chi_giao_hang,
+            phuong_thuc_thanh_toan, ghi_chu,
             chi_tiet: chiTietDonHang,
             tong_tien,
             trang_thai_thanh_toan: 'Chưa thanh toán',
@@ -241,7 +180,7 @@ router.post('/', middlewaresController.verifyToken, middlewaresController.verify
         });
 
         const savedOrder = await newOrder.save();
-        res.status(201).json({ success: true, message: 'Tạo đơn hàng thủ công thành công!', data: savedOrder });
+        res.status(201).json({ success: true, message: 'Tạo đơn hàng thành công!', data: savedOrder });
 
     } catch (error) {
         console.error("Lỗi khi tạo đơn hàng thủ công:", error);
@@ -249,9 +188,8 @@ router.post('/', middlewaresController.verifyToken, middlewaresController.verify
     }
 });
 
-
 // ======================================================
-// 3. Cập nhật trạng thái đơn hàng và gán shipper
+// 4. Cập nhật trạng thái đơn hàng và gán shipper
 // ======================================================
 router.put('/:id/status', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
@@ -276,21 +214,15 @@ router.put('/:id/status', middlewaresController.verifyToken, middlewaresControll
             }
             updateFields.trang_thai_don_hang = trang_thai_don_hang;
 
-            // THÊM MỚI: Xử lý logic hoàn kho và voucher khi admin hủy đơn hàng
-            if (trang_thai_don_hang === 'Hủy đơn hàng') {
-                // Chỉ hoàn kho nếu đơn hàng chưa bị hủy trước đó để tránh hoàn kho nhiều lần
-                if (orderToUpdate.trang_thai_don_hang !== 'Hủy đơn hàng') {
-                    // Hoàn lại số lượng sản phẩm vào kho
-                    for (const item of orderToUpdate.chi_tiet) {
-                        await SanPham.updateOne(
-                            { 'variants._id': item.id_variant },
-                            { $inc: { 'variants.$.so_luong': item.so_luong } }
-                        );
-                    }
-                    // Kích hoạt lại voucher nếu có
-                    if (orderToUpdate.id_voucher) {
-                        await Voucher.findByIdAndUpdate(orderToUpdate.id_voucher, { is_active: true });
-                    }
+            if (trang_thai_don_hang === 'Hủy đơn hàng' && orderToUpdate.trang_thai_don_hang !== 'Hủy đơn hàng') {
+                for (const item of orderToUpdate.chi_tiet) {
+                    await SanPham.updateOne(
+                        { 'variants._id': item.id_variant },
+                        { $inc: { 'variants.$.so_luong': item.so_luong } }
+                    );
+                }
+                if (orderToUpdate.id_voucher) {
+                    await Voucher.findByIdAndUpdate(orderToUpdate.id_voucher, { is_active: true });
                 }
             }
         }
@@ -318,6 +250,27 @@ router.put('/:id/status', middlewaresController.verifyToken, middlewaresControll
 
         const updatedOrder = await DonHang.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
 
+        // Gửi email sau khi cập nhật thành công
+        if (trang_thai_don_hang === 'Đã xác nhận' || trang_thai_don_hang === 'Hủy đơn hàng') {
+            const fullOrderDetails = await DonHang.findById(updatedOrder._id).lean();
+
+            // SỬA LỖI: Chuẩn bị dữ liệu chính xác cho template email
+            for (let item of fullOrderDetails.chi_tiet) {
+                // Gán `gia_ban` từ `gia` để template email hoạt động
+                item.gia_ban = item.gia;
+
+                const product = await SanPham.findOne({ 'variants._id': item.id_variant }).lean();
+                if (product) {
+                    const variant = product.variants.find(v => v._id.equals(item.id_variant));
+                    if (variant) {
+                        // Thay thế ObjectId bằng object chứa SKU cho email
+                        item.id_variant = { sku: variant.sku };
+                    }
+                }
+            }
+            await sendOrderStatusEmail(fullOrderDetails, trang_thai_don_hang);
+        }
+
         const finalOrder = await DonHang.findById(updatedOrder._id).populate('id_customer', 'ho_ten email').populate('id_shipper', 'ho_ten email').lean();
 
         req.io.emit('orderStatusUpdated', finalOrder);
@@ -326,60 +279,6 @@ router.put('/:id/status', middlewaresController.verifyToken, middlewaresControll
     } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái đơn hàng:', error);
         res.status(500).json({ success: false, message: error.message || 'Lỗi server khi cập nhật trạng thái đơn hàng.' });
-    }
-});
-// ======================================================
-// 4. Hủy đơn hàng
-// ======================================================
-router.patch('/:id/cancel', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw new Error('ID đơn hàng không hợp lệ.');
-        }
-
-        const order = await DonHang.findById(id);
-        if (!order) {
-            throw new Error('Không tìm thấy đơn hàng.');
-        }
-
-        if (order.trang_thai_don_hang !== 'Chờ xác nhận' && order.trang_thai_don_hang !== 'Đã xác nhận') {
-            throw new Error(`Không thể hủy đơn hàng ở trạng thái hiện tại: ${order.trang_thai_don_hang}.`);
-        }
-
-        order.trang_thai_don_hang = 'Hủy đơn hàng';
-        order.updated_at = Date.now();
-        await order.save();
-
-        // Hoàn lại số lượng sản phẩm
-        for (const item of order.chi_tiet) {
-            const product = await SanPham.findOne({ 'variants._id': item.id_variant });
-            if (product) {
-                const variant = product.variants.id(item.id_variant);
-                if (variant) {
-                    variant.so_luong += item.so_luong;
-                    await product.save();
-                }
-            }
-        }
-
-        // Kích hoạt lại voucher nếu có
-        if (order.id_voucher) {
-            const voucher = await Voucher.findById(order.id_voucher);
-            if (voucher && !voucher.is_active) {
-                voucher.is_active = true;
-                await voucher.save();
-            }
-        }
-
-        const updatedOrder = await DonHang.findById(id).populate('id_customer', 'ho_ten email').lean();
-
-        req.io.emit('orderCancelled', updatedOrder);
-        res.status(200).json({ success: true, message: 'Đơn hàng đã được hủy thành công.' });
-
-    } catch (error) {
-        console.error('Lỗi khi hủy đơn hàng:', error);
-        res.status(500).json({ success: false, message: error.message || 'Lỗi server khi hủy đơn hàng.' });
     }
 });
 
