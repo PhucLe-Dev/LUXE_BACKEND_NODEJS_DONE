@@ -12,7 +12,7 @@ const Voucher = mongoose.model('voucher');
 const { sendOrderStatusEmail } = require('../services/emailService');
 
 // ======================================================
-// 1. Lấy danh sách tất cả đơn hàng
+// 1. Lấy danh sách tất cả đơn hàng (ĐÃ CẬP NHẬT SẮP XẾP)
 // ======================================================
 router.get('/', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
@@ -21,6 +21,7 @@ router.get('/', middlewaresController.verifyToken, middlewaresController.verifyA
             limit = 10,
             search = '',
             trang_thai_don_hang,
+            dateRange,
         } = req.query;
 
         const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -39,8 +40,39 @@ router.get('/', middlewaresController.verifyToken, middlewaresController.verifyA
             query.trang_thai_don_hang = trang_thai_don_hang;
         }
 
+        if (dateRange) {
+            const endDate = new Date();
+            let startDate = new Date();
+
+            switch (dateRange) {
+                case 'today':
+                    startDate.setHours(0, 0, 0, 0);
+                    endDate.setHours(23, 59, 59, 999);
+                    break;
+                case 'last7days':
+                    startDate.setDate(endDate.getDate() - 7);
+                    break;
+                case 'last30days':
+                    startDate.setDate(endDate.getDate() - 30);
+                    break;
+                case 'last90days':
+                    startDate.setDate(endDate.getDate() - 90);
+                    break;
+                case 'last1year':
+                    startDate.setFullYear(endDate.getFullYear() - 1);
+                    break;
+                default:
+                    startDate = null;
+            }
+
+            if (startDate) {
+                query.created_at = { $gte: startDate, $lte: endDate };
+            }
+        }
+
         const orders = await DonHang.find(query)
-            .sort({ created_at: -1 })
+            // SỬA LỖI: Thay đổi sắp xếp từ ngày tạo sang mã đơn hàng tăng dần
+            .sort({ ma_don_hang: 1 })
             .skip(skip)
             .limit(parseInt(limit))
             .populate('id_customer', 'ho_ten email sdt avatar')
@@ -169,7 +201,6 @@ router.post('/', middlewaresController.verifyToken, middlewaresController.verify
         }
 
         const newOrder = new DonHang({
-            // ten_sp,
             ma_don_hang: newOrderCode, id_customer: customer._id,
             ho_ten, email, sdt, dia_chi_giao_hang,
             phuong_thuc_thanh_toan, ghi_chu,
@@ -254,16 +285,12 @@ router.put('/:id/status', middlewaresController.verifyToken, middlewaresControll
         if (trang_thai_don_hang === 'Đã xác nhận' || trang_thai_don_hang === 'Hủy đơn hàng') {
             const fullOrderDetails = await DonHang.findById(updatedOrder._id).lean();
 
-            // SỬA LỖI: Chuẩn bị dữ liệu chính xác cho template email
             for (let item of fullOrderDetails.chi_tiet) {
-                // Gán `gia_ban` từ `gia` để template email hoạt động
                 item.gia_ban = item.gia;
-
                 const product = await SanPham.findOne({ 'variants._id': item.id_variant }).lean();
                 if (product) {
                     const variant = product.variants.find(v => v._id.equals(item.id_variant));
                     if (variant) {
-                        // Thay thế ObjectId bằng object chứa SKU cho email
                         item.id_variant = { sku: variant.sku };
                     }
                 }
