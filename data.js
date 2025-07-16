@@ -515,7 +515,7 @@ const sp_arr = [
   },
   {
     _id: new ObjectId(),
-    ten_sp: 'Áo khoác hở vai',
+    ten_sp: 'Dioriviera Long Sleeveless Blouse',
     id_loai: loai_arr[1].id,
     id_thuong_hieu: thuong_hieu_arr[0].id,
     mo_ta: 'Áo khoác Off-The-Shoulder được chế tác từ len đen và lụa, nổi bật với thiết kế hai hàng khuy để lộ vai. Các nút bọc vải, một đặc điểm đặc trưng của Nhà mốt, làm nổi bật phần eo. Chiếc áo khoác có thể kết hợp với toàn bộ tủ đồ Dior để tạo nên một hình bóng thanh lịch và tinh tế.',
@@ -525,13 +525,12 @@ const sp_arr = [
       {
         _id: new ObjectId(),
         kich_thuoc: 'M',
-        mau_sac: 'Đen',
+        mau_sac: 'Trắng',
         gia: basePrice,
         gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
-        hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/841V30A1166X9000_E01?$default_GHC$&crop=412,152,1280,1350&wid=1440&hei=1557&scale=0.6811&bfc=on&qlt=85',
+        hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541B91A3356X0100_E01-1?$default_GHC$&crop=588,150,824,1570&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
-          'https://assets.christiandior.com/is/image/diorprod/841V30A1166X9000_E08?$default_GHC$&crop=412,152,1278,1346&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
-          'https://assets.christiandior.com/is/image/diorprod/841V30A1166X9000_E09?$center_GH_GHC$&crop=0,0,1901,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85'
+          'https://assets.christiandior.com/is/image/diorprod/541B91A3356X0100_E08-1?$default_GHC$&crop=614,150,773,1570&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         ]
       }
     ],
