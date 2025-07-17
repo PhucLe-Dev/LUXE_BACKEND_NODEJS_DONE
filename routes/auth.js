@@ -24,9 +24,4 @@ router.get('/me', middlewaresController.verifyToken, authControllers.getCurrentU
 
 router.put('/update', middlewaresController.verifyToken, authControllers.updateUser);
 
-const orderController = require('../adminRouter/orderController');
-const { verifyToken, verifyAdmin } = require('../controller/middlewaresController');
-router.get('/', verifyToken, verifyAdmin, orderController.getAllOrders);
-router.put('/:id/status', verifyToken, verifyAdmin, orderController.updateOrderStatus);
-router.get('/:id', verifyToken, orderController.getOrderDetails);
 module.exports = router;

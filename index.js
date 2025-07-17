@@ -84,7 +84,12 @@ const startServer = async () => {
 
 
     // ADMIN ROUTES
-    app.use('/api/admin/san-pham', require('./adminRouter/adminRouterSanPham'));
+
+    app.use('/api/admin/order', require('./adminRouter/adminRouteDonHang'));
+    app.use('/api/admin/users', require('./adminRouter/adminRouteNguoiDung'));
+    app.use('/api/admin/vouchers', require('./adminRouter/adminRouteVoucher'));
+    app.use('/api/admin/categories', require('./adminRouter/adminRouteDanhMuc'));
+    app.use('/api/admin/products', require('./adminRouter/adminRouteSanPham'));
     app.use('/api/admin/variants', require('./adminRouter/adminRouteVariants'));
 
     // SHIPPER
