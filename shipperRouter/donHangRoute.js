@@ -41,7 +41,7 @@ router.put("/update-status/:id", async (req, res) => {
 
     if (!nextStatus) {
       return res.status(400).json({
-        message: "Không thể cập nhật trạng thái từ trạng thái hiện tại 111",
+        message: "Không thể cập nhật trạng thái từ trạng thái hiện tại",
       });
     }
 
@@ -77,7 +77,7 @@ router.put("/cancel-order/:id", async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
     }
 
-    donHang.trang_thai_don_hang = "Hủy";
+    donHang.trang_thai_don_hang = "Hủy đơn hàng";
     donHang.updated_at = Date.now();
     await donHang.save();
 
