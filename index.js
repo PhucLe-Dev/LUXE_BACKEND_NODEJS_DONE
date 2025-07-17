@@ -31,6 +31,8 @@ const startServer = async () => {
           'http://localhost:3002',
           'http://localhost:3003',
           'https://luxe-customer-web-25-local.vercel.app',
+          'https://luxe-shipper-product.vercel.app',
+          'https://admin-fashions-av44.vercel.app',
         ],
         credentials: true
       }
@@ -60,6 +62,8 @@ const startServer = async () => {
         'http://localhost:3002',
         'http://localhost:3003',
         'https://luxe-customer-web-25-local.vercel.app',
+        'https://luxe-shipper-product.vercel.app',
+        'https://admin-fashions-av44.vercel.app',
       ],
       credentials: true
     }));

@@ -77,12 +77,6 @@ router.put("/cancel-order/:id", async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
     }
 
-    if (donHang.trang_thai_don_hang !== "Nhận Đơn") {
-      return res.status(400).json({
-        message: 'Chỉ có thể huỷ đơn hàng khi đang ở trạng thái "Nhận Đơn"',
-      });
-    }
-
     donHang.trang_thai_don_hang = "Hủy";
     donHang.updated_at = Date.now();
     await donHang.save();
