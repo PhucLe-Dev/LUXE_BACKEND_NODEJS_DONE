@@ -59,7 +59,7 @@ const startServer = async () => {
         'http://localhost:3001',
         'http://localhost:3002',
         'http://localhost:3003',
-        'https://luxe-customer-web-25-local.vercel.app'
+        'https://luxe-customer-web-25-local.vercel.app',
       ],
       credentials: true
     }));
