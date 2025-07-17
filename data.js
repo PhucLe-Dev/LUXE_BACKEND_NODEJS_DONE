@@ -8,9 +8,9 @@ const ObjectId = mongoose.Types.ObjectId;
 const salt = bcrypt.genSaltSync(10);
 const hash = bcrypt.hashSync('hehe', salt);
 
-// Hàm tạo giá ngẫu nhiên từ 1 triệu đến 30 triệu VND
+// Hàm tạo giá ngẫu nhiên từ 1 triệu đến 20 triệu VND
 const getRandomPrice = () => {
-  return Math.floor(Math.random() * (30000 - 1000 + 1)) + 1000;
+  return Math.floor(Math.random() * (2000000 - 100000 + 1)) + 100000;
 };
 const basePrice = getRandomPrice();
 
@@ -35,7 +35,7 @@ const sp_arr = [
   // Đồ nữ
   {
     _id: new ObjectId(),
-    ten_sp: 'Áo khoác thắt lưng ngắn',
+    ten_sp: 'Dior Vibe Sports Bra',
     id_loai: loai_arr[1].id,
     id_thuong_hieu: thuong_hieu_arr[2].id,
     mo_ta: 'Chiếc áo khoác là phong cách vượt thời gian được tái hiện bởi Maria Grazia Chiuri. Được chế tác từ vải cotton và vải lanh denim màu mộc, chiếc áo khoác có kiểu dáng cắt cúp thoải mái với con ong CD thêu và thẻ da Christian Dior Paris ở mặt sau, trong khi thắt lưng tông màu làm nổi bật phần eo. Được nâng tầm bởi tay áo dài rộng, hai túi có nắp cài nút ở ngực và hai túi xẻ hai bên, chiếc áo khoác có thể kết hợp với quần jeans phù hợp để hoàn thiện vẻ ngoài.',
@@ -48,10 +48,9 @@ const sp_arr = [
         mau_sac: 'Trắng',
         gia: basePrice,
         gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
-        hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/542V41A3078X0400_E01?$default_GHC$&crop=404,150,1193,1772&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
+        hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/544E18A5054X0864_E01?$default_GHC$&crop=721,573,558,632&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
-          'https://assets.christiandior.com/is/image/diorprod/542V41A3078X0400_E08?$default_GHC$&crop=458,150,1085,1809&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
-          'https://www.dior.com/couture/var/dior/storage/images/folder-media/folder-productpage/folder-crossselllook/folder-fall-2025-csl/block-look_f_25_3_look_100_e17/44700687-1-eng-GB/look_f_25_3_look_100_e17.jpg?imwidth=720'
+          'https://assets.christiandior.com/is/image/diorprod/544E18A5054X0864_E08?$default_GHC$&crop=735,574,531,631&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         ]
       },
     ],

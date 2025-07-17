@@ -34,7 +34,7 @@ const generateRandomPassword = (length = 8) => {
 const authControllers = {
     // Hàm tạo access token
     createAccessToken: (user) => {
-        return jwt.sign({ id: user._id, vai_tro: user.vai_tro }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '5h' });
+        return jwt.sign({ id: user._id, vai_tro: user.vai_tro }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '10h' });
     },
 
     // Hàm tạo refresh token

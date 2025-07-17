@@ -34,5 +34,103 @@ donHangSchema.pre('save', function (next) {
   next();
 });
 
+// Middleware để cập nhật updated_at
+donHangSchema.pre('save', function (next) {
+  this.updated_at = Date.now();
+  next();
+});
+
+// Middleware để xử lý thay đổi trạng thái đơn hàng
+donHangSchema.pre('save', async function (next) {
+  try {
+    const SanPham = mongoose.model('san_pham');
+    
+    // Kiểm tra xem có phải là cập nhật trạng thái không
+    if (this.isModified('trang_thai_don_hang')) {
+      const trangThaiCu = this.getUpdate ? this.getUpdate().$set?.trang_thai_don_hang : undefined;
+      const trangThaiMoi = this.trang_thai_don_hang;
+      
+      // Lấy trạng thái cũ từ database nếu đây là update
+      let trangThaiCuFromDB = null;
+      if (this.isNew === false) {
+        const oldOrder = await mongoose.model('don_hang').findById(this._id);
+        trangThaiCuFromDB = oldOrder?.trang_thai_don_hang;
+      }
+      
+      const trangThaiCuActual = trangThaiCuFromDB || trangThaiCu;
+      
+      // Xử lý logic cập nhật số lượng
+      await updateInventory(this.variants, trangThaiCuActual, trangThaiMoi, SanPham);
+    }
+    
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Middleware cho findOneAndUpdate
+donHangSchema.pre('findOneAndUpdate', async function (next) {
+  try {
+    const SanPham = mongoose.model('san_pham');
+    const update = this.getUpdate();
+    
+    if (update.$set && update.$set.trang_thai_don_hang) {
+      // Lấy document hiện tại
+      const currentDoc = await this.model.findOne(this.getQuery());
+      if (currentDoc) {
+        const trangThaiCu = currentDoc.trang_thai_don_hang;
+        const trangThaiMoi = update.$set.trang_thai_don_hang;
+        
+        // Xử lý logic cập nhật số lượng
+        await updateInventory(currentDoc.variants, trangThaiCu, trangThaiMoi, SanPham);
+      }
+    }
+    
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Hàm helper để cập nhật inventory
+async function updateInventory(variants, trangThaiCu, trangThaiMoi, SanPham) {
+  const trangThaiTruSoLuong = ['Đã xác nhận', 'Shipper đã nhận hàng', 'Đang giao', 'Đã giao', 'Giao hàng thành công'];
+  const trangThaiCongSoLuong = ['Hủy đơn hàng', 'Trả hàng và hoàn tiền', 'Giao hàng thất bại'];
+  
+  for (const variant of variants) {
+    const soLuongMua = variant.so_luong;
+    let soLuongChange = 0;
+    let soLuongDaBanChange = 0;
+    
+    // Logic xác định thay đổi số lượng
+    const oldStatusTruSoLuong = trangThaiTruSoLuong.includes(trangThaiCu);
+    const newStatusTruSoLuong = trangThaiTruSoLuong.includes(trangThaiMoi);
+    
+    if (!oldStatusTruSoLuong && newStatusTruSoLuong) {
+      // Chuyển từ trạng thái chưa trừ sang trạng thái trừ số lượng
+      soLuongChange = -soLuongMua;
+      soLuongDaBanChange = soLuongMua;
+    } else if (oldStatusTruSoLuong && !newStatusTruSoLuong) {
+      // Chuyển từ trạng thái đã trừ sang trạng thái chưa trừ (hủy, thất bại)
+      soLuongChange = soLuongMua;
+      soLuongDaBanChange = -soLuongMua;
+    }
+    
+    // Cập nhật database
+    if (soLuongChange !== 0 || soLuongDaBanChange !== 0) {
+      await SanPham.updateOne(
+        { 'variants._id': variant.id_variant },
+        {
+          $inc: {
+            'variants.$.so_luong': soLuongChange,
+            'variants.$.so_luong_da_ban': soLuongDaBanChange
+          }
+        }
+      );
+    }
+  }
+}
+
 // Export model
 module.exports = donHangSchema;
