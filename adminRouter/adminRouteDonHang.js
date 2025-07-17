@@ -8,6 +8,7 @@ const DonHang = mongoose.model('don_hang');
 const NguoiDung = mongoose.model('nguoi_dung');
 const SanPham = mongoose.model('san_pham');
 const Voucher = mongoose.model('voucher');
+const LoaiSanPham = mongoose.model('loai_san_pham');
 // Import dịch vụ email
 const { sendOrderStatusEmail } = require('../services/emailService');
 
@@ -99,7 +100,260 @@ router.get('/', middlewaresController.verifyToken, middlewaresController.verifyA
 });
 
 // ======================================================
-// 2. Lấy chi tiết một đơn hàng
+// 2. Reports
+// ======================================================
+
+router.get('/report', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
+    try {
+        const { from, to } = req.query;
+
+        let startDate, endDate;
+
+        if (from && to) {
+            startDate = new Date(from);
+            endDate = new Date(to);
+            endDate.setHours(23, 59, 59, 999);
+        } else {
+            endDate = new Date();
+            startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
+        }
+
+        const rangeMs = endDate.getTime() - startDate.getTime();
+        const prevStartDate = new Date(startDate.getTime() - rangeMs);
+        const prevEndDate = new Date(startDate.getTime() - 1);
+
+        const getReportData = async (start, end) => {
+            const result = await DonHang.aggregate([
+                { $match: { created_at: { $gte: start, $lte: end } } },
+                {
+                    $group: {
+                        _id: null,
+                        totalOrders: { $sum: 1 },
+                        totalRevenue: { $sum: "$tong_tien" },
+                        averageOrderValue: { $avg: "$tong_tien" }
+                    }
+                }
+            ]);
+            return result[0] || { totalOrders: 0, totalRevenue: 0, averageOrderValue: 0 };
+        };
+
+        const getDailyRevenue = async (start, end) => {
+            const result = await DonHang.aggregate([
+                { $match: { created_at: { $gte: start, $lte: end } } },
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
+                        },
+                        totalRevenue: { $sum: "$tong_tien" },
+                        totalOrders: { $sum: 1 }
+                    }
+                },
+                { $sort: { _id: 1 } }
+            ]);
+
+            const map = new Map();
+            result.forEach(item => map.set(item._id, item));
+
+            const days = [];
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                const dateStr = d.toISOString().split('T')[0];
+                if (map.has(dateStr)) {
+                    days.push({
+                        date: dateStr,
+                        totalRevenue: map.get(dateStr).totalRevenue,
+                        totalOrders: map.get(dateStr).totalOrders
+                    });
+                } else {
+                    days.push({
+                        date: dateStr,
+                        totalRevenue: 0,
+                        totalOrders: 0
+                    });
+                }
+            }
+
+            return days;
+        };
+
+        const getTopProducts = async (start, end) => {
+            // 1. Lấy 5 variant bán chạy nhất trong khoảng thời gian
+            const topVariants = await DonHang.aggregate([
+              { $match: { created_at: { $gte: start, $lte: end } } },
+              { $unwind: "$chi_tiet" },
+              {
+                $group: {
+                  _id: "$chi_tiet.id_variant",
+                  totalSold: { $sum: "$chi_tiet.so_luong" },
+                  totalRevenue: { $sum: { $multiply: ["$chi_tiet.so_luong", "$chi_tiet.gia"] } }
+                }
+              },
+              { $sort: { totalSold: -1 } },
+              { $limit: 5 }
+            ]);
+
+            const variantIds = topVariants.map(v => v._id);
+
+            // 2. Lấy sản phẩm chứa các variant trên
+            const products = await SanPham.find(
+              { "variants._id": { $in: variantIds } },
+              { ten_sp: 1, variants: 1 }
+            ).lean();
+
+            // 3. Map variantId -> product
+            const variantIdToProduct = new Map();
+            for (const product of products) {
+              for (const variant of product.variants) {
+                if (variantIds.find(id => id.toString() === variant._id.toString())) {
+                  variantIdToProduct.set(variant._id.toString(), {
+                    ten_sp: product.ten_sp,
+                    id_san_pham: product._id
+                  });
+                }
+              }
+            }
+
+            // 4. Kết hợp dữ liệu variant với sản phẩm
+            const result = topVariants.map(v => {
+              const prod = variantIdToProduct.get(v._id.toString());
+              return {
+                variant_id: v._id,
+                id_san_pham: prod?.id_san_pham,
+                ten_sp: prod?.ten_sp,
+                totalSold: v.totalSold,
+                totalRevenue: v.totalRevenue
+              };
+            });
+
+            return result;
+          };
+
+          const getRevenueByCategory = async (start, end) => {
+            // 1. Lấy chi tiết đơn hàng
+            const items = await DonHang.aggregate([
+              { $match: { created_at: { $gte: start, $lte: end } } },
+              { $unwind: "$chi_tiet" },
+              {
+                $project: {
+                  id_variant: "$chi_tiet.id_variant",
+                  so_luong: "$chi_tiet.so_luong",
+                  gia: "$chi_tiet.gia"
+                }
+              }
+            ]);
+
+            const variantIds = items.map(i => i.id_variant);
+
+            // 2. Lấy sản phẩm tương ứng với variant
+            const products = await SanPham.find(
+              { "variants._id": { $in: variantIds } },
+              { id_loai: 1, variants: 1 }
+            ).lean();
+
+            const variantIdToCategory = new Map();
+            for (const product of products) {
+              for (const variant of product.variants) {
+                variantIdToCategory.set(variant._id.toString(), product.id_loai);
+              }
+            }
+
+            // 3. Gộp theo id_loai
+            const categoryRevenueMap = new Map();
+
+            for (const item of items) {
+              const id_loai = variantIdToCategory.get(item.id_variant.toString());
+              if (!id_loai) continue;
+
+              const revenue = item.so_luong * item.gia;
+
+              if (!categoryRevenueMap.has(id_loai.toString())) {
+                categoryRevenueMap.set(id_loai.toString(), {
+                  id_loai,
+                  totalRevenue: 0,
+                  totalSold: 0
+                });
+              }
+
+              const current = categoryRevenueMap.get(id_loai.toString());
+              current.totalRevenue += revenue;
+              current.totalSold += item.so_luong;
+            }
+
+            const resultArray = Array.from(categoryRevenueMap.values());
+
+            // 4. Lấy tên danh mục từ bảng loai_san_pham
+            const loaiIds = resultArray.map(item => item.id_loai);
+
+            const loaiList = await LoaiSanPham.find(
+              { id: { $in: loaiIds } },
+              { id: 1, ten_loai: 1 }
+            ).lean();
+
+
+            const loaiMap = new Map(loaiList.map(loai => [loai.id.toString(), loai.ten_loai]));
+
+            // 5. Gán tên danh mục vào kết quả
+            const finalResult = resultArray.map(item => ({
+              id_loai: item.id_loai,
+              ten_loai: loaiMap.get(item.id_loai.toString()) || "Không xác định",
+              totalRevenue: item.totalRevenue,
+              totalSold: item.totalSold
+            }));
+
+            return finalResult;
+          };
+
+
+
+        const [current, previous, dailyRevenue, topProducts, revenueByCategory] = await Promise.all([
+            getReportData(startDate, endDate),
+            getReportData(prevStartDate, prevEndDate),
+            getDailyRevenue(startDate, endDate),
+            getTopProducts(startDate, endDate),
+            getRevenueByCategory(startDate, endDate)
+        ]);
+
+        const calcChange = (currentValue, prevValue) => {
+            if (prevValue === 0 && currentValue > 0) return 100;
+            if (prevValue === 0 && currentValue === 0) return 0;
+            return ((currentValue - prevValue) / prevValue) * 100;
+        };
+
+        const result = {
+            current: {
+                ...current,
+                from: startDate,
+                to: endDate
+            },
+            previous: {
+                ...previous,
+                from: prevStartDate,
+                to: prevEndDate
+            },
+            change: {
+                totalOrders: calcChange(current.totalOrders, previous.totalOrders),
+                totalRevenue: calcChange(current.totalRevenue, previous.totalRevenue),
+                averageOrderValue: calcChange(current.averageOrderValue, previous.averageOrderValue)
+            },
+            dailyRevenue,
+            topProducts,
+            revenueByCategory
+        };
+
+        res.status(200).json({ success: true, data: result });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi server khi tạo báo cáo.',
+            error: error.message
+        });
+    }
+});
+
+
+
+// ======================================================
+// 3. Lấy chi tiết một đơn hàng
 // ======================================================
 router.get('/:id', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
@@ -149,7 +403,7 @@ router.get('/:id', middlewaresController.verifyToken, middlewaresController.veri
 });
 
 // ======================================================
-// 3. Tạo đơn hàng thủ công
+// 4. Tạo đơn hàng thủ công
 // ======================================================
 router.post('/', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
@@ -220,7 +474,7 @@ router.post('/', middlewaresController.verifyToken, middlewaresController.verify
 });
 
 // ======================================================
-// 4. Cập nhật trạng thái đơn hàng và gán shipper
+// 5. Cập nhật trạng thái đơn hàng và gán shipper
 // ======================================================
 router.put('/:id/status', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
@@ -310,7 +564,7 @@ router.put('/:id/status', middlewaresController.verifyToken, middlewaresControll
 });
 
 // ======================================================
-// 5. Xóa đơn hàng
+// 6. Xóa đơn hàng
 // ======================================================
 router.delete('/:id', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
@@ -328,5 +582,6 @@ router.delete('/:id', middlewaresController.verifyToken, middlewaresController.v
         res.status(500).json({ success: false, message: 'Lỗi server khi xóa đơn hàng.', error: error.message });
     }
 });
+
 
 module.exports = router;

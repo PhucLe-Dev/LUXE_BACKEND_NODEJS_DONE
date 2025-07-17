@@ -6,7 +6,7 @@ const middlewaresController = require("../controller/middlewaresController");
 
 // Define status transitions in a configuration object for easy maintenance
 const STATUS_TRANSITIONS = {
-  "Nhận Đơn": "Đang giao",
+  "Shipper đã nhận hàng": "Đang giao",
   "Đang giao": "Đã giao",
   "Đã giao": "Giao hàng thành công",
 };
@@ -36,11 +36,12 @@ router.put("/update-status/:id", async (req, res) => {
     }
 
     const currentStatus = donHang.trang_thai_don_hang;
+
     const nextStatus = STATUS_TRANSITIONS[currentStatus];
 
     if (!nextStatus) {
       return res.status(400).json({
-        message: "Không thể cập nhật trạng thái từ trạng thái hiện tại",
+        message: "Không thể cập nhật trạng thái từ trạng thái hiện tại 111",
       });
     }
 
