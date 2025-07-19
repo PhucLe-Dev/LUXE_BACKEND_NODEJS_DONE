@@ -31,8 +31,8 @@ const startServer = async () => {
           'http://localhost:3002',
           'http://localhost:3003',
           'https://luxe-customer-web-25-local.vercel.app',
-          'https://luxe-shipper-product.vercel.app',
-          'https://admin-fashions-av44.vercel.app',
+          'https://luxe-shipper.vercel.app',
+          'https://luxe-admin-git-main-phucle-devs-projects.vercel.app',
         ],
         credentials: true
       }
@@ -63,7 +63,7 @@ const startServer = async () => {
         'http://localhost:3003',
         'https://luxe-customer-web-25-local.vercel.app',
         'https://luxe-shipper-product.vercel.app',
-        'https://admin-fashions-av44.vercel.app',
+        'https://luxe-admin-git-main-phucle-devs-projects.vercel.app',
       ],
       credentials: true
     }));
@@ -86,9 +86,8 @@ const startServer = async () => {
     app.use('/api/rating', require('./userRouter/ratingRoute'));
     app.use('/api/contact', require('./userRouter/contactStore'));
 
-
     // ADMIN ROUTES
-
+    app.use('/api/admin/product/phucdev', require('./adminRouter/adminRouteSanPhamPhucDev'));
     app.use('/api/admin/order', require('./adminRouter/adminRouteDonHang'));
     app.use('/api/admin/users', require('./adminRouter/adminRouteNguoiDung'));
     app.use('/api/admin/vouchers', require('./adminRouter/adminRouteVoucher'));

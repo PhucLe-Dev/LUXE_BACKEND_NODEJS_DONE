@@ -8,9 +8,9 @@ const ObjectId = mongoose.Types.ObjectId;
 const salt = bcrypt.genSaltSync(10);
 const hash = bcrypt.hashSync('hehe', salt);
 
-// Hàm tạo giá ngẫu nhiên từ 1 triệu đến 20 triệu VND
+// Hàm tạo giá ngẫu nhiên từ 700k đến 10 triệu VND
 const getRandomPrice = () => {
-  return Math.floor(Math.random() * (2000000 - 100000 + 1)) + 100000;
+  return Math.floor(Math.random() * (10000000 - 700000 + 1)) + 700000;
 };
 const basePrice = getRandomPrice();
 

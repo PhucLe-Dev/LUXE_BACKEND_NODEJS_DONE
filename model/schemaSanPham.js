@@ -34,6 +34,5 @@ const sanPhamSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now }
 }, { collection: 'san_pham' });
 
-
 // Export model
 module.exports = sanPhamSchema;
