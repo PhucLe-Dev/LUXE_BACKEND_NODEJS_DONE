@@ -93,13 +93,33 @@ router.get(
   middlewaresController.verifyToken,
   async (req, res) => {
     try {
+      const toEndOfDay = (dateString) => {
+        const date = new Date(dateString);
+        date.setHours(23, 59, 59, 999); // set to 23:59:59.999
+        return date;
+      };
+
+      const { from, to } = req.query;
+
       const DonHang = mongoose.model("don_hang", DonHangSchema);
 
       const shipperId = req.user.id;
 
-      const donHangList = await DonHang.find({
+      const filter = {
         id_shipper: new mongoose.Types.ObjectId(shipperId),
-      }).populate("id_customer", "ho_ten email");
+      };
+
+      if (from && to) {
+        filter.created_at = {
+          $gte: new Date(from),
+          $lte: toEndOfDay(to),
+        };
+      }
+
+      const donHangList = await DonHang.find(filter).populate(
+        "id_customer",
+        "ho_ten email"
+      );
 
       res.status(200).json(donHangList);
     } catch (error) {
