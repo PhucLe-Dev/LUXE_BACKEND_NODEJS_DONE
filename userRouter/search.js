@@ -9,7 +9,8 @@ router.get('/', async (req, res) => {
 
     try {
         const products = await SanPhamModel.find({
-            ten_sp: { $regex: keyword, $options: 'i' }
+            ten_sp: { $regex: keyword, $options: 'i' },
+            an_hien: true
         })
             .limit(5)
             .select('ten_sp slug');
@@ -30,7 +31,7 @@ router.get('/find-by-slug', async (req, res) => {
 
     try {
         const sanpham = await SanPhamModel.aggregate([
-            { $match: { slug: decodeURIComponent(slug) } },
+            { $match: { slug: decodeURIComponent(slug), an_hien: true } },
             {
                 $lookup: {
                     from: 'thuong_hieu',
@@ -71,7 +72,8 @@ router.get('/full-text', async (req, res) => {
         const products = await SanPhamModel.aggregate([
             {
                 $match: {
-                    ten_sp: { $regex: keyword, $options: 'i' }
+                    ten_sp: { $regex: keyword, $options: 'i' },
+                    an_hien: true
                 }
             },
             {

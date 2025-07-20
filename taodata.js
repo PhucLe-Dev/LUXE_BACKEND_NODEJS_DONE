@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 const slugify = require('slugify');
 require('dotenv').config();
 const mongoose = require('mongoose');
-
+const { makeSku } = require('./utils/generate');
 
 // Import các schema
 const LoaiSanPham = require('./model/schemaLoaiSanPham');
@@ -14,6 +14,7 @@ const BinhLuan = require('./model/schemaBinhLuan');
 const Voucher = require('./model/schemaVoucher');
 const DiaChiModel = require('./model/schemaDiaChi');
 const DanhGiaModel = require('./model/schemaDanhGia');
+const SanPhamYeuThich = require('./model/schemaSanPhamYeuThich')
 
 // Import dữ liệu mẫu
 const {
@@ -26,16 +27,8 @@ const {
   binh_luan_arr,
   dia_chi_arr,
   danh_gia_arr,
+  san_pham_yeu_thich,
 } = require('./data');
-
-// Hàm sinh SKU duy nhất
-const generateUniqueSKU = async () => {
-  const SanPhamModel = mongoose.model('san_pham', SanPham);
-  const sku = `${uuidv4().slice(0, 8).toUpperCase()}_${uuidv4().slice(0, 4).toUpperCase()}`;
-  const existing = await SanPhamModel.findOne({ 'variants.sku': sku });
-  if (!existing) return sku;
-  return generateUniqueSKU();
-};
 
 // Hàm sinh ngẫu nhiên
 let randomCreate = function (low, high) {
@@ -80,7 +73,7 @@ const chen_sp = async () => {
     sp.slug = slugify(sp.ten_sp, { lower: true, strict: true }) + "-" + sp._id;
     for (let variant of sp.variants) {
       try {
-        variant.sku = await generateUniqueSKU();
+        variant.sku = await makeSku(sp.ten_sp, variant.kich_thuoc, variant.mau_sac);
         variant.so_luong = randomCreate(29, 30);
         variant.so_luong_da_ban = randomCreate(1, 28);
         // Tính phần trăm giảm giá và làm tròn xuống
@@ -170,6 +163,17 @@ const chen_danh_gia = async () => {
   console.log('Chèn đánh giá thành công');
 };
 
+// Hàm chèn sản phẩm yêu thích
+const chen_san_pham_yeu_thich = async () => {
+  const SanPhamYeuThichModel = mongoose.model('san_pham_yeu_thich', SanPhamYeuThich);
+  await SanPhamYeuThichModel.deleteMany({}).then(obj => console.log(`Đã xóa ${obj.deletedCount} sản phẩm yêu thích`));
+  for (let sanPhamYeuThich of san_pham_yeu_thich) {
+    let newSanPhamYeuThich = new SanPhamYeuThichModel(sanPhamYeuThich);
+    await newSanPhamYeuThich.save();
+  }
+  console.log('Chèn sản phẩm yêu thích thành công');
+};
+
 (async () => {
   try {
     await mongoose.connect(process.env.DATABASE_URL);
@@ -185,6 +189,7 @@ const chen_danh_gia = async () => {
     await chen_binh_luan();
     await chen_dia_chi();
     await chen_danh_gia();
+    await chen_san_pham_yeu_thich();
 
     console.log("🎉 Hoàn tất chèn dữ liệu!");
     process.exit();

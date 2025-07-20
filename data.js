@@ -10,7 +10,7 @@ const hash = bcrypt.hashSync('hehe', salt);
 
 // Hàm tạo giá ngẫu nhiên từ 700k đến 10 triệu VND
 const getRandomPrice = () => {
-  return Math.floor(Math.random() * (10000000 - 700000 + 1)) + 700000;
+  return Math.floor(Math.random() * (10_000_000 - 500_000 + 1)) + 500_000;
 };
 const basePrice = getRandomPrice();
 
@@ -3495,6 +3495,8 @@ const dia_chi_arr = [
 
 const danh_gia_arr = [];
 
+const san_pham_yeu_thich = [];
+
 // Export dữ liệu
 module.exports = {
   loai_arr,
@@ -3506,4 +3508,5 @@ module.exports = {
   binh_luan_arr,
   dia_chi_arr,
   danh_gia_arr,
+  san_pham_yeu_thich,
 };
