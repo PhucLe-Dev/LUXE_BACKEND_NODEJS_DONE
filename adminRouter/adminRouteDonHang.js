@@ -538,7 +538,7 @@ router.put('/:id/status', middlewaresController.verifyToken, middlewaresControll
         // Gửi email sau khi cập nhật thành công
         if (trang_thai_don_hang === 'Đã xác nhận' || trang_thai_don_hang === 'Hủy đơn hàng') {
             const fullOrderDetails = await DonHang.findById(updatedOrder._id).lean();
-
+            
             for (let item of fullOrderDetails.chi_tiet) {
                 item.gia_ban = item.gia;
                 const product = await SanPham.findOne({ 'variants._id': item.id_variant }).lean();

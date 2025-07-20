@@ -87,7 +87,11 @@ const startServer = async () => {
     app.use('/api/admin/categories', require('./adminRouter/adminRouteDanhMuc'));
     app.use('/api/admin/products', require('./adminRouter/adminRouteSanPham'));
     app.use('/api/admin/variants', require('./adminRouter/adminRouteVariants'));
+    app.use('/api/admin/comments', require('./adminRouter/adminRouteBinhLuan'));
 
+
+
+    
     // SHIPPER
     app.use('/api/shipper/order', require('./shipperRouter/donHangRoute'));
 
