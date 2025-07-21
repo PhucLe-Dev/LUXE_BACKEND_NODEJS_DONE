@@ -8,9 +8,9 @@ const ObjectId = mongoose.Types.ObjectId;
 const salt = bcrypt.genSaltSync(10);
 const hash = bcrypt.hashSync('hehe', salt);
 
-// Hàm tạo giá ngẫu nhiên từ 1 triệu đến 30 triệu VND
+// Hàm tạo giá ngẫu nhiên từ 700k đến 10 triệu VND
 const getRandomPrice = () => {
-  return Math.floor(Math.random() * (30000000 - 1000000 + 1)) + 1000000;
+  return Math.floor(Math.random() * (10_000_000 - 500_000 + 1)) + 500_000;
 };
 const basePrice = getRandomPrice();
 
@@ -35,7 +35,7 @@ const sp_arr = [
   // Đồ nữ
   {
     _id: new ObjectId(),
-    ten_sp: 'Áo khoác thắt lưng ngắn',
+    ten_sp: 'Dior Vibe Sports Bra',
     id_loai: loai_arr[1].id,
     id_thuong_hieu: thuong_hieu_arr[2].id,
     mo_ta: 'Chiếc áo khoác là phong cách vượt thời gian được tái hiện bởi Maria Grazia Chiuri. Được chế tác từ vải cotton và vải lanh denim màu mộc, chiếc áo khoác có kiểu dáng cắt cúp thoải mái với con ong CD thêu và thẻ da Christian Dior Paris ở mặt sau, trong khi thắt lưng tông màu làm nổi bật phần eo. Được nâng tầm bởi tay áo dài rộng, hai túi có nắp cài nút ở ngực và hai túi xẻ hai bên, chiếc áo khoác có thể kết hợp với quần jeans phù hợp để hoàn thiện vẻ ngoài.',
@@ -47,11 +47,10 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
-        hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/542V41A3078X0400_E01?$default_GHC$&crop=404,150,1193,1772&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
+        hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/544E18A5054X0864_E01?$default_GHC$&crop=721,573,558,632&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
-          'https://assets.christiandior.com/is/image/diorprod/542V41A3078X0400_E08?$default_GHC$&crop=458,150,1085,1809&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
-          'https://www.dior.com/couture/var/dior/storage/images/folder-media/folder-productpage/folder-crossselllook/folder-fall-2025-csl/block-look_f_25_3_look_100_e17/44700687-1-eng-GB/look_f_25_3_look_100_e17.jpg?imwidth=720'
+          'https://assets.christiandior.com/is/image/diorprod/544E18A5054X0864_E08?$default_GHC$&crop=735,574,531,631&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         ]
       },
     ],
@@ -76,7 +75,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/542V41A3102X1823_E01?$default_GHC$&crop=403,150,1194,1813&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_076_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -105,7 +104,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541J90A3A75X0823_E01?$default_GHC$&crop=629,152,742,1471&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_072_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -136,7 +135,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Tím',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541V17A1761X4715_E01?$default_GHC$&crop=235,144,1530,1358&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_072_E14?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -146,7 +145,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xanh dương',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541V17A1761X5575_E01?$default_GHC$&crop=298,150,1415,1350&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/541V17A1761X5575_E08?$default_GHC$&crop=270,150,1460,1353&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -157,7 +156,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xanh lá',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541V17A1761X6254_E01?$default_GHC$&crop=300,142,1401,1368&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/541V17A1761X6254_E08?$default_GHC$&crop=307,150,1387,1356&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -185,7 +184,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/841V30A1166X9000_E01?$default_GHC$&crop=412,152,1280,1350&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/841V30A1166X9000_E08?$default_GHC$&crop=412,152,1278,1346&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -214,7 +213,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/544V11A5005X9000_E01?$default_GHC$&crop=213,150,1574,1756&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_008_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -243,7 +242,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541D13A3124X0200_E01?$default_GHC$&crop=540,152,899,1569&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/541D13A3124X0200_E08?$default_GHC$&crop=515,146,969,1572&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -272,7 +271,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541D13A3124X0200_E01?$default_GHC$&crop=540,152,899,1569&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/541D13A3124X0200_E08?$default_GHC$&crop=515,146,969,1572&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -301,7 +300,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541B64A3356X0100_E01?$default_GHC$&crop=444,144,1113,1661&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/541B64A3356X0100_E08?$default_GHC$&crop=413,145,1172,1660&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -329,7 +328,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541R81A3A92X0860_E01?$default_GHC$&crop=685,150,630,1571&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_029_E01?$lookDefault_GH-GHC$&crop=568,0,1862,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -360,7 +359,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/540R36A1610X0200_E01?$default_GHC$&crop=730,150,541,1572&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
 
@@ -371,7 +370,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/540R36A1610X9000_E01?$default_GHC$&crop=714,150,572,1571&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/540R36A1610X9000_E08?$default_GHC$&crop=718,150,565,1572&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85'
@@ -399,7 +398,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/141R38A2790X9000_E01?$default_GHC$&crop=613,150,774,1572&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/141R38A2790X9000_E08?$default_GHC$&crop=613,146,775,1574&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -428,7 +427,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/211P07A1166X0200_E01?$default_GHC$&crop=728,150,542,1472&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/211P07A1166X0200_E08?$default_GHC$&crop=728,149,543,1472&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -440,7 +439,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/211P07A1166X9000_E01?$default_GHC$&crop=679,150,635,1472&wid=1440&hei=1557&scale=0.6811&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/211P07A1166X9000_E08?$default_GHC$&crop=687,150,623,1471&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -469,7 +468,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/841V01A1166X0200_E01-1?$default_GHC$&crop=501,149,999,1368&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/841V01A1166X0200_E08-1?$default_GHC$&crop=503,149,1058,1411&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -498,7 +497,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/121P45B1166X9000_E01?$default_GHC$&crop=427,490,1106,1024&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/121P45B1166X9000_E08?$default_GHC$&crop=399,495,1162,988&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -515,7 +514,7 @@ const sp_arr = [
   },
   {
     _id: new ObjectId(),
-    ten_sp: 'Áo khoác hở vai',
+    ten_sp: 'Dioriviera Long Sleeveless Blouse',
     id_loai: loai_arr[1].id,
     id_thuong_hieu: thuong_hieu_arr[0].id,
     mo_ta: 'Áo khoác Off-The-Shoulder được chế tác từ len đen và lụa, nổi bật với thiết kế hai hàng khuy để lộ vai. Các nút bọc vải, một đặc điểm đặc trưng của Nhà mốt, làm nổi bật phần eo. Chiếc áo khoác có thể kết hợp với toàn bộ tủ đồ Dior để tạo nên một hình bóng thanh lịch và tinh tế.',
@@ -525,13 +524,12 @@ const sp_arr = [
       {
         _id: new ObjectId(),
         kich_thuoc: 'M',
-        mau_sac: 'Đen',
+        mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
-        hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/841V30A1166X9000_E01?$default_GHC$&crop=412,152,1280,1350&wid=1440&hei=1557&scale=0.6811&bfc=on&qlt=85',
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
+        hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541B91A3356X0100_E01-1?$default_GHC$&crop=588,150,824,1570&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
-          'https://assets.christiandior.com/is/image/diorprod/841V30A1166X9000_E08?$default_GHC$&crop=412,152,1278,1346&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
-          'https://assets.christiandior.com/is/image/diorprod/841V30A1166X9000_E09?$center_GH_GHC$&crop=0,0,1901,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85'
+          'https://assets.christiandior.com/is/image/diorprod/541B91A3356X0100_E08-1?$default_GHC$&crop=614,150,773,1570&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         ]
       }
     ],
@@ -556,7 +554,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Hồng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541D20A1212X4221_E01?$default_GHC$&crop=527,149,952,1571&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/541D20A1212X4221_E08?$default_GHC$&crop=525,149,942,1571&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -584,7 +582,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541R79A6396X0842_E01?$default_GHC$&crop=697,149,606,1571&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/541R79A6396X0842_E08?$default_GHC$&crop=660,150,681,1573&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -612,7 +610,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Hồng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541V70A1166X4220_E01?$default_GHC$&crop=395,150,1211,1731&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_006_E03?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -643,7 +641,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Hồng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541J23A1166X4220_E01?$default_GHC$&crop=538,484,924,1030&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_006_E02?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -674,7 +672,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Hồng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541J23A1166X4220_E01?$default_GHC$&crop=538,484,924,1030&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_006_E02?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -705,7 +703,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/547P92A3332X1700_E01?$default_GHC$&crop=505,490,991,906&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/547P92A3332X1700_E08?$default_GHC$&crop=533,488,934,932&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -733,7 +731,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/527C86A3905X1320_E01-1?$default_GHC$&crop=396,144,1206,1072&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/527C86A3905X1320_E08-1?$default_GHC$&crop=414,148,1172,1075&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -761,7 +759,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/544S13A2061X9000_E01?$default_GHC$&crop=536,150,928,1381&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/544S13A2061X9000_E08?$default_GHC$&crop=516,150,969,1390&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -789,7 +787,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/544S24A2061X9000_E01?$default_GHC$&crop=497,150,1006,1352&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_316_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -819,7 +817,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/521V67A1758X9000_E01-1?$default_GHC$&crop=425,150,1150,1353&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_2_LOOK_016_E01-1?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -849,7 +847,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/541D47A6380X9000_E01?$default_GHC$&crop=634,148,736,1575&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/541D47A6380X9000_E08?$default_GHC$&crop=627,149,737,1572&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -877,7 +875,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xám',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/521D46A1690X9331_E01?$default_GHC$&crop=676,149,648,1570&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/521D46A1690X9331_E08?$default_GHC$&crop=658,152,684,1570&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -906,7 +904,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/521V79A7050X9000_E01-2?$default_GHC$&crop=529,168,988,1325&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/521V79A7050X9000_E08-3?$default_GHC$&crop=501,153,1052,1380&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -934,7 +932,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/521R78A1761X9000_E01?$default_GHC$&crop=696,149,590,1573&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/521R78A1761X9000_E08?$default_GHC$&crop=694,150,617,1574&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -963,7 +961,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xanh Navy',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/593C101A5811C540_E01?$default_GHC$&crop=545,487,905,1095&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_070_E13?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -993,7 +991,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Vàng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/593C670A6502C280_E01?$default_GHC$&crop=607,146,786,1368&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_066_E01?$lookDefault_GH-GHC$&crop=571,0,1859,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1024,7 +1022,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xnh navy',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/483C568A5231C540_E01?$default_GHC$&crop=443,150,1112,1243&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_071_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1037,7 +1035,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xnh da trời',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/483C568A5231C520_E01?$default_GHC$&crop=440,150,1121,1241&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_065_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1067,7 +1065,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xanh da trời',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/593C402A6502C580_E01?$default_GHC$&crop=450,104,1100,1588&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_061_E01?$lookDefault_GH-GHC$&crop=570,0,1862,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1098,7 +1096,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/593C401A6265C980_E01?$default_GHC$&crop=499,150,1002,1379&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_174_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1129,7 +1127,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/593D581A3011C080_E01?$default_GHC$&crop=497,150,1006,1352&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_063_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1160,7 +1158,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/593C511A6523C179_E01?$default_GHC$&crop=418,153,1146,1448&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_069_E01?$lookDefault_GH-GHC$&crop=572,0,1857,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1191,7 +1189,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trăng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/113J692A0614C020_E01-2?$default_GHC$&crop=407,148,1208,1359&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_149_E07?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1205,7 +1203,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/113J692A0614C540_E01-3?$default_GHC$&crop=445,150,1117,1351&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_1_LOOK_175_E07?$lookDefault_GH-GHC$&crop=568,0,1861,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1236,7 +1234,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xanh navy',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/593C210A5811C540_E01?$default_GHC$&crop=461,149,1078,1351&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_070_E01?$lookDefault_GH-GHC$&crop=570,0,1862,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1267,7 +1265,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/593C102A5811C640_E01?$default_GHC$&crop=784,151,440,1468&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_063_E13?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1297,7 +1295,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/013C501F1581C080_E01-2?$default_GHC$&crop=506,151,994,1350&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/013C501F1581C080_E08-2?$default_GHC$&crop=551,148,903,1355&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -1326,7 +1324,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/593M600A7006C085_E01?$default_GHC$&crop=516,147,968,1361&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_062_E07?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1357,7 +1355,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/593D481A3011C080_E01?$default_GHC$&crop=447,150,1107,1531&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_062_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1388,7 +1386,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/013C120A3226C900_E01-2?$default_GHC$&crop=786,146,422,1475&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_140_E02?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1418,7 +1416,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/733C139E3226C900_E01-1?$default_GHC$&crop=742,150,516,1479&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_119_E13?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1448,7 +1446,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Nâu',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583C204A6005C781_E01-2?$default_GHC$&crop=454,150,1072,1383&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_051_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1479,7 +1477,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583C559B3013C074_E01?$default_GHC$&crop=447,150,1108,1347&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_015_E07?$lookDefault_GH-GHC$&crop=568,0,1861,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1510,7 +1508,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xám',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583C103A1000C980_E01?$default_GHC$&crop=749,150,503,1473&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_008_E13-1?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1541,7 +1539,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xám',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583C201A1000C980_E01?$default_GHC$&crop=468,150,1065,1350&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_008_E01-1?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1572,7 +1570,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Nâu',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583M609AM007C780_E01-2?$default_GHC$&crop=432,150,1136,1513&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_004_E07-2?$lookDefault_GH-GHC$&crop=568,0,1861,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1586,7 +1584,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583M609AM007C080_E01-2?$default_GHC$&crop=433,151,1134,1515&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_007_E07-2?$lookDefault_GH-GHC$&crop=570,0,1860,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1617,7 +1615,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583M626A2012C587_E01?$default_GHC$&crop=416,150,1168,1429&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_047_E07?$lookDefault_GH-GHC$&crop=568,0,1862,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1648,7 +1646,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583M612A7008C087_E01?$default_GHC$&crop=556,150,888,1353&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_043_E07?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1679,7 +1677,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Nâu',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583C141A1002C880_E01?$default_GHC$&crop=702,149,565,1472&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_043_E13?$lookDefault_GH-GHC$&crop=568,0,1862,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1710,7 +1708,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xanh da trời',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583D003A3015C580_E01?$default_GHC$&crop=544,490,912,1112&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_014_E08?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1741,7 +1739,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xanh da trời',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583D487A3015C580_E01?$default_GHC$&crop=427,150,1114,1456&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_014_E01?$lookDefault_GH-GHC$&crop=568,0,1861,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1772,7 +1770,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'White',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583D182A3010C085_E01?$default_GHC$&crop=716,147,568,1475&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_021_E13?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1803,7 +1801,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'White',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/313D014J352XC000_E01?$default_GHC$&crop=782,150,436,1472&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_009_E02-1?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1834,7 +1832,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583J696A0849C580_E01?$default_GHC$&crop=431,149,1138,1352&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_002_E07-1?$lookDefault_GH-GHC$&crop=571,0,1861,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1848,7 +1846,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583J696A0849C085_E01?$default_GHC$&crop=422,150,1157,1353&wid=1440&hei=1557&scale=0.6811&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_198_E07?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1862,7 +1860,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Vàng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583J696A0849C285_E01?$default_GHC$&crop=439,150,1123,1350&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_045_E08-1?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1893,7 +1891,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583J604A3000C085_E01-1?$default_GHC$&crop=428,150,1134,1613&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_011_E07-1?$lookDefault_GH-GHC$&crop=570,0,1862,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1923,7 +1921,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xanh navy',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/583D189A3000C585_E01-1?$default_GHC$&crop=647,150,707,1472&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_195_E13-1?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -1955,7 +1953,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/493C158A1001C800_E01?$default_GHC$&crop=748,150,504,1472&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/493C158A1001C800_E08?$default_GHC$&crop=758,150,492,1473&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -1983,7 +1981,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/013C122A3866C900_E01-2?$default_GHC$&crop=720,150,562,1474&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/013C122A3866C900_E08-2?$default_GHC$&crop=718,150,558,1474&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2012,7 +2010,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/193C243C6326C840_E01?$default_GHC$&crop=416,148,1161,1449&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_24_3_LOOK_134_E01?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2043,7 +2041,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/443C136A5851C140_E01?$default_GHC$&crop=740,150,551,1471&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_24_4_LOOK_122_E02?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2074,7 +2072,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Hồng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/313C509E5918C400_E01?$default_GHC$&crop=436,150,1129,1464&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_1_LOOK_004_E01-1?$lookDefault_GH-GHC$&crop=568,0,1861,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2088,7 +2086,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xanh navy',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/313C509E5918C540_E01?$default_GHC$&crop=445,149,1110,1434&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_1_LOOK_009_E01-1?$lookDefault_GH-GHC$&crop=568,0,1862,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2119,7 +2117,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/513C161A6472C989_E01?$default_GHC$&crop=764,147,469,1474&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_1_LOOK_121_E13?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2151,7 +2149,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Xanh Navy',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/1HTPO333LGPH578_E01?$default_GHC$&crop=306,643,1379,1016&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_069_E19?$lookDefault_GH-GHC$&crop=574,0,1858,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2165,7 +2163,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/1HTPO333LGPH140_E01-2?$default_GHC$&crop=299,646,1402,1010&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_060_E19?$lookDefault_GH-GHC$&crop=571,0,1857,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2196,7 +2194,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/1LLSH260KENH00N_E01-2?$default_GHC$&crop=157,320,1693,1487&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_3_LOOK_066_E01?$lookDefault_GH-GHC$&crop=571,0,1859,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2227,7 +2225,7 @@ const sp_arr = [
         kich_thuoc: '36 x 27.5 x 16.5 cm',
         mau_sac: 'Hồng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1296ZEEQM082_E01?$default_GHC$&crop=325,187,1353,1594&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M1296ZEEQM082_E08?$default_GHC$&crop=307,179,1392,1602&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2257,7 +2255,7 @@ const sp_arr = [
         kich_thuoc: '36 x 27.5 x 16.5 cm',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1296ZEDRM041_E01?$default_GHC$&crop=302,149,1396,1636&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M1296ZEDRM041_E08?$default_GHC$&crop=308,131,1384,1650&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2287,7 +2285,7 @@ const sp_arr = [
         kich_thuoc: '36.5 x 28 x 16.5 cm',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1324OWHPM030_E01?$default_GHC$&crop=266,213,1424,1578&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M1324OWHPM030_E08?$default_GHC$&crop=319,213,1370,1578&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2301,7 +2299,7 @@ const sp_arr = [
         kich_thuoc: '36.5 x 28 x 16.5 cm',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1324OWHPM51U_E01?$default_GHC$&crop=283,212,1392,1581&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M1324OWHPM51U_E08?$default_GHC$&crop=318,195,1360,1606&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2315,7 +2313,7 @@ const sp_arr = [
         kich_thuoc: '36.5 x 28 x 16.5 cm',
         mau_sac: 'Xám',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1324OWHPM51G_E01?$default_GHC$&crop=234,225,1466,1583&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M1324OWHPM51G_E08?$default_GHC$&crop=312,225,1393,1567&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2329,7 +2327,7 @@ const sp_arr = [
         kich_thuoc: '36.5 x 28 x 16.5 cm',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1324OWHPM900_E01?$default_GHC$&crop=297,211,1406,1580&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_1_LOOK_703_E10?$lookDefault_GH-GHC$&crop=568,0,1861,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2360,7 +2358,7 @@ const sp_arr = [
         kich_thuoc: '36 x 27.5 x 16.5 cm',
         mau_sac: 'Xanh trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1296ZEEPM64I_E01?$default_GHC$&crop=298,193,1407,1588&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M1296ZEEPM64I_E08?$default_GHC$&crop=307,189,1375,1597&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2391,7 +2389,7 @@ const sp_arr = [
         kich_thuoc: '36 x 27.5 x 16.5 cm',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/S6100OSNWM900_E03?$default_GHC$&crop=579,759,809,1093&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/S6100OSNWM900_E01?$default_GHC$&crop=510,741,971,1100&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2405,7 +2403,7 @@ const sp_arr = [
         kich_thuoc: '36 x 27.5 x 16.5 cm',
         mau_sac: 'Hồng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/S6100OSNWM413_E03-3?$default_GHC$&crop=612,762,792,1083&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/S6100OSNWM413_E01-3?$default_GHC$&crop=493,756,1017,1086&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2419,7 +2417,7 @@ const sp_arr = [
         kich_thuoc: '36 x 27.5 x 16.5 cm',
         mau_sac: 'Trắng',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/S6100OSNWM030_E03-3?$default_GHC$&crop=551,769,789,1083&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/S6100OSNWM030_E01?$default_GHC$&crop=525,777,961,1065&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2450,7 +2448,7 @@ const sp_arr = [
         kich_thuoc: '26.5 x 22 x 14 cm',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1325SLOIM900_E01?$default_GHC$&crop=390,384,1200,1407&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_2_LOOK_891_E05-1?$lookDefault_GH-GHC$&crop=572,0,1860,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2481,7 +2479,7 @@ const sp_arr = [
         kich_thuoc: '25 x 19 x 16 cm / 10 x 7.5 x 6.5 inches',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1365UBOLM900_E01?$default_GHC$&crop=276,464,1418,1380&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M1365UBOLM900_E08?$default_GHC$&crop=285,478,1337,1367&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2512,7 +2510,7 @@ const sp_arr = [
         kich_thuoc: ' 23 x 15 x 8 cm / 9 x 6 x 3 inches',
         mau_sac: 'Be',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1241OEEOM49E_E01?$default_GHC$&crop=344,965,1391,794&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M1241OEEOM49E_E08?$default_GHC$&crop=325,971,1389,795&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2543,7 +2541,7 @@ const sp_arr = [
         kich_thuoc: '(26.5 x 22 x 14 cm)',
         mau_sac: 'Beige, White and Natural Plan de Paris Embroidery',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1325CETJM925_E01?$default_GHC$&crop=412,423,1176,1363&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M1325CETJM925_E08?$default_GHC$&crop=434,404,1159,1382&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2557,7 +2555,7 @@ const sp_arr = [
         kich_thuoc: '(26.5 x 22 x 14 cm)',
         mau_sac: 'White and Black Plan de Paris Embroidery with Black',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1325CETJM081_E01?$default_GHC$&crop=387,416,1198,1381&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_1_LOOK_458_E11?$lookDefault_GH-GHC$&crop=571,0,1857,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2571,7 +2569,7 @@ const sp_arr = [
         kich_thuoc: '(26.5 x 22 x 14 cm)',
         mau_sac: 'Black and White Plan de Paris Embroidery with Black',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M1325CETJM46I_E01?$default_GHC$&crop=337,430,1238,1361&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M1325CETJM46I_E08?$default_GHC$&crop=432,419,1144,1367&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2602,7 +2600,7 @@ const sp_arr = [
         kich_thuoc: ' 24 x 21 x 12 cm / 9.5 x 8.5 x 4.5 inches',
         mau_sac: 'White and Blue Toile de Jouy Palms Embroidery',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M0565OEYDM086_E01?$default_GHC$&crop=338,367,1242,1452&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_001_E17?$lookDefault_GH-GHC$&crop=569,0,1855,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2633,7 +2631,7 @@ const sp_arr = [
         kich_thuoc: '26 x 13.5 x 5 cm / 10.5 x 5.5 x 2 inches',
         mau_sac: 'Antique Beige Cannage Lambskin',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M0540ONGEM62U_E01?$default_GHC$&crop=299,707,1341,1087&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M0540ONGEM62U_E08-1?$default_GHC$&crop=368,717,1264,1078&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2664,7 +2662,7 @@ const sp_arr = [
         kich_thuoc: 'M',
         mau_sac: 'Đen',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/013C120A3226C900_E01-2?$default_GHC$&crop=786,146,422,1475&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_H_25_2_LOOK_140_E02?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2694,7 +2692,7 @@ const sp_arr = [
         kich_thuoc: '20 x 18 x 8 cm / 8 x 7 x 3 inches',
         mau_sac: 'Black Satin Embroidered with Gold-Tone Beads and White Resin Pearls',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/M0531OIMQM911_E01?$default_GHC$&crop=457,508,1027,1296&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/M0531OIMQM911_E08?$default_GHC$&crop=499,510,984,1298&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2726,7 +2724,7 @@ const sp_arr = [
         kich_thuoc: '0.6 cm / 0.25 inch and 1.4 cm / 0.5 inch',
         mau_sac: 'Gold-Finish Metal and White Resin Pearls',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/E4088WOMRSD301_E03-1?$default_GHC$&crop=141,349,1536,1086&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_332_E08?$lookDefault_GH-GHC$&crop=568,0,1863,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2756,7 +2754,7 @@ const sp_arr = [
         kich_thuoc: '1.4 cm / 0.5 inch',
         mau_sac: 'Gold-Finish Metal and White Resin Pearls',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/E4163WOMRSD301_E03?$default_GHC$&crop=542,1122,881,378&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/E4163WOMRSD301_E03?$default_GHC$&crop=542,1122,881,378&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2786,7 +2784,7 @@ const sp_arr = [
         kich_thuoc: '44 – 50 cm / 17.25 – 19.75 inches',
         mau_sac: 'Gold-Finish Metal, White Crystals and Black Lacquer',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/N3364WOMLQD307_E01?$default_GHC$&crop=609,166,783,1392&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/N3364WOMLQD307_E09?$bottom_GH_GHC$&crop=126,0,1874,1889&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2797,7 +2795,7 @@ const sp_arr = [
         kich_thuoc: '44 – 50 cm / 17.25 – 19.75 inches',
         mau_sac: 'Gold-Finish Metal, White Crystals and Latte',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/N3364WOMLQD14W_E01?$default_GHC$&crop=618,166,772,1393&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/N3364WOMLQD14W_E09?$bottom_GH_GHC$&crop=216,0,1784,1892&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2825,7 +2823,7 @@ const sp_arr = [
         kich_thuoc: '44 – 50 cm / 17.25 – 19.75 inches',
         mau_sac: 'Gold-Finish Metal and Silver-Tone Crystals',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/N3423WOMCYD03S_E01-1?$default_GHC$&crop=481,166,1080,1392&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_3_LOOK_075_E12?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2854,7 +2852,7 @@ const sp_arr = [
         kich_thuoc: '44 – 50 cm / 17.25 – 19.75 inches',
         mau_sac: 'Gold-Finish Metal and Silver-Tone Crystals',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/R2385WOMCYD03S_E03-1?$default_GHC$&crop=501,889,768,729&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_1_LOOK_021_E11?$lookDefault_GH-GHC$&crop=568,0,1860,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2884,7 +2882,7 @@ const sp_arr = [
         kich_thuoc: '44 – 50 cm / 17.25 – 19.75 inches',
         mau_sac: 'Gold-Finish Metal and White Crystals',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/R1137CDLCYD301_E03-1?$default_GHC$&crop=687,895,557,722&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_2_LOOK_137_E10?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2915,7 +2913,7 @@ const sp_arr = [
         kich_thuoc: '5.5 x 4.7 cm / 2.25 x 1.75 inches',
         mau_sac: 'Gold-Finish Metal and Amber-Colored Crystals',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/B1690WOMCYD01L_E01?$default_GHC$&crop=499,769,1030,916&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_2_LOOK_819_E10?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -2945,7 +2943,7 @@ const sp_arr = [
         kich_thuoc: '1.3 cm / 0.5 inch',
         mau_sac: 'Pink-Finish Metal with Pink Resin Pearls and Pink Crystals',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/E1038TRICYD12P_E03?$default_GHC$&crop=147,573,1706,969&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/E1038TRICYD12P_E02?$default_GHC$&crop=33,667,1931,974&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2957,7 +2955,7 @@ const sp_arr = [
         kich_thuoc: '1.3 cm / 0.5 inch',
         mau_sac: 'Gold-Finish Metal with White Resin Pearls and Silver-Tone Crystals',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/E1038TRICYD03S_E03?$default_GHC$&crop=163,612,1735,961&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/E1038TRICYD03S_E02?$default_GHC$&crop=33,670,1933,966&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -2986,7 +2984,7 @@ const sp_arr = [
         kich_thuoc: '2.7 cm / 1 inch',
         mau_sac: 'Gold-Finish Metal, White Resin Pearls and White Crystals',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/E1549PTCCYD301_E01?$default_GHC$&crop=410,647,1181,879&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_2_LOOK_086_E08?$lookDefault_GH-GHC$&crop=568,0,1862,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -3017,7 +3015,7 @@ const sp_arr = [
         kich_thuoc: '34.5 – 37 cm / 13.5 – 14.5 inches',
         mau_sac: 'Pink-Finish Metal and Pink Resin Pearls',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/N1921WOMRSD09P_E01-1?$default_GHC$&crop=242,141,1577,1573&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/N1921WOMRSD09P_E09-1?$bottom_GH_GHC$&crop=0,0,2000,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -3046,7 +3044,7 @@ const sp_arr = [
         kich_thuoc: '0.6 cm / 0.25 inch and 1.4 cm / 0.5 inch',
         mau_sac: 'Gold-Finish Metal with White Resin Pearls and Black Satin',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/E3720WOMRSD301_E03?$default_GHC$&crop=426,371,1310,1477&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_1_LOOK_007_E07?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -3077,7 +3075,7 @@ const sp_arr = [
         kich_thuoc: '1.7 cm / 0.75 inch',
         mau_sac: 'Matte Gold-Finish Metal and White Resin Pearls',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/E3943WOMRSD301_E01-2?$default_GHC$&crop=4,650,1843,945&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_2_LOOK_083_E08-1?$lookDefault_GH-GHC$&crop=570,0,1859,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -3108,7 +3106,7 @@ const sp_arr = [
         kich_thuoc: '1.7 cm / 0.75 inch',
         mau_sac: 'Matte Gold-Finish Metal and White Resin Pearl',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/B2844WOMRSD301_E03?$default_GHC$&crop=497,351,1018,1188&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/B2844WOMRSD301_E01-1?$default_GHC$&crop=455,752,1042,652&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -3137,7 +3135,7 @@ const sp_arr = [
         kich_thuoc: 'XXS (48), XS (50), S (52), M (54), L (56), XL (58), XXL (60) and 3XL (62)',
         mau_sac: 'Matte Gold-Finish Metal and White Resin Pearl',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/R2534WOMRSD301_E03?$default_GHC$&crop=245,587,1286,1083&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/R2534WOMRSD301_E01?$default_GHC$&crop=262,1024,1315,567&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -3167,7 +3165,7 @@ const sp_arr = [
         kich_thuoc: '1.7 cm / 0.75 inch',
         mau_sac: 'Gold-Finish Metal and White Resin Pearls',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/R2383WOMRSD301_E03-3?$default_GHC$&crop=2,444,1694,1229&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/R2383WOMRSD301_E01?$default_GHC$&crop=247,765,1506,831&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -3197,7 +3195,7 @@ const sp_arr = [
         kich_thuoc: '2.4 cm',
         mau_sac: 'Champagne-Finish Metal with a White Resin Pearl and Silver-Tone Crystals',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/R2320WOMCYD03S_E03?$default_GHC$&crop=171,679,1312,907&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/R2320WOMCYD03S_E01?$default_GHC$&crop=126,848,1371,747&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -3227,7 +3225,7 @@ const sp_arr = [
         kich_thuoc: 'For more information, please review the size guide',
         mau_sac: 'Pale Gold-Finish Metal with Black Grosgrain and White Resin Pearls',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/V1575WOMRSD307_E01-1?$default_GHC$&crop=789,295,487,1395&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_2_LOOK_927_E11?$lookDefault_GH-GHC$&crop=571,0,1855,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -3256,7 +3254,7 @@ const sp_arr = [
         kich_thuoc: 'For more information, please review the size guide',
         mau_sac: 'Sky Blue Lambskin with Star Motif',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/V1577WOMLMDB05_E01?$default_GHC$&crop=718,210,744,1594&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/V1577WOMLMDB05_E08?$default_GHC$&crop=595,207,677,1597&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
@@ -3285,7 +3283,7 @@ const sp_arr = [
         kich_thuoc: '5cm / 7cm (rộng, dài)',
         mau_sac: 'Blue and White Embroidery',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/45DTE952X130C555_E01?$default_GHC$&crop=637,433,736,903&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_2_LOOK_802_E09-1?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -3298,7 +3296,7 @@ const sp_arr = [
         kich_thuoc: '5cm / 7cm (rộng, dài)',
         mau_sac: 'Rose des Vents and White Embroidery',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/45DTE952X130C410_E01?$default_GHC$&crop=628,434,754,904&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_25_2_LOOK_886_E09-1?$lookDefault_GH-GHC$&crop=568,0,1864,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -3312,7 +3310,7 @@ const sp_arr = [
         kich_thuoc: '5cm / 7cm (rộng, dài)',
         mau_sac: 'Black and White Embroidery',
         gia: basePrice,
-        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(Math.random() * (basePrice / 2)) : null,
+        gia_km: Math.random() < 0.5 ? basePrice - Math.floor(basePrice * (Math.random() * 0.2 + 0.3)) : null,
         hinh_chinh: 'https://assets.christiandior.com/is/image/diorprod/45DTE952X130C920_E01?$default_GHC$&crop=408,433,1184,752&wid=720&hei=778&scale=0.3405&bfc=on&qlt=85',
         hinh_thumbnail: [
           'https://assets.christiandior.com/is/image/diorprod/LOOK_F_24_4_LOOK_791_E09?$lookDefault_GH-GHC$&crop=572,0,1857,2000&wid=720&hei=778&scale=0.3892&bfc=on&qlt=85',
@@ -3333,11 +3331,11 @@ const sp_arr = [
 
 // Dữ liệu người dùng (NguoiDung)
 const nguoi_dung_arr = [
-  { _id: new ObjectId(), ho_ten: 'Nguyễn Văn A', email: 'nguyenvana@gmail.com', mat_khau: hash, vai_tro: 'admin', avatar:'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069528/goyoujung1_zef06z.jpg' },
-  { _id: new ObjectId(), ho_ten: 'Trần Thị B', email: 'tranthib@gmail.com', mat_khau: hash, vai_tro: 'khach_hang', avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/kimjiwon2_dsilgi.jpg' },
-  { _id: new ObjectId(), ho_ten: 'Trần Thị C', email: 'tranthic@gmail.com', mat_khau: hash, vai_tro: 'khach_hang', avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/jisoo3_kqv7si.jpg' },
-  { _id: new ObjectId(), ho_ten: 'Lê Văn D', email: 'levand@gmail.com', mat_khau: hash, vai_tro: 'shipper', avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069248/jisoo4_p7a0qx.jpg' },
-  { _id: new ObjectId(), ho_ten: 'Lê Văn E', email: 'levane@gmail.com', mat_khau: hash, vai_tro: 'shipper', avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/soobin1_qmmtow.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Nguyễn Văn A', email: 'nguyenvana@gmail.com', mat_khau: hash, vai_tro: 'admin', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069528/goyoujung1_zef06z.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Trần Thị B', email: 'tranthib@gmail.com', mat_khau: hash, vai_tro: 'khach_hang', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/kimjiwon2_dsilgi.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Trần Thị C', email: 'tranthic@gmail.com', mat_khau: hash, vai_tro: 'khach_hang', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/jisoo3_kqv7si.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Lê Văn D', email: 'levand@gmail.com', mat_khau: hash, vai_tro: 'shipper', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069248/jisoo4_p7a0qx.jpg' },
+  { _id: new ObjectId(), ho_ten: 'Lê Văn E', email: 'levane@gmail.com', mat_khau: hash, vai_tro: 'shipper', trang_thai: true, avatar: 'https://res.cloudinary.com/dohwmkapy/image/upload/v1748069249/soobin1_qmmtow.jpg' },
 ];
 
 // Dữ liệu voucher (Voucher)
@@ -3351,7 +3349,7 @@ const voucher_arr = [
     discount_value: 10,
     min_order_value: 0,
     start_date: new Date("2025-05-01T00:00:00Z"),
-    end_date: new Date("2025-06-01T23:59:59Z"),
+    end_date: new Date("2025-10-01T23:59:59Z"),
     is_active: true
   },
   {
@@ -3363,7 +3361,7 @@ const voucher_arr = [
     discount_value: 50000,
     min_order_value: 500000,
     start_date: new Date("2025-06-01T00:00:00Z"),
-    end_date: new Date("2025-06-30T23:59:59Z"),
+    end_date: new Date("2025-10-30T23:59:59Z"),
     is_active: true
   },
   {
@@ -3375,7 +3373,7 @@ const voucher_arr = [
     discount_value: 20,
     min_order_value: 200000,
     start_date: new Date("2025-05-27T00:00:00Z"),
-    end_date: new Date("2025-05-28T23:59:59Z"),
+    end_date: new Date("2025-10-28T23:59:59Z"),
     is_active: true
   },
   {
@@ -3386,87 +3384,23 @@ const voucher_arr = [
     discount_value: 100000,
     min_order_value: 300000,
     start_date: new Date("2025-04-01T00:00:00Z"),
-    end_date: new Date("2025-04-30T23:59:59Z"),
+    end_date: new Date("2025-10-30T23:59:59Z"),
     is_active: false
   }
 ];
 
 // Dữ liệu đơn hàng (DonHang)
-const don_hang_arr = [
-  {
-    _id: new ObjectId(),
-    id_customer: nguoi_dung_arr[1]._id,
-    id_shipper: nguoi_dung_arr[3]._id, // Lê Văn D
-    id_voucher: voucher_arr[0]._id, // Sử dụng voucher WELCOME10
-    ma_don_hang: 'DH001111',
-    chi_tiet: [
-      {
-        id_variant: sp_arr[0].variants[0]._id,
-        so_luong: 2,   
-        gia: sp_arr[0].variants[0].gia_km || sp_arr[0].variants[0].gia,
-      }
-    ],
-    tong_tien: 10000000,
-    ho_ten:"Phúc Lê",
-    email: "phucle.415776@gmail.com",
-    sdt: '0865945907',
-    dia_chi_giao_hang: '123 Đường Láng, TPHCM',
-    phuong_thuc_thanh_toan: 'COD',
-    trang_thai_thanh_toan: 'Chưa thanh toán',
-    trang_thai_don_hang: 'Chờ xác nhận',
-  },
-  {
-    _id: new ObjectId(),
-    id_customer: nguoi_dung_arr[0]._id,
-    id_shipper: nguoi_dung_arr[4]._id, // Lê Văn E
-    ma_don_hang: 'DH002222',
-    chi_tiet: [
-      {
-        id_variant: sp_arr[4].variants[0]._id,
-        so_luong: 1,   
-        gia: sp_arr[4].variants[0].gia_km || sp_arr[4].variants[0].gia,
-      }
-    ],
-    tong_tien: 10000000,
-    ho_ten: "Phúc Hoài",
-    email: "phucle.415776@gmail.com",
-    sdt: '0865945907',
-    dia_chi_giao_hang: '123 Đường Láng, TPHCM',
-    phuong_thuc_thanh_toan: 'VNPay',
-    trang_thai_thanh_toan: 'Đã thanh toán',
-    trang_thai_don_hang: 'Chờ xác nhận',
-  }
-];
+const don_hang_arr = [];
+
+
+const dia_chi_arr = [];
+
+const danh_gia_arr = [];
+
+const san_pham_yeu_thich = [];
 
 // Dữ liệu bình luận (BinhLuan)
-const binh_luan_arr = [
-  {
-    _id: new ObjectId(), // Bình luận gốc
-    id_san_pham: sp_arr[0]._id,
-    id_customer: nguoi_dung_arr[1]._id,
-    diem: 5,
-    noi_dung: 'Áo sơ mi rất đẹp, chất liệu lụa mềm mại, đáng giá tiền!',
-    an_hien: true,
-    parent_id: null, // Đây là bình luận gốc
-    created_at: new Date(),
-    updated_at: new Date()
-  },
-  {
-    _id: new ObjectId(), // Bình luận phản hồi
-    id_san_pham: sp_arr[0]._id,
-    id_customer: nguoi_dung_arr[0]._id,
-    diem: null, // Không cần đánh giá sao với phản hồi
-    noi_dung: 'Cảm ơn bạn đã phản hồi, shop sẽ phục vụ tốt hơn nữa!',
-    an_hien: true,
-    parent_id: null, // Sẽ gán phía dưới
-    created_at: new Date(),
-    updated_at: new Date()
-  }
-];
-
-// Gán parent_id cho phản hồi
-binh_luan_arr[1].parent_id = binh_luan_arr[0]._id;
-
+const binh_luan_arr = [];
 
 // Export dữ liệu
 module.exports = {
@@ -3477,4 +3411,7 @@ module.exports = {
   voucher_arr,
   don_hang_arr,
   binh_luan_arr,
+  dia_chi_arr,
+  danh_gia_arr,
+  san_pham_yeu_thich,
 };

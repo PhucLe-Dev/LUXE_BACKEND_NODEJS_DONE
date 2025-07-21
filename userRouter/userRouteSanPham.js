@@ -5,130 +5,176 @@ const LoaiSanPhamModel = mongoose.model('loai_san_pham', require('../model/schem
 const ThuongHieuModel = mongoose.model('thuong_hieu', require('../model/schemaThuongHieu'));
 const SanPhamModel = mongoose.model('san_pham', require('../model/schemaSanPham'));
 
+const buildProductPipeline = (
+  page,
+  limit,
+  sort,
+  matchCondition,
+  isRandom = false,
+  additionalFilters = {}
+) => {
+  const skip = (page - 1) * limit;
+  const pipeline = [{ $match: matchCondition }];
+
+  // Add additional filters from query params
+  const conditions = [];
+
+  if (additionalFilters.categories && additionalFilters.categories.length > 0) {
+    const validCategories = additionalFilters.categories.filter(id => !isNaN(id) && id > 0);
+    if (validCategories.length > 0) {
+      conditions.push({ id_loai: { $in: validCategories } });
+    }
+  }
+
+  if (additionalFilters.brands && additionalFilters.brands.length > 0) {
+    const validBrands = additionalFilters.brands.filter(id => !isNaN(id) && id > 0);
+    if (validBrands.length > 0) {
+      conditions.push({ id_thuong_hieu: { $in: validBrands } });
+    }
+  }
+
+  if (additionalFilters.origins && additionalFilters.origins.length > 0) {
+    const validOrigins = additionalFilters.origins.filter(origin => origin && origin.trim() !== '');
+    if (validOrigins.length > 0) {
+      conditions.push({ xuat_xu: { $in: validOrigins } });
+    }
+  }
+
+  if (conditions.length > 0) {
+    pipeline.push({ $match: { $and: conditions } });
+  }
+
+  if (isRandom) {
+    pipeline.push({ $sample: { size: Math.min(limit, 1000) } });
+  }
+
+  if (['discounted', 'price_asc', 'price_desc', 'bestselling'].includes(sort)) {
+    pipeline.push({ $unwind: '$variants' });
+
+    // FIX: Ensure only discounted products are considered for 'discounted' sort
+    if (sort === 'discounted') {
+      pipeline.push({
+        $match: {
+          'variants.gia_km': { $ne: null, $gt: 0 },
+          $expr: { $lt: ['$variants.gia_km', '$variants.gia'] },
+        },
+      });
+    }
+
+    pipeline.push({
+      $addFields: {
+        effectivePrice: {
+          $cond: [
+            { $and: [{ $ne: ['$variants.gia_km', null] }, { $gt: ['$variants.gia_km', 0] }] },
+            '$variants.gia_km',
+            '$variants.gia',
+          ],
+        },
+        totalSold: { $ifNull: ['$variants.so_luong_da_ban', 0] },
+        // Calculate discount percentage for sorting
+        discountPercentage: {
+          $cond: [
+            { $and: [{ $ne: ['$variants.gia_km', null] }, { $gt: ['$variants.gia_km', 0] }] },
+            {
+              $multiply: [
+                { $divide: [{ $subtract: ['$variants.gia', '$variants.gia_km'] }, '$variants.gia'] },
+                100
+              ]
+            },
+            0
+          ]
+        }
+      },
+    });
+
+    pipeline.push({
+      $group: {
+        _id: '$_id',
+        ten_sp: { $first: '$ten_sp' },
+        slug: { $first: '$slug' },
+        id_loai: { $first: '$id_loai' },
+        id_thuong_hieu: { $first: '$id_thuong_hieu' },
+        mo_ta: { $first: '$mo_ta' },
+        chat_lieu: { $first: '$chat_lieu' },
+        xuat_xu: { $first: '$xuat_xu' },
+        variants: { $push: '$variants' },
+        hot: { $first: '$hot' },
+        an_hien: { $first: '$an_hien' },
+        luot_xem: { $first: '$luot_xem' },
+        tags: { $first: '$tags' },
+        meta_title: { $first: '$meta_title' },
+        meta_description: { $first: '$meta_description' },
+        meta_keywords: { $first: '$meta_keywords' },
+        created_at: { $first: '$created_at' },
+        updated_at: { $first: '$updated_at' },
+        totalSold: { $sum: '$totalSold' },
+        minPrice: { $min: '$effectivePrice' },
+        maxPrice: { $max: '$effectivePrice' },
+        maxDiscountPercentage: { $max: '$discountPercentage' } // Used for discounted sort
+      },
+    });
+
+    if (sort === 'price_asc') pipeline.push({ $sort: { minPrice: 1 } });
+    // FIX: Correctly sort by maxPrice for price_desc
+    else if (sort === 'price_desc') pipeline.push({ $sort: { maxPrice: -1 } });
+    else if (sort === 'bestselling') pipeline.push({ $sort: { totalSold: -1 } });
+    // Sort by highest discount percentage for 'discounted'
+    else if (sort === 'discounted') pipeline.push({ $sort: { maxDiscountPercentage: -1 } });
+
+  } else {
+    if (sort === 'views') pipeline.push({ $sort: { luot_xem: -1 } });
+    else if (sort === 'newest') pipeline.push({ $sort: { created_at: -1 } });
+    else if (sort === 'all') pipeline.push({ $sort: { created_at: -1 } });
+  }
+
+  pipeline.push({
+    $facet: {
+      paginatedResults: [
+        ...(isRandom ? [] : [{ $skip: skip }, { $limit: limit }]),
+        {
+          $lookup: {
+            from: 'thuong_hieu',
+            localField: 'id_thuong_hieu',
+            foreignField: 'id',
+            as: 'thuong_hieu',
+          },
+        },
+        { $unwind: { path: '$thuong_hieu', preserveNullAndEmptyArrays: true } },
+      ],
+      totalCount: [{ $count: 'count' }],
+    },
+  });
+
+  return pipeline;
+};
+
 // Route để lấy danh sách sản phẩm với phân trang và bộ lọc
 router.get('/san-pham', async (req, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page)) || 1;
     const limit = Math.max(1, parseInt(req.query.limit)) || 20;
-    const skip = (page - 1) * limit;
     const isRandom = req.query.random === 'true';
 
-    const categories = req.query.category ? (Array.isArray(req.query.category) ? req.query.category.map(id => parseInt(id)) : [parseInt(req.query.category)]) : [];
-    const brands = req.query.brand ? (Array.isArray(req.query.brand) ? req.query.brand.map(id => parseInt(id)) : [parseInt(req.query.brand)]) : [];
-    const origins = req.query.origin ? (Array.isArray(req.query.origin) ? req.query.origin : [req.query.origin]) : [];
+    const categories = req.query.category ?
+      (Array.isArray(req.query.category) ?
+        req.query.category.map(id => parseInt(id)) :
+        [parseInt(req.query.category)]) : [];
+
+    const brands = req.query.brand ?
+      (Array.isArray(req.query.brand) ?
+        req.query.brand.map(id => parseInt(id)) :
+        [parseInt(req.query.brand)]) : [];
+
+    const origins = req.query.origin ?
+      (Array.isArray(req.query.origin) ?
+        req.query.origin :
+        [req.query.origin]) : [];
+
     const sort = req.query.sort || 'all';
 
     const matchCondition = { an_hien: true };
-    const conditions = [];
 
-    if (categories.length > 0) {
-      conditions.push({ id_loai: { $in: categories } });
-    }
-    if (brands.length > 0) {
-      conditions.push({ id_thuong_hieu: { $in: brands } });
-    }
-    if (origins.length > 0) {
-      conditions.push({ xuat_xu: { $in: origins } });
-    }
-
-    if (conditions.length > 0) {
-      matchCondition.$and = conditions;
-    }
-
-    const pipeline = [{ $match: matchCondition }];
-
-    if (isRandom) {
-      pipeline.push({ $sample: { size: Math.min(limit, 1000) } }); // Giới hạn size tối đa 1000 để tránh hiệu suất thấp
-      pipeline.push({
-        $lookup: {
-          from: 'thuong_hieu',
-          localField: 'id_thuong_hieu',
-          foreignField: 'id',
-          as: 'thuong_hieu',
-        },
-      });
-      pipeline.push({ $unwind: { path: '$thuong_hieu', preserveNullAndEmptyArrays: true } });
-    }
-
-    if (['discounted', 'price_asc', 'price_desc', 'bestselling'].includes(sort)) {
-      pipeline.push({ $unwind: '$variants' });
-
-      if (sort === 'discounted') {
-        pipeline.push({
-          $match: {
-            'variants.gia_km': { $ne: null, $gt: 0 },
-            $expr: { $lt: ['$variants.gia_km', '$variants.gia'] },
-          },
-        });
-      }
-
-      pipeline.push({
-        $addFields: {
-          effectivePrice: {
-            $cond: [
-              { $and: [{ $ne: ['$variants.gia_km', null] }, { $gt: ['$variants.gia_km', 0] }] },
-              '$variants.gia_km',
-              '$variants.gia',
-            ],
-          },
-          totalSold: { $ifNull: ['$variants.so_luong_da_ban', 0] },
-        },
-      });
-
-      pipeline.push({
-        $group: {
-          _id: '$_id',
-          ten_sp: { $first: '$ten_sp' },
-          slug: { $first: '$slug' },
-          id_loai: { $first: '$id_loai' },
-          id_thuong_hieu: { $first: '$id_thuong_hieu' },
-          mo_ta: { $first: '$mo_ta' },
-          chat_lieu: { $first: '$chat_lieu' },
-          xuat_xu: { $first: '$xuat_xu' },
-          variants: { $push: '$variants' },
-          hot: { $first: '$hot' },
-          an_hien: { $first: '$an_hien' },
-          luot_xem: { $first: '$luot_xem' },
-          tags: { $first: '$tags' },
-          meta_title: { $first: '$meta_title' },
-          meta_description: { $first: '$meta_description' },
-          meta_keywords: { $first: '$meta_keywords' },
-          created_at: { $first: '$created_at' },
-          updated_at: { $first: '$updated_at' },
-          totalSold: { $sum: '$totalSold' },
-          minPrice: { $min: '$effectivePrice' },
-          maxPrice: { $max: '$effectivePrice' },
-        },
-      });
-
-      if (sort === 'price_asc') pipeline.push({ $sort: { minPrice: 1 } });
-      if (sort === 'price_desc') pipeline.push({ $sort: { minPrice: -1 } });
-      if (sort === 'bestselling') pipeline.push({ $sort: { totalSold: -1 } });
-      if (sort === 'discounted') pipeline.push({ $sort: { minPrice: 1 } });
-    } else if (sort === 'views') {
-      pipeline.push({ $sort: { luot_xem: -1 } });
-    } else if (sort === 'newest') {
-      pipeline.push({ $sort: { created_at: -1 } });
-    }
-
-    pipeline.push({
-      $facet: {
-        paginatedResults: [
-          { $skip: skip },
-          { $limit: limit },
-          {
-            $lookup: {
-              from: 'thuong_hieu',
-              localField: 'id_thuong_hieu',
-              foreignField: 'id',
-              as: 'thuong_hieu',
-            },
-          },
-          { $unwind: { path: '$thuong_hieu', preserveNullAndEmptyArrays: true } },
-        ],
-        totalCount: [{ $count: 'count' }],
-      },
-    });
+    const pipeline = buildProductPipeline(page, limit, sort, matchCondition, isRandom, { categories, brands, origins });
 
     const result = await SanPhamModel.aggregate(pipeline);
     const totalProducts = result[0]?.totalCount[0]?.count || 0;

@@ -34,118 +34,86 @@ const generateRandomPassword = (length = 8) => {
 const authControllers = {
     // Hàm tạo access token
     createAccessToken: (user) => {
-        return jwt.sign({ id: user._id, vai_tro: user.vai_tro }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '5h' });
+        return jwt.sign({ id: user._id, vai_tro: user.vai_tro }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '10h' });
     },
+
     // Hàm tạo refresh token
     createRefreshToken: (user) => {
         return jwt.sign({ id: user._id, vai_tro: user.vai_tro }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
     },
+
     // Hàm tạo verification token
     createVerificationToken: (user) => {
         return jwt.sign({ id: user._id }, process.env.JWT_VERIFICATION_TOKEN_SECRET, { expiresIn: '1d' });
     },
+
     // Hàm gửi email xác thực
     sendVerificationEmail: async (user, verificationToken) => {
-        const verificationLink = `${process.env.CLIENT_URL}/api/auth/verify-email?token=${verificationToken}`;
+        const verificationLink = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/verify-email?token=${verificationToken}`;
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: user.email,
-            subject: 'Xác thực tài khoản của bạn',
+            subject: 'Xác thực tài khoản của bạn - LUXE STORE',
             html: `
-        <!DOCTYPE html>
-        <html lang="vi">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              margin: 0;
-              padding: 0;
-              background-color: #f4f4f4;
-            }
-            .container {
-              width: 100%;
-              max-width: 600px;
-              margin: 0 auto;
-              background-color: #ffffff;
-              border-radius: 8px;
-              overflow: hidden;
-              box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
-            .header {
-              background-color: #ebbd5b;
-              color: #ffffff;
-              text-align: center;
-              padding: 20px 0;
-            }
-            .header h1 {
-              font-size: 24px;
-              font-weight: bold;
-              margin: 0;
-            }
-            .logo {
-              font-size: 40px;
-              font-weight: bold;
-              color: #ffffff;
-              margin-top: 10px;
-            }
-            .content {
-              padding: 30px;
-              text-align: center;
-            }
-            .content h2 {
-              font-size: 20px;
-              color: #333333;
-              margin-bottom: 15px;
-            }
-            .content p {
-              font-size: 16px;
-              color: #666666;
-              line-height: 1.5;
-              margin-bottom: 20px;
-            }
-            .verification-link {
-              display: inline-block;
-              padding: 12px 25px;
-              background-color: #ebbd5b;
-              color: #ffffff;
-              text-decoration: none;
-              border-radius: 5px;
-              font-size: 16px;
-              font-weight: bold;
-            }
-            .verification-link:hover {
-              background-color: #d4a047;
-            }
-            .footer {
-              text-align: center;
-              padding: 20px;
-              font-size: 12px;
-              color: #999999;
-              background-color: #f4f4f4;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>EMAIL XÁC THỰC TÀI KHOẢN KHÁCH HÀNG</h1>
-              <div class="logo">LUXE</div>
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                <div style="background-color: #ebbd5b; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+                    <h1 style="color: white; margin: 0;">LUXE STORE</h1>
+                    <p style="color: white; margin: 10px 0 0 0; font-size: 16px;">XÁC THỰC TÀI KHOẢN</p>
+                </div>
+                
+                <div style="padding: 20px; background-color: #f9f9f9;">
+                    <h2 style="color: #333; margin-bottom: 20px;">Xin chào ${user.ho_ten},</h2>
+                    
+                    <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+                        Chào mừng bạn đến với Luxe Store! Để hoàn tất quá trình đăng ký, 
+                        vui lòng xác thực tài khoản của bạn bằng cách nhấp vào nút bên dưới.
+                    </p>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${verificationLink}" 
+                           style="display: inline-block; padding: 15px 30px; background-color: #ebbd5b; 
+                                  color: white; text-decoration: none; border-radius: 5px; 
+                                  font-weight: bold; font-size: 16px;">
+                            XÁC THỰC TÀI KHOẢN
+                        </a>
+                    </div>
+                    
+                    <div style="background-color: white; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ebbd5b;">
+                        <p style="margin: 0; color: #666; font-size: 14px;">
+                            <strong>⚠️ Lưu ý:</strong> Liên kết này sẽ hết hạn sau 24 giờ. 
+                            Nếu bạn không yêu cầu xác thực, vui lòng bỏ qua email này.
+                        </p>
+                    </div>
+                    
+                    <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+                        Nếu nút không hoạt động, bạn có thể sao chép và dán liên kết sau vào trình duyệt:
+                    </p>
+                    
+                    <div style="background-color: white; padding: 15px; border-radius: 5px; margin: 20px 0; word-break: break-all;">
+                        <p style="margin: 0; color: #888; font-size: 14px;">${verificationLink}</p>
+                    </div>
+                    
+                    <p style="color: #666; line-height: 1.6;">
+                        Nếu có thắc mắc, bạn có thể liên hệ với chúng tôi qua:
+                    </p>
+                    
+                    <div style="background-color: white; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <p style="margin: 0; color: #666; font-size: 14px;"><strong>📍 Địa chỉ:</strong> 11 Đ. Sư Vạn Hạnh, Phường 12, Quận 10, Hồ Chí Minh</p>
+                        <p style="margin: 10px 0 0 0; color: #666; font-size: 14px;"><strong>📞 Điện thoại:</strong> +84 (310) 555-1234</p>
+                        <p style="margin: 10px 0 0 0; color: #666; font-size: 14px;"><strong>📧 Email:</strong> luxesupport@gmail.com</p>
+                    </div>
+                    
+                    <p style="color: #666; line-height: 1.6;">
+                        Trân trọng,<br>
+                        <strong>Đội ngũ hỗ trợ khách hàng Luxe Store</strong>
+                    </p>
+                </div>
+                
+                <div style="background-color: #333; color: white; padding: 15px; text-align: center; border-radius: 0 0 8px 8px;">
+                    <p style="margin: 0; font-size: 14px;">© 2025 Luxe Store - Cảm ơn bạn đã tin tưởng chúng tôi!</p>
+                </div>
             </div>
-            <div class="content">
-              <h2>Xin chào ${user.ho_ten},</h2>
-              <p>Vui lòng nhấp vào nút bên dưới để xác thực tài khoản của bạn:</p>
-              <a href="${verificationLink}" class="verification-link">Xác thực ngay</a>
-              <p>Liên kết này sẽ hết hạn sau 24 giờ. Nếu bạn không yêu cầu xác thực, hãy bỏ qua email này.</p>
-            </div>
-            <div class="footer">
-              <p>&copy; 2025 LUXE. All rights reserved.</p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `,
+        `,
         };
 
         try {
@@ -162,102 +130,66 @@ const authControllers = {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: user.email,
-            subject: 'Mật khẩu mới cho tài khoản của bạn',
+            subject: 'Mật khẩu mới cho tài khoản của bạn - LUXE STORE',
             html: `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            background-color: #f4f4f4;
-                            margin: 0;
-                            padding: 0;
-                        }
-                        .container {
-                            max-width: 600px;
-                            margin: 20px auto;
-                            background-color: #ffffff;
-                            border-radius: 8px;
-                            overflow: hidden;
-                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        }
-                        .header {
-                            background-color: #ebbd5b;
-                            color: #ffffff;
-                            text-align: center;
-                            padding: 20px;
-                        }
-                        .header h1 {
-                            margin: 0;
-                            font-size: 24px;
-                        }
-                        .content {
-                            padding: 20px;
-                            text-align: center;
-                        }
-                        .content h2 {
-                            color: #333333;
-                            font-size: 20px;
-                        }
-                        .content p {
-                            color: #666666;
-                            line-height: 1.6;
-                            margin: 10px 0;
-                        }
-                        .password-box {
-                            background-color: #f9f9f9;
-                            border: 1px solid #e0e0e0;
-                            padding: 15px;
-                            margin: 15px 0;
-                            border-radius: 5px;
-                            font-size: 18px;
-                            font-weight: bold;
-                            color: #333333;
-                        }
-                        .button {
-                            display: inline-block;
-                            padding: 12px 24px;
-                            background-color: #ebbd5b;
-                            color: #ffffff;
-                            text-decoration: none;
-                            border-radius: 5px;
-                            margin: 15px 0;
-                            font-weight: bold;
-                        }
-                        .footer {
-                            background-color: #ebbd5b;
-                            text-align: center;
-                            padding: 10px;
-                            color: #ffffff;
-                            font-size: 12px;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <h1>EMAIL ĐẶT LẠI MẬT KHẨU</h1>
-                            <h2>LUXE</h2>
-                        </div>
-                        <div class="content">
-                            <h2>Xin chào ${user.ho_ten},</h2>
-                            <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
-                            <p>Mật khẩu mới của bạn là:</p>
-                            <div class="password-box">${newPassword}</div>
-                            <p>Vui lòng sử dụng mật khẩu này để đăng nhập và đổi mật khẩu mới ngay sau khi đăng nhập.</p>
-                            <a href="${process.env.CLIENT_URL}/login" class="button">Đăng nhập ngay</a>
-                            <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng liên hệ với chúng tôi ngay lập tức.</p>
-                        </div>
-                        <div class="footer">
-                            <p>© 2025 LUXE. All rights reserved.</p>
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                <div style="background-color: #ebbd5b; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+                    <h1 style="color: white; margin: 0;">LUXE STORE</h1>
+                    <p style="color: white; margin: 10px 0 0 0; font-size: 16px;">ĐẶT LẠI MẬT KHẨU</p>
+                </div>
+                
+                <div style="padding: 20px; background-color: #f9f9f9;">
+                    <h2 style="color: #333; margin-bottom: 20px;">Xin chào ${user.ho_ten},</h2>
+                    
+                    <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+                        Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. 
+                        Mật khẩu mới đã được tạo và hiển thị bên dưới:
+                    </p>
+                    
+                    <div style="background-color: white; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ebbd5b; text-align: center;">
+                        <p style="margin: 0; color: #666; font-size: 14px; margin-bottom: 10px;"><strong>MẬT KHẨU MỚI CỦA BẠN:</strong></p>
+                        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; border: 2px dashed #ebbd5b;">
+                            <p style="margin: 0; font-size: 24px; font-weight: bold; color: #333; font-family: 'Courier New', monospace;">${newPassword}</p>
                         </div>
                     </div>
-                </body>
-                </html>
-            `,
+                    
+                    <div style="background-color: white; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ff6b6b;">
+                        <p style="margin: 0; color: #666; font-size: 14px;">
+                            <strong>⚠️ Quan trọng:</strong> Vui lòng đổi mật khẩu ngay sau khi đăng nhập để bảo mật tài khoản của bạn.
+                        </p>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${process.env.NEXT_PUBLIC_API_BASE_URL}/login" 
+                           style="display: inline-block; padding: 15px 30px; background-color: #ebbd5b; 
+                                  color: white; text-decoration: none; border-radius: 5px; 
+                                  font-weight: bold; font-size: 16px;">
+                            ĐĂNG NHẬP NGAY
+                        </a>
+                    </div>
+                    
+                    <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+                        Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng liên hệ với chúng tôi ngay lập tức 
+                        để bảo vệ tài khoản của bạn.
+                    </p>
+                    
+                    <div style="background-color: white; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <p style="margin: 0; color: #666; font-size: 14px;"><strong>📍 Địa chỉ:</strong> 11 Đ. Sư Vạn Hạnh, Phường 12, Quận 10, Hồ Chí Minh</p>
+                        <p style="margin: 10px 0 0 0; color: #666; font-size: 14px;"><strong>📞 Điện thoại:</strong> +84 (310) 555-1234</p>
+                        <p style="margin: 10px 0 0 0; color: #666; font-size: 14px;"><strong>📧 Email:</strong> luxesupport@gmail.com</p>
+                    </div>
+                    
+                    <p style="color: #666; line-height: 1.6;">
+                        Trân trọng,<br>
+                        <strong>Đội ngũ hỗ trợ khách hàng Luxe Store</strong>
+                    </p>
+                </div>
+                
+                <div style="background-color: #333; color: white; padding: 15px; text-align: center; border-radius: 0 0 8px 8px;">
+                    <p style="margin: 0; font-size: 14px;">© 2025 Luxe Store - Bảo mật tài khoản là ưu tiên hàng đầu!</p>
+                </div>
+            </div>
+        `,
         };
 
         try {
@@ -462,16 +394,15 @@ const authControllers = {
     // Hàm thay đổi mật khẩu
     changePasswordUser: async (req, res) => {
         try {
-            const { mat_khau, mat_khau_moi, xac_nhan_mat_khau_moi } = req.body;
+            const { userId, mat_khau, mat_khau_moi, xac_nhan_mat_khau_moi } = req.body;
 
-            
-            const users = await User.find(); // lấy toàn bộ user
-            const user = await Promise.all(users.map(async u => ({
-                ...u._doc,
-                isMatch: await bcrypt.compare(mat_khau, u.mat_khau)
-            }))).then(results => results.find(u => u.isMatch));
-
+            const user = await User.findById(userId);
             if (!user) {
+                return res.status(404).json({ message: 'Người dùng không tồn tại' });
+            }
+
+            const isMatch = await bcrypt.compare(mat_khau, user.mat_khau);
+            if (!isMatch) {
                 return res.status(400).json({ message: 'Mật khẩu hiện tại không đúng' });
             }
 
@@ -482,11 +413,10 @@ const authControllers = {
             const salt = await bcrypt.genSalt(10);
             const hashedNewPassword = await bcrypt.hash(mat_khau_moi, salt);
 
-            await User.findByIdAndUpdate(user._id, {
-                mat_khau: hashedNewPassword,
-                xac_nhan_mat_khau: mat_khau_moi, // nếu bạn vẫn cần
-                updated_at: Date.now(),
-            });
+            user.mat_khau = hashedNewPassword;
+            user.xac_nhan_mat_khau = mat_khau_moi;
+            user.updated_at = Date.now();
+            await user.save();
 
             res.status(200).json({ message: 'Đổi mật khẩu thành công' });
         } catch (error) {

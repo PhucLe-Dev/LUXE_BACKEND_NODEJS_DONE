@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const variantSchema = new mongoose.Schema({
   sku: { type: String, required: true },
   kich_thuoc: { type: String, required: true },
@@ -34,7 +33,6 @@ const sanPhamSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }
 }, { collection: 'san_pham' });
-
 
 // Export model
 module.exports = sanPhamSchema;

@@ -41,7 +41,7 @@ router.put("/update-status/:id", async (req, res) => {
 
     if (!nextStatus) {
       return res.status(400).json({
-        message: "Không thể cập nhật trạng thái từ trạng thái hiện tại 111",
+        message: "Không thể cập nhật trạng thái từ trạng thái hiện tại",
       });
     }
 
@@ -77,13 +77,7 @@ router.put("/cancel-order/:id", async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
     }
 
-    if (donHang.trang_thai_don_hang !== "Nhận Đơn") {
-      return res.status(400).json({
-        message: 'Chỉ có thể huỷ đơn hàng khi đang ở trạng thái "Nhận Đơn"',
-      });
-    }
-
-    donHang.trang_thai_don_hang = "Hủy";
+    donHang.trang_thai_don_hang = "Hủy đơn hàng";
     donHang.updated_at = Date.now();
     await donHang.save();
 
@@ -99,13 +93,33 @@ router.get(
   middlewaresController.verifyToken,
   async (req, res) => {
     try {
+      const toEndOfDay = (dateString) => {
+        const date = new Date(dateString);
+        date.setHours(23, 59, 59, 999); // set to 23:59:59.999
+        return date;
+      };
+
+      const { from, to } = req.query;
+
       const DonHang = mongoose.model("don_hang", DonHangSchema);
 
       const shipperId = req.user.id;
 
-      const donHangList = await DonHang.find({
+      const filter = {
         id_shipper: new mongoose.Types.ObjectId(shipperId),
-      }).populate("id_customer", "ho_ten email");
+      };
+
+      if (from && to) {
+        filter.created_at = {
+          $gte: new Date(from),
+          $lte: toEndOfDay(to),
+        };
+      }
+
+      const donHangList = await DonHang.find(filter).populate(
+        "id_customer",
+        "ho_ten email"
+      );
 
       res.status(200).json(donHangList);
     } catch (error) {
