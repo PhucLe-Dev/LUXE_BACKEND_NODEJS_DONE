@@ -179,104 +179,104 @@ router.get('/report', middlewaresController.verifyToken, middlewaresController.v
         const getTopProducts = async (start, end) => {
             // 1. Lấy 5 variant bán chạy nhất trong khoảng thời gian
             const topVariants = await DonHang.aggregate([
-              { $match: { created_at: { $gte: start, $lte: end } } },
-              { $unwind: "$chi_tiet" },
-              {
-                $group: {
-                  _id: "$chi_tiet.id_variant",
-                  totalSold: { $sum: "$chi_tiet.so_luong" },
-                  totalRevenue: { $sum: { $multiply: ["$chi_tiet.so_luong", "$chi_tiet.gia"] } }
-                }
-              },
-              { $sort: { totalSold: -1 } },
-              { $limit: 5 }
+                { $match: { created_at: { $gte: start, $lte: end } } },
+                { $unwind: "$chi_tiet" },
+                {
+                    $group: {
+                        _id: "$chi_tiet.id_variant",
+                        totalSold: { $sum: "$chi_tiet.so_luong" },
+                        totalRevenue: { $sum: { $multiply: ["$chi_tiet.so_luong", "$chi_tiet.gia"] } }
+                    }
+                },
+                { $sort: { totalSold: -1 } },
+                { $limit: 5 }
             ]);
 
             const variantIds = topVariants.map(v => v._id);
 
             // 2. Lấy sản phẩm chứa các variant trên
             const products = await SanPham.find(
-              { "variants._id": { $in: variantIds } },
-              { ten_sp: 1, variants: 1 }
+                { "variants._id": { $in: variantIds } },
+                { ten_sp: 1, variants: 1 }
             ).lean();
 
             // 3. Map variantId -> product
             const variantIdToProduct = new Map();
             for (const product of products) {
-              for (const variant of product.variants) {
-                if (variantIds.find(id => id.toString() === variant._id.toString())) {
-                  variantIdToProduct.set(variant._id.toString(), {
-                    ten_sp: product.ten_sp,
-                    id_san_pham: product._id
-                  });
+                for (const variant of product.variants) {
+                    if (variantIds.find(id => id.toString() === variant._id.toString())) {
+                        variantIdToProduct.set(variant._id.toString(), {
+                            ten_sp: product.ten_sp,
+                            id_san_pham: product._id
+                        });
+                    }
                 }
-              }
             }
 
             // 4. Kết hợp dữ liệu variant với sản phẩm
             const result = topVariants.map(v => {
-              const prod = variantIdToProduct.get(v._id.toString());
-              return {
-                variant_id: v._id,
-                id_san_pham: prod?.id_san_pham,
-                ten_sp: prod?.ten_sp,
-                totalSold: v.totalSold,
-                totalRevenue: v.totalRevenue
-              };
+                const prod = variantIdToProduct.get(v._id.toString());
+                return {
+                    variant_id: v._id,
+                    id_san_pham: prod?.id_san_pham,
+                    ten_sp: prod?.ten_sp,
+                    totalSold: v.totalSold,
+                    totalRevenue: v.totalRevenue
+                };
             });
 
             return result;
-          };
+        };
 
-          const getRevenueByCategory = async (start, end) => {
+        const getRevenueByCategory = async (start, end) => {
             // 1. Lấy chi tiết đơn hàng
             const items = await DonHang.aggregate([
-              { $match: { created_at: { $gte: start, $lte: end } } },
-              { $unwind: "$chi_tiet" },
-              {
-                $project: {
-                  id_variant: "$chi_tiet.id_variant",
-                  so_luong: "$chi_tiet.so_luong",
-                  gia: "$chi_tiet.gia"
+                { $match: { created_at: { $gte: start, $lte: end } } },
+                { $unwind: "$chi_tiet" },
+                {
+                    $project: {
+                        id_variant: "$chi_tiet.id_variant",
+                        so_luong: "$chi_tiet.so_luong",
+                        gia: "$chi_tiet.gia"
+                    }
                 }
-              }
             ]);
 
             const variantIds = items.map(i => i.id_variant);
 
             // 2. Lấy sản phẩm tương ứng với variant
             const products = await SanPham.find(
-              { "variants._id": { $in: variantIds } },
-              { id_loai: 1, variants: 1 }
+                { "variants._id": { $in: variantIds } },
+                { id_loai: 1, variants: 1 }
             ).lean();
 
             const variantIdToCategory = new Map();
             for (const product of products) {
-              for (const variant of product.variants) {
-                variantIdToCategory.set(variant._id.toString(), product.id_loai);
-              }
+                for (const variant of product.variants) {
+                    variantIdToCategory.set(variant._id.toString(), product.id_loai);
+                }
             }
 
             // 3. Gộp theo id_loai
             const categoryRevenueMap = new Map();
 
             for (const item of items) {
-              const id_loai = variantIdToCategory.get(item.id_variant.toString());
-              if (!id_loai) continue;
+                const id_loai = variantIdToCategory.get(item.id_variant.toString());
+                if (!id_loai) continue;
 
-              const revenue = item.so_luong * item.gia;
+                const revenue = item.so_luong * item.gia;
 
-              if (!categoryRevenueMap.has(id_loai.toString())) {
-                categoryRevenueMap.set(id_loai.toString(), {
-                  id_loai,
-                  totalRevenue: 0,
-                  totalSold: 0
-                });
-              }
+                if (!categoryRevenueMap.has(id_loai.toString())) {
+                    categoryRevenueMap.set(id_loai.toString(), {
+                        id_loai,
+                        totalRevenue: 0,
+                        totalSold: 0
+                    });
+                }
 
-              const current = categoryRevenueMap.get(id_loai.toString());
-              current.totalRevenue += revenue;
-              current.totalSold += item.so_luong;
+                const current = categoryRevenueMap.get(id_loai.toString());
+                current.totalRevenue += revenue;
+                current.totalSold += item.so_luong;
             }
 
             const resultArray = Array.from(categoryRevenueMap.values());
@@ -285,8 +285,8 @@ router.get('/report', middlewaresController.verifyToken, middlewaresController.v
             const loaiIds = resultArray.map(item => item.id_loai);
 
             const loaiList = await LoaiSanPham.find(
-              { id: { $in: loaiIds } },
-              { id: 1, ten_loai: 1 }
+                { id: { $in: loaiIds } },
+                { id: 1, ten_loai: 1 }
             ).lean();
 
 
@@ -294,14 +294,14 @@ router.get('/report', middlewaresController.verifyToken, middlewaresController.v
 
             // 5. Gán tên danh mục vào kết quả
             const finalResult = resultArray.map(item => ({
-              id_loai: item.id_loai,
-              ten_loai: loaiMap.get(item.id_loai.toString()) || "Không xác định",
-              totalRevenue: item.totalRevenue,
-              totalSold: item.totalSold
+                id_loai: item.id_loai,
+                ten_loai: loaiMap.get(item.id_loai.toString()) || "Không xác định",
+                totalRevenue: item.totalRevenue,
+                totalSold: item.totalSold
             }));
 
             return finalResult;
-          };
+        };
 
 
 
@@ -402,9 +402,11 @@ router.get('/:id', middlewaresController.verifyToken, middlewaresController.veri
     }
 });
 
-// ======================================================
-// 4. Tạo đơn hàng thủ công
-// ======================================================
+
+// =================================================================
+// 4. Tạo đơn hàng thủ công (ĐÃ CẬP NHẬT)
+// =================================================================
+
 router.post('/', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
         const {
@@ -429,6 +431,7 @@ router.post('/', middlewaresController.verifyToken, middlewaresController.verify
         for (const item of chi_tiet) {
             const product = await SanPham.findOne({ 'variants.sku': item.id_variant });
             if (!product) return res.status(404).json({ success: false, message: `Không tìm thấy sản phẩm với SKU: ${item.id_variant}` });
+
             const variant = product.variants.find(v => v.sku === item.id_variant);
             if (!variant) return res.status(404).json({ success: false, message: `SKU ${item.id_variant} không tồn tại.` });
             if (variant.so_luong < item.so_luong) return res.status(400).json({ success: false, message: `Sản phẩm ${variant.sku} không đủ số lượng.` });
@@ -443,7 +446,13 @@ router.post('/', middlewaresController.verifyToken, middlewaresController.verify
                 gia_goc: variant.gia
             });
 
-            variant.so_luong -= item.so_luong;
+            // ===========================================================
+            // MỤC XỬ LÝ: CẬP NHẬT TỒN KHO VÀ SỐ LƯỢNG BÁN KHI TẠO ĐƠN
+            // ===========================================================
+            variant.so_luong -= item.so_luong; // Giảm số lượng tồn kho
+            variant.so_luong_da_ban = (variant.so_luong_da_ban || 0) + item.so_luong; // Tăng số lượng đã bán
+            // ===========================================================
+
             await product.save();
         }
 
@@ -473,9 +482,10 @@ router.post('/', middlewaresController.verifyToken, middlewaresController.verify
     }
 });
 
-// ======================================================
-// 5. Cập nhật trạng thái đơn hàng và gán shipper
-// ======================================================
+
+// =====================================================================
+// 5. Cập nhật trạng thái đơn hàng và gán shipper (ĐÃ CẬP NHẬT)
+// =====================================================================
 router.put('/:id/status', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
     try {
         const { id } = req.params;
@@ -487,29 +497,72 @@ router.put('/:id/status', middlewaresController.verifyToken, middlewaresControll
 
         const orderToUpdate = await DonHang.findById(id);
         if (!orderToUpdate) {
-            throw new Error('Không tìm thấy đơn hàng để cập nhật.');
+            return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng để cập nhật.' });
         }
+
+        const oldStatus = orderToUpdate.trang_thai_don_hang;
+        const newStatus = trang_thai_don_hang;
 
         const updateFields = { updated_at: Date.now() };
 
-        if (trang_thai_don_hang) {
+        if (newStatus && newStatus !== oldStatus) {
             const validOrderStatuses = DonHang.schema.path('trang_thai_don_hang').enumValues;
-            if (!validOrderStatuses.includes(trang_thai_don_hang)) {
+            if (!validOrderStatuses.includes(newStatus)) {
                 return res.status(400).json({ success: false, message: `Trạng thái đơn hàng không hợp lệ.` });
             }
-            updateFields.trang_thai_don_hang = trang_thai_don_hang;
+            updateFields.trang_thai_don_hang = newStatus;
 
-            if (trang_thai_don_hang === 'Hủy đơn hàng' && orderToUpdate.trang_thai_don_hang !== 'Hủy đơn hàng') {
+            // ============================================================================================
+            // MỤC XỬ LÝ: CẬP NHẬT TỒN KHO & SỐ LƯỢNG BÁN KHI THAY ĐỔI TRẠNG THÁI ĐƠN HÀNG
+            // ============================================================================================
+
+            // Kịch bản 1: Hủy một đơn hàng đang hoạt động (không phải trạng thái "Hủy đơn hàng")
+            if (newStatus === 'Hủy đơn hàng' && oldStatus !== 'Hủy đơn hàng') {
                 for (const item of orderToUpdate.chi_tiet) {
                     await SanPham.updateOne(
                         { 'variants._id': item.id_variant },
-                        { $inc: { 'variants.$.so_luong': item.so_luong } }
+                        {
+                            $inc: {
+                                'variants.$.so_luong': item.so_luong,         // Hoàn trả số lượng tồn kho
+                                'variants.$.so_luong_da_ban': -item.so_luong  // Giảm số lượng đã bán
+                            }
+                        }
                     );
                 }
                 if (orderToUpdate.id_voucher) {
-                    await Voucher.findByIdAndUpdate(orderToUpdate.id_voucher, { is_active: true });
+                    await Voucher.findByIdAndUpdate(orderToUpdate.id_voucher, { $inc: { so_luong_da_dung: -1 } });
                 }
             }
+
+            // Kịch bản 2: Phục hồi một đơn hàng đã bị hủy
+            else if (oldStatus === 'Hủy đơn hàng' && newStatus !== 'Hủy đơn hàng') {
+                // Trước khi phục hồi, kiểm tra lại tồn kho
+                for (const item of orderToUpdate.chi_tiet) {
+                    const product = await SanPham.findOne({ 'variants._id': item.id_variant }, { 'variants.$': 1 });
+                    const variant = product.variants[0];
+                    if (variant.so_luong < item.so_luong) {
+                        throw new Error(`Không đủ tồn kho (${variant.so_luong}) để phục hồi sản phẩm SKU ${variant.sku}. Cần ${item.so_luong}.`);
+                    }
+                }
+
+                // Nếu tất cả sản phẩm đều đủ tồn kho, tiến hành cập nhật
+                for (const item of orderToUpdate.chi_tiet) {
+                    await SanPham.updateOne(
+                        { 'variants._id': item.id_variant },
+                        {
+                            $inc: {
+                                'variants.$.so_luong': -item.so_luong, // Trừ lại số lượng tồn kho
+                                'variants.$.so_luong_da_ban': item.so_luong   // Tăng lại số lượng đã bán
+                            }
+                        }
+                    );
+                }
+                if (orderToUpdate.id_voucher) {
+                    await Voucher.findByIdAndUpdate(orderToUpdate.id_voucher, { $inc: { so_luong_da_dung: 1 } });
+                }
+            }
+
+
         }
 
         if (trang_thai_thanh_toan) {
@@ -538,7 +591,7 @@ router.put('/:id/status', middlewaresController.verifyToken, middlewaresControll
         // Gửi email sau khi cập nhật thành công
         if (trang_thai_don_hang === 'Đã xác nhận' || trang_thai_don_hang === 'Hủy đơn hàng') {
             const fullOrderDetails = await DonHang.findById(updatedOrder._id).lean();
-            
+
             for (let item of fullOrderDetails.chi_tiet) {
                 item.gia_ban = item.gia;
                 const product = await SanPham.findOne({ 'variants._id': item.id_variant }).lean();
@@ -547,6 +600,7 @@ router.put('/:id/status', middlewaresController.verifyToken, middlewaresControll
                     if (variant) {
                         item.id_variant = { sku: variant.sku };
                     }
+
                 }
             }
             await sendOrderStatusEmail(fullOrderDetails, trang_thai_don_hang);
