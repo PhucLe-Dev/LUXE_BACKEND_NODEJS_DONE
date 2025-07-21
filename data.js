@@ -3390,112 +3390,20 @@ const voucher_arr = [
 ];
 
 // Dữ liệu đơn hàng (DonHang)
-const don_hang_arr = [
-  {
-    _id: new ObjectId(),
-    id_customer: nguoi_dung_arr[1]._id,
-    id_shipper: nguoi_dung_arr[3]._id, // Lê Văn D
-    id_voucher: voucher_arr[0]._id, // Sử dụng voucher WELCOME10
-    ma_don_hang: 'DH001111',
-    variants: [
-      {
-        id_variant: sp_arr[0].variants[0]._id,
-        so_luong: 2,
-        gia: sp_arr[0].variants[0].gia_km || sp_arr[0].variants[0].gia,
-      }
-    ],
-    tong_tien: 10000000,
-    ho_ten: "Phúc Lê",
-    email: "phucle.415776@gmail.com",
-    sdt: '0865945907',
-    dia_chi_giao_hang: '123 Đường Láng, TPHCM',
-    phuong_thuc_thanh_toan: 'COD',
-    trang_thai_thanh_toan: 'Chưa thanh toán',
-    trang_thai_don_hang: 'Chờ xác nhận',
-  },
-  {
-    _id: new ObjectId(),
-    id_customer: nguoi_dung_arr[0]._id,
-    id_shipper: nguoi_dung_arr[4]._id, // Lê Văn E
-    ma_don_hang: 'DH002222',
-    variants: [
-      {
-        id_variant: sp_arr[4].variants[0]._id,
-        so_luong: 1,
-        gia: sp_arr[4].variants[0].gia_km || sp_arr[4].variants[0].gia,
-      },
-      {
-        id_variant: sp_arr[5].variants[0]._id,
-        so_luong: 1,
-        gia: sp_arr[5].variants[0].gia_km || sp_arr[5].variants[0].gia,
-      },
-    ],
-    tong_tien: 10000000,
-    ho_ten: "Phúc Hoài",
-    email: "phucle.415776@gmail.com",
-    sdt: '0865945907',
-    dia_chi_giao_hang: '123 Đường Láng, TPHCM',
-    phuong_thuc_thanh_toan: 'VNPay',
-    trang_thai_thanh_toan: 'Đã thanh toán',
-    trang_thai_don_hang: 'Chờ xác nhận',
-  }
-];
-
-// Dữ liệu bình luận (BinhLuan)
-const binh_luan_arr = [
-  {
-    _id: new ObjectId(), // Bình luận gốc
-    id_san_pham: sp_arr[0]._id,
-    id_customer: nguoi_dung_arr[1]._id,
-    diem: 5,
-    noi_dung: 'Áo sơ mi rất đẹp, chất liệu lụa mềm mại, đáng giá tiền!',
-    an_hien: true,
-    parent_id: null, // Đây là bình luận gốc
-    created_at: new Date(),
-    updated_at: new Date()
-  },
-  {
-    _id: new ObjectId(), // Bình luận phản hồi
-    id_san_pham: sp_arr[0]._id,
-    id_customer: nguoi_dung_arr[0]._id,
-    diem: null, // Không cần đánh giá sao với phản hồi
-    noi_dung: 'Cảm ơn bạn đã phản hồi, shop sẽ phục vụ tốt hơn nữa!',
-    an_hien: true,
-    parent_id: null, // Sẽ gán phía dưới
-    created_at: new Date(),
-    updated_at: new Date()
-  }
-];
-
-// Gán parent_id cho phản hồi
-binh_luan_arr[1].parent_id = binh_luan_arr[0]._id;
+const don_hang_arr = [];
 
 
-const dia_chi_arr = [
-  {
-    id_customer: nguoi_dung_arr[1]._id,
-    addresses: [
-      {
-        fullName: "Trần Thị B",
-        phoneNumber: "0909123456",
-        email: "tranthib@gmail.com",
-        administrativeAddress: "Phường Bến Nghé, Quận 1, TP Hồ Chí Minh",
-        specificAddress: "123 Nguyễn Huệ"
-      },
-      {
-        fullName: "Trần Thị B",
-        phoneNumber: "0909123456",
-        email: "tranthib@gmail.com",
-        administrativeAddress: "Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",
-        specificAddress: "Số 12, ngõ 30 Trần Thái Tông"
-      },
-    ]
-  },
-];
+const dia_chi_arr = [];
 
 const danh_gia_arr = [];
 
 const san_pham_yeu_thich = [];
+
+// Dữ liệu bình luận (BinhLuan)
+const binh_luan_arr = [];
+
+// Gán parent_id cho phản hồi
+binh_luan_arr[1].parent_id = binh_luan_arr[0]._id;
 
 // Export dữ liệu
 module.exports = {

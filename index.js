@@ -87,6 +87,7 @@ const startServer = async () => {
     app.use("/api/customer", require("./userRouter/customerRoute"));
     app.use("/api/rating", require("./userRouter/ratingRoute"));
     app.use("/api/contact", require("./userRouter/contactStore"));
+    app.use("/api/productFavourite", require("./userRouter/userRouterSPYeuThich"));
 
     // ADMIN ROUTES
     app.use(
