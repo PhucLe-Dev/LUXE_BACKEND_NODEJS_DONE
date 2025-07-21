@@ -3402,9 +3402,6 @@ const san_pham_yeu_thich = [];
 // Dữ liệu bình luận (BinhLuan)
 const binh_luan_arr = [];
 
-// Gán parent_id cho phản hồi
-binh_luan_arr[1].parent_id = binh_luan_arr[0]._id;
-
 // Export dữ liệu
 module.exports = {
   loai_arr,
