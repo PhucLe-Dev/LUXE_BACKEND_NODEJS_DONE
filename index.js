@@ -89,17 +89,21 @@ const startServer = async () => {
     app.use("/api/contact", require("./userRouter/contactStore"));
     app.use("/api/productFavourite", require("./userRouter/userRouterSPYeuThich"));
 
+
+
     // ADMIN ROUTES
-
-
     app.use("/api/admin/product/phucdev", require("./adminRouter/adminRouteSanPhamPhucDev"));
     app.use("/api/admin/dashboard", require("./adminRouter/adminRouteDashboard"));
     app.use("/api/admin/order", require("./adminRouter/adminRouteDonHang"));
     app.use("/api/admin/users", require("./adminRouter/adminRouteNguoiDung"));
     app.use("/api/admin/vouchers", require("./adminRouter/adminRouteVoucher"));
     app.use("/api/admin/categories", require("./adminRouter/adminRouteDanhMuc"));
-    app.use("/api/admin/products", require("./adminRouter/adminRouteSanPham"));
-    app.use("/api/admin/variants", require("./adminRouter/adminRouteVariants"));
+    app.use("/api/admin/comments", require("./adminRouter/adminRouteBinhLuan"));
+    app.use("/api/admin/brands", require("./adminRouter/adminRouteThuongHieu"));
+    app.use('/api/admin', require("./adminRouter/user"));
+
+
+
 
 
     // SHIPPER

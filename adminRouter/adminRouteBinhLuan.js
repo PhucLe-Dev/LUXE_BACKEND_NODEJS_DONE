@@ -55,7 +55,7 @@ router.get('/', middlewaresController.verifyToken, middlewaresController.verifyA
 
         const comments = await BinhLuan.find(query)
             .populate('id_san_pham', 'ten_sp slug')
-            .populate('id_customer', 'username email')
+            .populate('id_customer', 'username email ho_ten avatar')
             .sort({ created_at: -1 })
             .skip(skip)
             .limit(parseInt(limit))
