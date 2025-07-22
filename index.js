@@ -11,7 +11,7 @@ const { Server } = require("socket.io");
 // Load env
 dotenv.config();
 
-// Firebase Admin
+// Firebase
 const serviceAccount = require("./login-with-google/service-account-key.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -30,9 +30,6 @@ const startServer = async () => {
           "http://localhost:3001",
           "http://localhost:3002",
           "http://localhost:3003",
-          "https://luxe-customer-web-25-local.vercel.app",
-          "https://luxe-shipper.vercel.app",
-          "https://luxe-admin-git-main-phucle-devs-projects.vercel.app",
         ],
         credentials: true,
       },
@@ -62,9 +59,6 @@ const startServer = async () => {
           "http://localhost:3001",
           "http://localhost:3002",
           "http://localhost:3003",
-          "https://luxe-customer-web-25-local.vercel.app",
-          "https://luxe-shipper-product.vercel.app",
-          "https://luxe-admin-git-main-phucle-devs-projects.vercel.app",
         ],
         credentials: true,
       })
@@ -89,8 +83,6 @@ const startServer = async () => {
     app.use("/api/contact", require("./userRouter/contactStore"));
     app.use("/api/productFavourite", require("./userRouter/userRouterSPYeuThich"));
 
-
-
     // ADMIN ROUTES
     app.use("/api/admin/product/phucdev", require("./adminRouter/adminRouteSanPhamPhucDev"));
     app.use("/api/admin/dashboard", require("./adminRouter/adminRouteDashboard"));
@@ -101,10 +93,6 @@ const startServer = async () => {
     app.use("/api/admin/comments", require("./adminRouter/adminRouteBinhLuan"));
     app.use("/api/admin/brands", require("./adminRouter/adminRouteThuongHieu"));
     app.use('/api/admin', require("./adminRouter/user"));
-
-
-
-
 
     // SHIPPER
     app.use("/api/shipper/order", require("./shipperRouter/donHangRoute"));
