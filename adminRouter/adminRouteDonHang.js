@@ -223,6 +223,65 @@ router.get(
   }
 );
 
+
+// ======================================================
+// 4. Tạo đơn hàng thủ công
+// ======================================================
+// ======================================================
+// GET: Tìm kiếm sản phẩm (variants) theo tên HOẶC SKU
+// QUAN TRỌNG: Route này phải được đặt TRƯỚC route '/:id'
+// ======================================================
+router.get(
+  "/search-products",
+  middlewaresController.verifyToken,
+  middlewaresController.verifyAdmin,
+  async (req, res) => {
+    try {
+      const { term } = req.query;
+      if (!term || term.length < 2) {
+        return res.status(200).json({ success: true, data: [] });
+      }
+
+      // CẢI TIẾN: Tìm kiếm theo cả tên sản phẩm (ten_sp) và SKU của variant
+      const products = await SanPham.find({
+        $or: [
+          { ten_sp: { $regex: term, $options: 'i' } },
+          { 'variants.sku': { $regex: term, $options: 'i' } }
+        ]
+      })
+        .select('ten_sp variants._id variants.sku variants.kich_thuoc variants.mau_sac variants.hinh_chinh variants.so_luong')
+        .limit(10);
+
+      // "Làm phẳng" kết quả để trả về một danh sách các variants
+      const results = products.flatMap(product =>
+        product.variants
+          // Lọc thêm một lần nữa để chỉ giữ lại các variant khớp với từ khóa (nếu tìm theo SKU)
+          .filter(variant =>
+            product.ten_sp.toLowerCase().includes(term.toLowerCase()) ||
+            variant.sku.toLowerCase().includes(term.toLowerCase())
+          )
+          .map(variant => ({
+            ten_sp: product.ten_sp,
+            _id: variant._id,
+            sku: variant.sku,
+            kich_thuoc: variant.kich_thuoc,
+            mau_sac: variant.mau_sac,
+            hinh_chinh: variant.hinh_chinh,
+            so_luong_ton: variant.so_luong
+          }))
+      );
+
+      res.status(200).json({ success: true, data: results });
+    } catch (error) {
+      console.error("Lỗi khi tìm kiếm sản phẩm:", error);
+      res.status(500).json({ success: false, message: 'Lỗi server khi tìm kiếm sản phẩm.' });
+    }
+  }
+);
+
+
+
+
 // ======================================================
 // 3. Lấy chi tiết một đơn hàng
 // ======================================================
@@ -247,7 +306,31 @@ router.get(
         return res.status(404).json({ success: false, message: "Không tìm thấy đơn hàng." });
       }
 
+      // ======================================================
+      // === BẮT ĐẦU PHẦN CODE MỚI ĐỂ TÍNH TOÁN GIẢM GIÁ ===
+      // ======================================================
+
+      // Lấy ra danh sách chi tiết sản phẩm của đơn hàng
       const orderDetails = order.chi_tiet || order.variants || [];
+
+      // BƯỚC 1: Tính tổng tạm tính (subTotal) dựa trên giá gốc của các sản phẩm trong đơn hàng
+      const subTotal = orderDetails.reduce((acc, item) => {
+        return acc + (item.gia * item.so_luong);
+      }, 0);
+
+      // BƯỚC 2: Tính số tiền đã giảm. 
+      // Cách tính đơn giản và chính xác nhất là lấy Tạm tính trừ đi Tổng tiền cuối cùng.
+      // (Giả sử phí vận chuyển được cộng sau hoặc bằng 0)
+      const discountAmount = subTotal - order.tong_tien;
+
+      // BƯỚC 3: Thêm trường `gia_giam` vào đối tượng `order` để trả về cho frontend
+      order.gia_giam = discountAmount > 0 ? discountAmount : 0;
+
+      // ======================================================
+      // === KẾT THÚC PHẦN CODE MỚI ===
+      // ======================================================
+
+      // Phần code bên dưới để populate thông tin chi tiết cho từng sản phẩm được giữ nguyên
       for (let i = 0; i < orderDetails.length; i++) {
         const item = orderDetails[i];
         if (item.id_variant) {
@@ -269,6 +352,7 @@ router.get(
         }
       }
 
+      // Dữ liệu `order` trả về giờ đây đã có trường `gia_giam` mà frontend cần
       res.status(200).json({ success: true, data: order });
     } catch (error) {
       res.status(500).json({ success: false, message: "Lỗi server khi lấy chi tiết đơn hàng.", error: error.message });
@@ -276,8 +360,35 @@ router.get(
   }
 );
 
+
 // ======================================================
-// 4. Tạo đơn hàng thủ công
+// GET: Lấy chi tiết một đơn hàng bằng ID
+// Route này phải nằm SAU các route GET cụ thể khác như '/search-products'
+// ======================================================
+router.get(
+  "/:id",
+  middlewaresController.verifyToken,
+  middlewaresController.verifyAdmin,
+  async (req, res) => {
+    try {
+      if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ success: false, message: "ID đơn hàng không hợp lệ." });
+      }
+      const order = await DonHang.findById(req.params.id).populate('id_customer', 'ho_ten email');
+      if (!order) {
+        return res.status(404).json({ success: false, message: "Không tìm thấy đơn hàng." });
+      }
+      res.status(200).json({ success: true, data: order });
+    } catch (error) {
+      console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
+      res.status(500).json({ success: false, message: 'Lỗi server.' });
+    }
+  }
+);
+
+
+// ======================================================
+// POST: Tạo đơn hàng thủ công
 // ======================================================
 router.post(
   "/",
@@ -286,49 +397,79 @@ router.post(
   async (req, res) => {
     try {
       const { ho_ten, email, sdt, dia_chi_giao_hang, phuong_thuc_thanh_toan, ghi_chu } = req.body;
-      const orderItems = req.body.chi_tiet || req.body.variants;
+      const itemsFromRequest = req.body.chi_tiet;
 
-      if (!ho_ten || !sdt || !dia_chi_giao_hang || !orderItems || orderItems.length === 0) {
+      if (!ho_ten || !sdt || !dia_chi_giao_hang || !itemsFromRequest || itemsFromRequest.length === 0) {
         return res.status(400).json({ success: false, message: "Vui lòng cung cấp đủ thông tin khách hàng và sản phẩm." });
       }
+
       const customer = await NguoiDung.findOne({ email: email.toLowerCase() });
       if (!customer) {
         return res.status(404).json({ success: false, message: `Không tìm thấy khách hàng với email: ${email}.` });
       }
 
       let tong_tien = 0;
-      const chiTietDonHang = [];
+      const variantsForOrder = [];
 
-      for (const item of orderItems) {
+      for (const item of itemsFromRequest) {
         const product = await SanPham.findOne({ 'variants.sku': item.id_variant });
-        if (!product) return res.status(404).json({ success: false, message: `Không tìm thấy sản phẩm với SKU: ${item.id_variant}` });
+        if (!product) {
+          return res.status(404).json({ success: false, message: `Không tìm thấy sản phẩm với SKU: ${item.id_variant}` });
+        }
+
         const variant = product.variants.find(v => v.sku === item.id_variant);
-        if (!variant) return res.status(404).json({ success: false, message: `SKU ${item.id_variant} không tồn tại.` });
-        if (variant.so_luong < item.so_luong) return res.status(400).json({ success: false, message: `Sản phẩm ${variant.sku} không đủ số lượng.` });
+        if (!variant) {
+          return res.status(404).json({ success: false, message: `SKU ${item.id_variant} không tồn tại trong sản phẩm.` });
+        }
+
+        if (variant.so_luong < item.so_luong) {
+          return res.status(400).json({ success: false, message: `Sản phẩm ${variant.sku} không đủ số lượng trong kho.` });
+        }
 
         const giaBan = variant.gia_km || variant.gia;
         tong_tien += giaBan * item.so_luong;
 
-        chiTietDonHang.push({ id_variant: variant._id, so_luong: item.so_luong, gia: giaBan, gia_goc: variant.gia });
+        variantsForOrder.push({
+          id_variant: variant._id,
+          so_luong: item.so_luong,
+          gia: giaBan,
+          gia_goc: variant.gia,
+        });
       }
 
       const lastOrder = await DonHang.findOne().sort({ ma_don_hang: -1 });
       let newOrderCode = 'DH001';
       if (lastOrder && lastOrder.ma_don_hang) {
-        const lastNum = parseInt(lastOrder.ma_don_hang.replace('DH', ''));
-        newOrderCode = 'DH' + (lastNum + 1).toString().padStart(3, '0');
+        const lastNum = parseInt(lastOrder.ma_don_hang.replace('DH', ''), 10);
+        if (!isNaN(lastNum)) {
+          newOrderCode = 'DH' + (lastNum + 1).toString().padStart(3, '0');
+        }
       }
 
       const newOrder = new DonHang({
-        ma_don_hang: newOrderCode, id_customer: customer._id,
+        ma_don_hang: newOrderCode,
+        id_customer: customer._id,
         ho_ten, email, sdt, dia_chi_giao_hang, phuong_thuc_thanh_toan, ghi_chu,
-        chi_tiet: chiTietDonHang,
+        variants: variantsForOrder,
         tong_tien,
         trang_thai_thanh_toan: 'Chưa thanh toán',
         trang_thai_don_hang: 'Chờ xác nhận'
       });
 
       const savedOrder = await newOrder.save();
+
+      for (const item of variantsForOrder) {
+        await SanPham.updateOne(
+          { 'variants._id': item.id_variant },
+          {
+            $inc: {
+              'variants.$.so_luong': -item.so_luong,
+              'variants.$.so_luong_da_ban': item.so_luong
+            }
+          }
+        );
+      }
+
       res.status(201).json({ success: true, message: 'Tạo đơn hàng thành công!', data: savedOrder });
 
     } catch (error) {
@@ -337,6 +478,10 @@ router.post(
     }
   }
 );
+
+
+
+
 
 // ======================================================
 // 5. Cập nhật trạng thái đơn hàng và gán shipper

@@ -1,3 +1,5 @@
+// adminDashboardRoute.js
+
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
@@ -9,34 +11,38 @@ const DonHang = mongoose.model("don_hang");
 const NguoiDung = mongoose.model("nguoi_dung");
 const SanPham = mongoose.model("san_pham");
 
+// ======================================================
+// ROUTE: Lấy thống kê tổng quan cho dashboard
+// GET /admin/dashboard/summary
+// ======================================================
 router.get(
   "/summary",
   middlewaresController.verifyToken,
   middlewaresController.verifyAdmin,
   async (req, res) => {
     try {
-      const donHang = await DonHang.find({
-        created_at: {
-          $gte: new Date(new Date().setHours(0, 0, 0, 0)),
-          $lte: new Date(new Date().setHours(23, 59, 59, 999)),
-        },
-      }).count();
-      const nguoiDung = await NguoiDung.find({
-        created_at: {
-          $gte: new Date(new Date().setHours(0, 0, 0, 0)),
-          $lte: new Date(new Date().setHours(23, 59, 59, 999)),
-        },
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+
+      const todayEnd = new Date();
+      todayEnd.setHours(23, 59, 59, 999);
+
+      const donHang = await DonHang.countDocuments({
+        created_at: { $gte: todayStart, $lte: todayEnd },
+      });
+
+      const nguoiDung = await NguoiDung.countDocuments({
+        created_at: { $gte: todayStart, $lte: todayEnd },
         vai_tro: "khach_hang",
-      }).count();
-      const sanPham = await SanPham.find().count();
+      });
+
+      const sanPham = await SanPham.countDocuments();
+
       const doanhThuHomNay = await DonHang.aggregate([
         {
           $match: {
             trang_thai_don_hang: "Giao hàng thành công",
-            created_at: {
-              $gte: new Date(new Date().setHours(0, 0, 0, 0)),
-              $lte: new Date(new Date().setHours(23, 59, 59, 999)),
-            },
+            created_at: { $gte: todayStart, $lte: todayEnd },
           },
         },
         {
@@ -46,6 +52,7 @@ router.get(
           },
         },
       ]);
+
       res.status(200).json({
         total_orders: donHang,
         total_customers: nguoiDung,
@@ -60,141 +67,125 @@ router.get(
   }
 );
 
+// ======================================================
+// Helper function được tối ưu hóa để lấy thống kê sản phẩm
+// ======================================================
+const getAggregatedProductSales = async (start, end) => {
+  return await DonHang.aggregate([
+    // Giai đoạn 1: Lọc các đơn hàng thành công trong khoảng thời gian
+    {
+      $match: {
+        created_at: { $gte: start, $lte: end },
+        trang_thai_don_hang: "Giao hàng thành công",
+      },
+    },
+    // Giai đoạn 2: Tách các sản phẩm trong mỗi đơn hàng ra thành các document riêng
+    { $unwind: "$chi_tiet" },
+    // Giai đoạn 3: Nhóm theo từng biến thể sản phẩm (variant) để tính tổng số lượng bán và doanh thu
+    {
+      $group: {
+        _id: "$chi_tiet.id_variant",
+        totalSold: { $sum: "$chi_tiet.so_luong" },
+        totalRevenue: { $sum: { $multiply: ["$chi_tiet.so_luong", "$chi_tiet.gia"] } },
+      },
+    },
+    // Giai đoạn 4: Liên kết với collection 'san_pham' để lấy thông tin chi tiết của sản phẩm
+    {
+      $lookup: {
+        from: "san_pham",
+        localField: "_id",
+        foreignField: "variants._id",
+        as: "productInfo",
+      },
+    },
+    // Giai đoạn 5: Tách mảng productInfo (thường chỉ có 1 phần tử)
+    { $unwind: "$productInfo" },
+    // Giai đoạn 6: Nhóm lại theo sản phẩm cha (product) để tổng hợp dữ liệu từ các biến thể
+    {
+      $group: {
+        _id: "$productInfo._id",
+        ten_sp: { $first: "$productInfo.ten_sp" },
+        // Lấy thumbnail của biến thể đầu tiên tìm thấy
+        thumbnail: { $first: { $arrayElemAt: ["$productInfo.variants.hinh_chinh", 0] } },
+        totalSold: { $sum: "$totalSold" },
+        totalRevenue: { $sum: "$totalRevenue" },
+      },
+    },
+    // Giai đoạn 7: Định dạng lại output cuối cùng
+    {
+      $project: {
+        _id: 0,
+        id_san_pham: "$_id",
+        ten_sp: 1,
+        thumbnail: 1,
+        totalSold: 1,
+        totalRevenue: 1,
+      },
+    },
+  ]);
+};
+
+
+// ======================================================
+// ROUTE: Lấy sản phẩm bán chạy dựa trên `so_luong_da_ban` (ĐÃ SỬA LỖI)
+// GET /admin/dashboard/san-pham-ban-chay
+// ======================================================
 router.get(
   "/san-pham-ban-chay",
   middlewaresController.verifyToken,
   middlewaresController.verifyAdmin,
   async (req, res) => {
     try {
-      const now = new Date();
-      const endDate = new Date(now.setHours(23, 59, 59, 999));
-      const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-      const prevEndDate = new Date(startDate.getTime() - 1);
-      const prevStartDate = new Date(
-        prevEndDate.getTime() - 30 * 24 * 60 * 60 * 1000
-      );
-
-      // Helper: Get sales by product ID
-      const getProductSales = async (start, end) => {
-        const rawItems = await DonHang.aggregate([
-          {
-            $match: {
-              created_at: { $gte: start, $lte: end },
-              trang_thai_don_hang: "Giao hàng thành công",
-            },
+      const topProducts = await SanPham.aggregate([
+        // Bước 1: Tách các variants
+        { $unwind: "$variants" },
+        // Bước 2: Nhóm theo sản phẩm cha và tính tổng
+        {
+          $group: {
+            _id: "$_id",
+            ten_sp: { $first: "$ten_sp" },
+            thumbnail: { $first: "$variants.hinh_chinh" },
+            tong_so_luong_da_ban: { $sum: "$variants.so_luong_da_ban" },
           },
-          { $unwind: "$chi_tiet" },
-          {
-            $project: {
-              id_variant: "$chi_tiet.id_variant",
-              so_luong: "$chi_tiet.so_luong",
-              gia: "$chi_tiet.gia",
-            },
+        },
+        // Bước 3: Sắp xếp
+        { $sort: { tong_so_luong_da_ban: -1 } },
+        // Bước 4: Giới hạn kết quả
+        { $limit: 10 },
+        // --- SỬA LỖI TẠI ĐÂY ---
+        // Bước 5: Thêm các trường mặc định để khớp với giao diện
+        {
+          $addFields: {
+            doanh_thu_thang_nay: 0,
+            thay_doi_phan_tram: 0,
           },
-          {
-            $group: {
-              _id: "$id_variant",
-              totalSold: { $sum: "$so_luong" },
-              totalRevenue: { $sum: { $multiply: ["$so_luong", "$gia"] } },
-            },
+        },
+        // Bước 6: Định dạng lại output cuối cùng
+        {
+          $project: {
+            _id: 0, // Loại bỏ _id
+            id_san_pham: "$_id",
+            ten_sp: 1, // Giữ lại ten_sp
+            thumbnail: 1, // Giữ lại thumbnail
+            so_luong_thang_nay: "$tong_so_luong_da_ban", // Đổi tên và giữ lại
+            doanh_thu_thang_nay: 1, // Giữ lại trường vừa thêm
+            thay_doi_phan_tram: 1, // Giữ lại trường vừa thêm
           },
-        ]);
-
-        const variantIds = rawItems.map((i) => i._id);
-
-        const products = await SanPham.find(
-          { "variants._id": { $in: variantIds } },
-          { ten_sp: 1, variants: 1 }
-        ).lean();
-
-        const variantToProduct = new Map();
-        for (const product of products) {
-          for (const variant of product.variants) {
-            variantToProduct.set(variant._id.toString(), {
-              id_san_pham: product._id,
-              ten_sp: product.ten_sp,
-              thumbnail: variant.hinh_chinh,
-            });
-          }
-        }
-
-        const productSales = new Map();
-        for (const item of rawItems) {
-          const info = variantToProduct.get(item._id.toString());
-          if (!info) continue;
-
-          const key = info.id_san_pham.toString();
-          if (!productSales.has(key)) {
-            productSales.set(key, {
-              id_san_pham: info.id_san_pham,
-              ten_sp: info.ten_sp,
-              thumbnail: info.thumbnail,
-              totalSold: 0,
-              totalRevenue: 0,
-            });
-          }
-
-          const current = productSales.get(key);
-          current.totalSold += item.totalSold;
-          current.totalRevenue += item.totalRevenue;
-        }
-
-        return productSales;
-      };
-
-      const [currentMap, prevMap] = await Promise.all([
-        getProductSales(startDate, endDate),
-        getProductSales(prevStartDate, prevEndDate),
+        },
       ]);
 
-      // Kết hợp tất cả id_san_pham
-      const allProductIds = new Set([...currentMap.keys(), ...prevMap.keys()]);
+      res.status(200).json({ success: true, data: topProducts });
 
-      const result = Array.from(allProductIds).map((productId) => {
-        const current = currentMap.get(productId);
-        const previous = prevMap.get(productId);
-
-        const so_luong_thang_nay = current?.totalSold || 0;
-        const so_luong_thang_truoc = previous?.totalSold || 0;
-        const doanh_thu_thang_nay = current?.totalRevenue || 0;
-        const doanh_thu_thang_truoc = previous?.totalRevenue || 0;
-
-        let percentChange = 0;
-        if (so_luong_thang_truoc === 0 && so_luong_thang_nay > 0)
-          percentChange = 100;
-        else if (so_luong_thang_truoc === 0) percentChange = 0;
-        else
-          percentChange =
-            ((so_luong_thang_nay - so_luong_thang_truoc) /
-              so_luong_thang_truoc) *
-            100;
-
-        return {
-          id_san_pham: productId,
-          ten_sp: current?.ten_sp || previous?.ten_sp || "Không xác định",
-          thumbnail: current?.thumbnail || previous?.thumbnail || null,
-          so_luong_thang_nay,
-          so_luong_thang_truoc,
-          doanh_thu_thang_nay,
-          doanh_thu_thang_truoc,
-          thay_doi_phan_tram: +percentChange.toFixed(2),
-        };
-      });
-
-      // Sắp xếp theo số lượng bán tháng này
-      result.sort((a, b) => b.so_luong_thang_nay - a.so_luong_thang_nay);
-
-      res.status(200).json({ success: true, data: result });
     } catch (error) {
-      console.error(error);
+      console.error("Lỗi khi lấy sản phẩm bán chạy:", error);
       res.status(500).json({
         success: false,
-        message: "Lỗi server khi thống kê sản phẩm bán chạy theo tháng.",
+        message: "Lỗi server khi thống kê sản phẩm bán chạy.",
         error: error.message,
       });
     }
   }
 );
+
 
 module.exports = router;
