@@ -11,24 +11,6 @@ const { Server } = require("socket.io");
 // Load env
 dotenv.config();
 
-const port = process.env.PORT || 3000;
-// Middleware
-app.use(cookieParser());
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3001",
-      "http://localhost:3002",
-      "http://localhost:3003",
-      "https://luxe-customer-web-25-local.vercel.app",
-      "https://luxe-shipper-web-25-local.vercel.app",
-      "https://luxe-admin-web-25-local.vercel.app",
-    ],
-    credentials: true,
-  })
-);
-app.use(express.json());
-
 // Firebase
 const serviceAccount = require("./login-with-google/service-account-key.json");
 admin.initializeApp({
@@ -38,31 +20,49 @@ admin.initializeApp({
 const startServer = async () => {
   try {
     await mongoose.connect(process.env.DATABASE_URL);
-    console.log("✅ MongoDB connected");
+    console.log(" MongoDB connected");
 
     const app = express();
     const server = http.createServer(app);
+    const port = process.env.PORT || 3000;
+
+    const allowedOrigins = [
+      "http://localhost:3001",
+      "http://localhost:3002",
+      "http://localhost:3003",
+      "https://luxe-customer-web-25-local.vercel.app",
+      "https://luxe-shipper-web-25-local.vercel.app",
+      "https://luxe-admin-web-25-local.vercel.app",
+    ];
+
+    // CORS setup – đặt trước TẤT CẢ các middleware khác
+    app.use(
+      cors({
+        origin: allowedOrigins,
+        credentials: true,
+      })
+    );
+
+    // Hỗ trợ preflight requests (OPTIONS)
+    app.options("*", cors());
+
+    //  Middleware khác
+    app.use(express.json());
+    app.use(cookieParser());
+
+    // SOCKET.IO setup
     const io = new Server(server, {
       cors: {
-        origin: [
-          "http://localhost:3001",
-          "http://localhost:3002",
-          "http://localhost:3003",
-          "https://luxe-customer-web-25-local.vercel.app",
-          "https://luxe-shipper-web-25-local.vercel.app",
-          "https://luxe-admin-web-25-local.vercel.app",
-        ],
+        origin: allowedOrigins,
         credentials: true,
       },
     });
 
-    // ✅ Truyền socket.io vào request
     app.use((req, res, next) => {
       req.io = io;
       next();
     });
 
-    // 🔌 Socket.io kết nối
     io.on("connection", (socket) => {
       console.log("🔌 Socket connected:", socket.id);
       socket.on("disconnect", () => {
@@ -97,7 +97,7 @@ const startServer = async () => {
     app.use("/api/admin/categories", require("./adminRouter/adminRouteDanhMuc"));
     app.use("/api/admin/comments", require("./adminRouter/adminRouteBinhLuan"));
     app.use("/api/admin/brands", require("./adminRouter/adminRouteThuongHieu"));
-    app.use('/api/admin', require("./adminRouter/user"));
+    app.use("/api/admin", require("./adminRouter/user"));
 
     // SHIPPER
     app.use("/api/shipper/order", require("./shipperRouter/donHangRoute"));
