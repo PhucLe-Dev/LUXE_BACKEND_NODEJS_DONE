@@ -37,6 +37,7 @@ const startServer = async () => {
           "https://luxe-customer-web-25-local.vercel.app",
           "https://luxe-shipper-web-25-local.vercel.app",
           "https://luxe-admin-web-25-local.vercel.app",
+          "https://luxe-be-web25.onrender.com",
         ],
         credentials: true,
       })
@@ -50,6 +51,7 @@ const startServer = async () => {
           "https://luxe-customer-web-25-local.vercel.app",
           "https://luxe-shipper-web-25-local.vercel.app",
           "https://luxe-admin-web-25-local.vercel.app",
+          "https://luxe-be-web25.onrender.com",
         ],
         credentials: true,
       },
