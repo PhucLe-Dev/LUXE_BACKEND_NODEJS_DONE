@@ -23,18 +23,34 @@ const middlewaresController = {
         }
     },
 
-    // ======================== CODE MỚI THÊM VÀO ========================
-    // Middleware xác thực vai trò Admin
-    verifyAdmin: (req, res, next) => {
-        // Middleware này phải được gọi sau verifyToken
-        if (req.user && req.user.vai_tro === 'admin') {
-            next(); // Nếu là admin, cho phép đi tiếp
-        } else {
-            // Nếu không phải admin, trả về lỗi 403 Forbidden
-            return res.status(403).json({ message: "Bạn không có quyền truy cập chức năng này" });
-        }
+    // // ======================== CODE MỚI THÊM VÀO ========================
+  // Middleware xác thực vai trò Admin
+  verifyAdmin: (req, res, next) => {
+    // Middleware này phải được gọi sau verifyToken
+    if (req.user && req.user.vai_tro === "admin") {
+      next(); // Nếu là admin, cho phép đi tiếp
+    } else {
+      // Nếu không phải admin, trả về lỗi 403 Forbidden
+      return res
+        .status(403)
+        .json({ message: "Bạn không có quyền truy cập chức năng này" });
     }
-    // ====================== KẾT THÚC CODE MỚI THÊM ======================
-}
+  },
+
+  // Middleware xác thực vài trò Shipper
+  verifyShipper: (req, res, next) => {
+    // Middleware này phải được gọi sau verifyToken
+    if (req.user && req.user.vai_tro === "shipper") {
+      next(); // Nếu là shipper, cho phép đi tiếp
+    } else {
+      // Nếu không phải shipper, trả về lỗi 403 Forbidden
+      return res
+        .status(403)
+        .json({ message: "Bạn không có quyền truy cập chức năng này" });
+    }
+  },
+
+  // ====================== KẾT THÚC CODE MỚI THÊM ======================
+};
 module.exports = middlewaresController;
 

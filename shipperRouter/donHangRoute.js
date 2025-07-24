@@ -12,85 +12,102 @@ const STATUS_TRANSITIONS = {
 };
 
 // Route lấy tất cả đơn hàng
-router.get("/get-all-orders", async (req, res) => {
-  try {
-    const donHang = await mongoose
-      .model("don_hang", DonHangSchema)
-      .find()
-      .populate("id_customer", "ho_ten email");
-    res.status(200).json(donHang);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Lỗi server" });
+router.get(
+  "/get-all-orders",
+  middlewaresController.verifyToken,
+  middlewaresController.verifyShipper,
+  async (req, res) => {
+    try {
+      const donHang = await mongoose
+        .model("don_hang", DonHangSchema)
+        .find()
+        .populate("id_customer", "ho_ten email");
+      res.status(200).json(donHang);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Lỗi server" });
+    }
   }
-});
+);
 
 // Route cập nhật trạng thái đơn hàng
-router.put("/update-status/:id", async (req, res) => {
-  try {
-    const DonHang = mongoose.model("don_hang", DonHangSchema);
-    const donHang = await DonHang.findById(req.params.id);
+router.put(
+  "/update-status/:id",
+  middlewaresController.verifyToken,
+  middlewaresController.verifyShipper,
+  async (req, res) => {
+    try {
+      const DonHang = mongoose.model("don_hang", DonHangSchema);
+      const donHang = await DonHang.findById(req.params.id);
 
-    if (!donHang) {
-      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
-    }
+      if (!donHang) {
+        return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+      }
 
-    const currentStatus = donHang.trang_thai_don_hang;
+      const currentStatus = donHang.trang_thai_don_hang;
 
-    const nextStatus = STATUS_TRANSITIONS[currentStatus];
+      const nextStatus = STATUS_TRANSITIONS[currentStatus];
 
-    if (!nextStatus) {
-      return res.status(400).json({
-        message: "Không thể cập nhật trạng thái từ trạng thái hiện tại",
+      if (!nextStatus) {
+        return res.status(400).json({
+          message: "Không thể cập nhật trạng thái từ trạng thái hiện tại",
+        });
+      }
+
+      // Update order
+      donHang.trang_thai_don_hang = nextStatus;
+      donHang.updated_at = Date.now();
+      await donHang.save();
+
+      return res.status(200).json({
+        message: "Cập nhật trạng thái thành công",
+        data: {
+          id: donHang._id,
+          previous_status: currentStatus,
+          new_status: nextStatus,
+          updated_at: donHang.updated_at,
+        },
+      });
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      return res.status(500).json({
+        message: "Lỗi server khi cập nhật trạng thái",
+        error:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
       });
     }
-
-    // Update order
-    donHang.trang_thai_don_hang = nextStatus;
-    donHang.updated_at = Date.now();
-    await donHang.save();
-
-    return res.status(200).json({
-      message: "Cập nhật trạng thái thành công",
-      data: {
-        id: donHang._id,
-        previous_status: currentStatus,
-        new_status: nextStatus,
-        updated_at: donHang.updated_at,
-      },
-    });
-  } catch (error) {
-    console.error("Error updating order status:", error);
-    return res.status(500).json({
-      message: "Lỗi server khi cập nhật trạng thái",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
-    });
   }
-});
+);
 
-router.put("/cancel-order/:id", async (req, res) => {
-  try {
-    const DonHang = mongoose.model("don_hang", DonHangSchema);
-    const donHang = await DonHang.findById(req.params.id);
+router.put(
+  "/cancel-order/:id",
+  middlewaresController.verifyToken,
+  middlewaresController.verifyShipper,
+  async (req, res) => {
+    try {
+      const DonHang = mongoose.model("don_hang", DonHangSchema);
+      const donHang = await DonHang.findById(req.params.id);
 
-    if (!donHang) {
-      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+      if (!donHang) {
+        return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+      }
+
+      donHang.trang_thai_don_hang = "Hủy đơn hàng";
+      donHang.updated_at = Date.now();
+      await donHang.save();
+
+      res.status(200).json({ message: "Huỷ đơn hàng thành công", donHang });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Lỗi server khi huỷ đơn hàng" });
     }
-
-    donHang.trang_thai_don_hang = "Hủy đơn hàng";
-    donHang.updated_at = Date.now();
-    await donHang.save();
-
-    res.status(200).json({ message: "Huỷ đơn hàng thành công", donHang });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Lỗi server khi huỷ đơn hàng" });
   }
-});
+);
 
 router.get(
   "/get-my-orders",
   middlewaresController.verifyToken,
+  middlewaresController.verifyShipper,
   async (req, res) => {
     try {
       const toEndOfDay = (dateString) => {
@@ -135,6 +152,7 @@ router.get(
 router.get(
   "/get-my-order/:id",
   middlewaresController.verifyToken,
+  middlewaresController.verifyShipper,
   async (req, res) => {
     try {
       const DonHang = mongoose.model("don_hang", DonHangSchema);
@@ -160,6 +178,7 @@ router.get(
 router.get(
   "/get-my-orders-today",
   middlewaresController.verifyToken,
+  middlewaresController.verifyShipper,
   async (req, res) => {
     try {
       const DonHang = mongoose.model("don_hang", DonHangSchema);
