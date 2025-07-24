@@ -2,11 +2,12 @@ const mongoose = require('mongoose');
 
 // Định nghĩa schema cho voucher
 const voucherSchema = new mongoose.Schema({
-  id_customer: { type: mongoose.Schema.Types.ObjectId, ref: 'nguoi_dung' },
+  id_customer: { type: mongoose.Schema.Types.ObjectId, ref: 'nguoi_dung', default: null },
   code: { type: String, required: true, unique: true, trim: true },
   description: { type: String, default: '' },
   discount_type: { type: String, enum: ['percent', 'fixed'], default: 'percent' },
   discount_value: { type: Number, required: true, min: 0 },
+  max_discount_value: { type: Number, default: null, min: 0 }, 
   min_order_value: { type: Number, default: 0, min: 0 },
   start_date: { type: Date, required: true },
   end_date: { type: Date, required: true },
