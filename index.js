@@ -11,6 +11,24 @@ const { Server } = require("socket.io");
 // Load env
 dotenv.config();
 
+const port = process.env.PORT || 3000;
+// Middleware
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3001",
+      "http://localhost:3002",
+      "http://localhost:3003",
+      "https://luxe-customer-web-25-local.vercel.app",
+      "https://luxe-shipper-web-25-local.vercel.app",
+      "https://luxe-admin-web-25-local.vercel.app",
+    ],
+    credentials: true,
+  })
+);
+app.use(express.json());
+
 // Firebase
 const serviceAccount = require("./login-with-google/service-account-key.json");
 admin.initializeApp({
@@ -51,27 +69,6 @@ const startServer = async () => {
         console.log("❌ Socket disconnected:", socket.id);
       });
     });
-
-    // chỗ này process.env.PORT không cần thêm biến môi trường nhé vì tôi deploy lên render.com 
-    // á nên nó yêu cầu yên tâm khi chạy local thì không có env nó sẽ chạy port 3000 như củ nhé
-    const port = process.env.PORT || 3000;
-
-    // Middleware
-    app.use(cookieParser());
-    app.use(
-      cors({
-        origin: [
-          "http://localhost:3001",
-          "http://localhost:3002",
-          "http://localhost:3003",
-          "https://luxe-customer-web-25-local.vercel.app",
-          "https://luxe-shipper-web-25-local.vercel.app",
-          "https://luxe-admin-web-25-local.vercel.app",
-        ],
-        credentials: true,
-      })
-    );
-    app.use(express.json());
 
     // Test route
     app.get("/", (req, res) => {
