@@ -1,6 +1,5 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", true);
 const cors = require("cors");
@@ -48,7 +47,6 @@ const startServer = async () => {
 
     //  Middleware khác
     app.use(express.json());
-    app.use(cookieParser());
 
     // SOCKET.IO setup
     const io = new Server(server, {
