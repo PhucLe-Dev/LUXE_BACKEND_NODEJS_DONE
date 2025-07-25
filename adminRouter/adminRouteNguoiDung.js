@@ -141,5 +141,40 @@ router.get('/:id', middlewaresController.verifyToken, middlewaresController.veri
     }
 });
 
+router.patch('/:id/toggle-status', middlewaresController.verifyToken, middlewaresController.verifyAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, message: 'ID người dùng không hợp lệ.' });
+        }
+
+        const user = await NguoiDung.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+        }
+
+        // Toggle trạng thái
+        user.trang_thai = !user.trang_thai;
+        await user.save();
+
+        // Loại bỏ mật khẩu trước khi gửi về client
+        const userResponse = user.toObject();
+        delete userResponse.mat_khau;
+
+        const action = user.trang_thai ? 'kích hoạt' : 'vô hiệu hóa';
+        res.status(200).json({ 
+            success: true, 
+            message: `Đã ${action} tài khoản thành công.`, 
+            data: userResponse 
+        });
+
+    } catch (error) {
+        console.error("Lỗi khi thay đổi trạng thái người dùng:", error);
+        res.status(500).json({ success: false, message: 'Lỗi server khi thay đổi trạng thái người dùng.' });
+    }
+});
+
 
 module.exports = router;
